@@ -7,7 +7,9 @@ export function WorkInProgress() {
 
   useEffect(() => {
     const dismissed = sessionStorage.getItem('wip-dismissed')
-    if (!dismissed) setVisible(true)
+    if (!dismissed) {
+      setTimeout(() => setVisible(true), 800)
+    }
   }, [])
 
   const dismiss = () => {
@@ -18,53 +20,73 @@ export function WorkInProgress() {
   if (!visible) return null
 
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: '24px',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      zIndex: 1000,
-      background: 'var(--text-primary)',
-      color: 'var(--bg)',
-      borderRadius: '100px',
-      padding: '12px 20px',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '16px',
-      fontSize: '13px',
-      fontFamily: 'var(--font-body)',
-      whiteSpace: 'nowrap',
-      boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
-    }}>
-      <span
+    <>
+      <div
+        onClick={dismiss}
         style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 998,
+          background: 'transparent',
+        }}
+      />
+      <div style={{
+        position: 'fixed',
+        bottom: '32px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 999,
+        background: 'var(--text-primary)',
+        color: 'var(--bg)',
+        borderRadius: '100px',
+        padding: '14px 24px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        fontSize: '13px',
+        fontFamily: 'var(--font-body)',
+        whiteSpace: 'nowrap',
+        maxWidth: 'calc(100vw - 48px)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.16)',
+        animation: 'slideUp 0.3s ease',
+      }}>
+        <span style={{
           width: '6px',
           height: '6px',
           borderRadius: '50%',
           background: '#8fbc8f',
           display: 'inline-block',
           flexShrink: 0,
-        }}
-      />
-      <span style={{ color: '#aaa' }}>
-        Always building.
-      </span>
-      <span>The work shown here is a start, not a summary.</span>
-      <button
-        onClick={dismiss}
-        style={{
-          color: '#666',
-          fontSize: '16px',
-          lineHeight: 1,
-          cursor: 'pointer',
-          background: 'none',
-          border: 'none',
-          padding: '0 0 0 4px',
-          fontFamily: 'var(--font-body)',
-        }}
-      >
-        ×
-      </button>
-    </div>
+        }} />
+        <span style={{
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}>
+          Always building. The work shown here is a start, not a summary.
+        </span>
+        <button
+          onClick={dismiss}
+          style={{
+            color: '#888',
+            fontSize: '18px',
+            lineHeight: 1,
+            cursor: 'pointer',
+            background: 'none',
+            border: 'none',
+            padding: '0',
+            flexShrink: 0,
+            fontFamily: 'var(--font-body)',
+          }}
+        >
+          ×
+        </button>
+      </div>
+      <style>{`
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+          to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+      `}</style>
+    </>
   )
 }

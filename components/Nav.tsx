@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { ToggleSwitch } from './ToggleSwitch'
 
 export function Nav() {
@@ -16,22 +17,25 @@ export function Nav() {
       background: 'var(--bg)',
       borderBottom: '0.5px solid var(--border)',
     }}>
-      <Image
-        src="/vindlogo.svg"
-        alt="Govind Ahluwalia"
-        width={80}
-        height={32}
-        style={{ objectFit: 'contain' }}
-      />
+      <Link href="/">
+        <Image
+          src="/vindlogo.svg"
+          alt="Govind Ahluwalia"
+          width={60}
+          height={24}
+          style={{ objectFit: 'contain', display: 'block' }}
+        />
+      </Link>
       <div style={{
         display: 'flex',
         alignItems: 'center',
         gap: 'clamp(16px, 3vw, 32px)',
       }}>
         <ToggleSwitch />
-        
         <a
-          href="mailto:ahluwaliagovind@ocadu.ca"
+          href="https://www.linkedin.com/in/govind-singh-ahluwalia/"
+          target="_blank"
+          rel="noopener noreferrer"
           style={{
             fontSize: '13px',
             color: 'var(--text-secondary)',

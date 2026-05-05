@@ -84,6 +84,7 @@ export function BentoGrid({ filter }: BentoGridProps) {
       {visibleCards.map(card => (
         <BentoCard
           key={card.id}
+          id={card.id}
           tag={card.tag}
           title={card.title}
           description={card.description}
