@@ -11,6 +11,7 @@ const cards = [
     href: '/falcon',
     size: 'large' as const,
     category: 'built' as const,
+    comingSoon: false,
   },
   {
     id: 'cpkc',
@@ -21,6 +22,7 @@ const cards = [
     href: '/cpkc',
     size: 'medium' as const,
     category: 'built' as const,
+    comingSoon: false,
   },
   {
     id: 'form',
@@ -30,6 +32,7 @@ const cards = [
     href: 'https://formgradex.vercel.app',
     size: 'medium' as const,
     category: 'built' as const,
+    comingSoon: false,
   },
   {
     id: 'about',
@@ -39,23 +42,26 @@ const cards = [
     href: undefined,
     size: 'small' as const,
     category: 'who' as const,
+    comingSoon: false,
   },
   {
     id: 'process',
     tag: 'Process',
-    title: 'I find the gap before anyone names it',
+    title: 'How I think',
     href: undefined,
     size: 'small' as const,
     category: 'think' as const,
+    comingSoon: true,
   },
   {
     id: 'sketchbook',
     tag: 'By hand',
     title: 'Sketchbook',
-    description: 'Everything starts on paper. Logo explorations, system maps, half-ideas.',
+    description: 'Everything starts on paper.',
     href: undefined,
     size: 'medium' as const,
     category: 'think' as const,
+    comingSoon: true,
   },
 ]
 
@@ -90,9 +96,10 @@ export function BentoGrid({ filter }: BentoGridProps) {
           description={card.description}
           href={card.href}
           size={card.size}
-          stat={card.stat}
-          statLabel={card.statLabel}
+          stat={(card as any).stat}
+          statLabel={(card as any).statLabel}
           category={card.category}
+          comingSoon={card.comingSoon}
         />
       ))}
     </div>
