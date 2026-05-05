@@ -47,9 +47,9 @@ export function WorkInProgress() {
         }}
       />
       <span style={{ color: '#aaa' }}>
-        This site is a work in progress —
+        Always building.
       </span>
-      <span>more coming soon.</span>
+      <span>The work shown here is a start, not a summary.</span>
       <button
         onClick={dismiss}
         style={{

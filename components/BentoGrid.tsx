@@ -50,10 +50,10 @@ const cards = [
   },
   {
     id: 'form',
-    tag: 'Exhibition · OCAD University',
+    tag: 'Exhibition Lead · OCAD · 2026',
     title: 'FOR/M',
-    description: 'GradEx 111 Industrial Design exhibition. May 2026.',
-    href: undefined,
+    description: 'Led strategy, sponsorship, and full site development for the OCAD Industrial Design graduating exhibition.',
+    href: 'https://formgradex.vercel.app',
     size: 'medium' as const,
     category: 'built' as const,
   },
