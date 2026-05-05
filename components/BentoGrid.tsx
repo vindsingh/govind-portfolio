@@ -23,6 +23,15 @@ const cards = [
     category: 'built' as const,
   },
   {
+    id: 'form',
+    tag: 'Exhibition Lead · OCAD · 2026',
+    title: 'FOR/M',
+    description: 'Led strategy, sponsorship, and full site development for the OCAD Industrial Design graduating exhibition.',
+    href: 'https://formgradex.vercel.app',
+    size: 'medium' as const,
+    category: 'built' as const,
+  },
+  {
     id: 'about',
     tag: 'New Delhi → Toronto',
     title: 'About',
@@ -48,15 +57,6 @@ const cards = [
     size: 'medium' as const,
     category: 'think' as const,
   },
-  {
-    id: 'form',
-    tag: 'Exhibition Lead · OCAD · 2026',
-    title: 'FOR/M',
-    description: 'Led strategy, sponsorship, and full site development for the OCAD Industrial Design graduating exhibition.',
-    href: 'https://formgradex.vercel.app',
-    size: 'medium' as const,
-    category: 'built' as const,
-  },
 ]
 
 const categoryMap: Record<string, string[]> = {
@@ -72,14 +72,12 @@ interface BentoGridProps {
 
 export function BentoGrid({ filter }: BentoGridProps) {
   const visible = categoryMap[filter] || ['built', 'think', 'who']
-
   const visibleCards = cards.filter(c => visible.includes(c.category))
 
   return (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(12, 1fr)',
-      gridAutoRows: '80px',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
       gap: '10px',
       width: '100%',
     }}>

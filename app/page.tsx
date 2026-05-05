@@ -16,25 +16,24 @@ function HomeContent() {
     <main>
       <Nav />
       <div style={{
-        padding: '64px 48px 48px',
+        padding: 'clamp(40px, 6vw, 80px) clamp(20px, 5vw, 48px)',
         maxWidth: '1200px',
         margin: '0 auto',
       }}>
-
-        <div style={{ marginBottom: '16px' }}>
+        <div style={{ marginBottom: 'clamp(40px, 6vw, 64px)' }}>
           <h1 style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(48px, 7vw, 96px)',
+            fontSize: 'clamp(40px, 10vw, 96px)',
             fontWeight: '500',
             letterSpacing: '-0.04em',
             lineHeight: '1.0',
             color: 'var(--text-primary)',
-            marginBottom: '20px',
+            marginBottom: '16px',
           }}>
             Govind<br />Ahluwalia
           </h1>
           <p style={{
-            fontSize: '15px',
+            fontSize: 'clamp(13px, 2vw, 15px)',
             color: 'var(--text-secondary)',
             maxWidth: '400px',
             lineHeight: '1.6',
@@ -45,7 +44,7 @@ function HomeContent() {
           </p>
         </div>
 
-        <div style={{ marginTop: '64px' }}>
+        <div>
           {mode === 'curious' ? (
             <FilterSelector
               selected={filter}
@@ -57,10 +56,8 @@ function HomeContent() {
               onChange={setFilter}
             />
           )}
-
           <BentoGrid filter={filter} />
         </div>
-
       </div>
       <WorkInProgress />
     </main>

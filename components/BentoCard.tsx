@@ -21,23 +21,15 @@ export function BentoCard({
   size = 'medium',
   stat,
   statLabel,
-  category,
 }: BentoCardProps) {
-
-  const sizeStyles: Record<string, React.CSSProperties> = {
-    small: { gridColumn: 'span 3', gridRow: 'span 2' },
-    medium: { gridColumn: 'span 4', gridRow: 'span 3' },
-    large: { gridColumn: 'span 5', gridRow: 'span 3' },
-  }
 
   const card = (
     <div
       style={{
-        ...sizeStyles[size],
         background: 'var(--bg-card)',
         border: '0.5px solid var(--border)',
         borderRadius: '16px',
-        padding: '24px',
+        padding: 'clamp(18px, 3vw, 28px)',
         position: 'relative',
         cursor: href ? 'pointer' : 'default',
         transition: 'border-color 0.2s ease, background 0.2s ease',
@@ -45,6 +37,7 @@ export function BentoCard({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
+        minHeight: size === 'large' ? '240px' : size === 'medium' ? '200px' : '160px',
       }}
       onMouseEnter={e => {
         if (href) {
@@ -63,20 +56,21 @@ export function BentoCard({
           letterSpacing: '0.1em',
           textTransform: 'uppercase',
           color: 'var(--text-muted)',
-          marginBottom: '12px',
+          marginBottom: '10px',
           fontFamily: 'var(--font-body)',
         }}>
           {tag}
         </div>
 
         <div style={{
-          fontSize: size === 'large' ? '24px' : '18px',
+          fontSize: size === 'large'
+            ? 'clamp(20px, 3vw, 26px)'
+            : 'clamp(16px, 2.5vw, 20px)',
           fontWeight: '500',
           color: 'var(--text-primary)',
           fontFamily: 'var(--font-display)',
           letterSpacing: '-0.02em',
-          lineHeight: '1.1',
-          marginBottom: description ? '10px' : '0',
+          lineHeight: '1.15',
         }}>
           {title}
         </div>
@@ -96,7 +90,7 @@ export function BentoCard({
       {stat && (
         <div style={{ marginTop: '16px' }}>
           <div style={{
-            fontSize: '42px',
+            fontSize: 'clamp(32px, 5vw, 48px)',
             fontWeight: '300',
             color: 'var(--text-primary)',
             fontFamily: 'var(--font-display)',
@@ -106,7 +100,7 @@ export function BentoCard({
             {stat}
           </div>
           <div style={{
-            fontSize: '11px',
+            fontSize: '10px',
             color: 'var(--text-muted)',
             letterSpacing: '0.06em',
             textTransform: 'uppercase',
@@ -120,11 +114,10 @@ export function BentoCard({
       {href && (
         <div style={{
           position: 'absolute',
-          bottom: '20px',
-          right: '20px',
+          bottom: '16px',
+          right: '16px',
           fontSize: '14px',
           color: 'var(--text-muted)',
-          transition: 'color 0.2s',
         }}>
           ↗
         </div>
@@ -133,7 +126,24 @@ export function BentoCard({
   )
 
   if (href) {
-    return <Link href={href} style={{ ...sizeStyles[size], display: 'contents' }}>{card}</Link>
+    const isExternal = href.startsWith('http')
+    if (isExternal) {
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ display: 'block', textDecoration: 'none' }}
+        >
+          {card}
+        </a>
+      )
+    }
+    return (
+      <Link href={href} style={{ display: 'block', textDecoration: 'none' }}>
+        {card}
+      </Link>
+    )
   }
 
   return card
