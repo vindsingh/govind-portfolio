@@ -8,7 +8,7 @@ export function WorkInProgress() {
   useEffect(() => {
     const dismissed = sessionStorage.getItem('wip-dismissed')
     if (!dismissed) {
-      setTimeout(() => setVisible(true), 800)
+      setTimeout(() => setVisible(true), 600)
     }
   }, [])
 
@@ -26,65 +26,148 @@ export function WorkInProgress() {
         style={{
           position: 'fixed',
           inset: 0,
+          background: 'rgba(0,0,0,0.25)',
           zIndex: 998,
-          background: 'transparent',
+          animation: 'fadeIn 0.2s ease',
         }}
       />
       <div style={{
         position: 'fixed',
-        bottom: '32px',
+        top: '50%',
         left: '50%',
-        transform: 'translateX(-50%)',
+        transform: 'translate(-50%, -50%)',
         zIndex: 999,
-        background: 'var(--text-primary)',
-        color: 'var(--bg)',
-        borderRadius: '100px',
-        padding: '14px 24px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        fontSize: '13px',
-        fontFamily: 'var(--font-body)',
-        whiteSpace: 'nowrap',
-        maxWidth: 'calc(100vw - 48px)',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.16)',
-        animation: 'slideUp 0.3s ease',
+        background: 'var(--bg)',
+        border: '0.5px solid var(--border)',
+        borderRadius: '20px',
+        padding: '36px',
+        width: 'min(440px, calc(100vw - 48px))',
+        boxShadow: '0 24px 64px rgba(0,0,0,0.10)',
+        animation: 'dialogIn 0.25s ease',
       }}>
-        <span style={{
-          width: '6px',
-          height: '6px',
-          borderRadius: '50%',
-          background: '#8fbc8f',
-          display: 'inline-block',
-          flexShrink: 0,
-        }} />
-        <span style={{
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
+
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          marginBottom: '16px',
         }}>
-          Always building. The work shown here is a start, not a summary.
-        </span>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}>
+            <span style={{
+              width: '7px',
+              height: '7px',
+              borderRadius: '50%',
+              background: '#8fbc8f',
+              display: 'inline-block',
+              flexShrink: 0,
+            }} />
+            <span style={{
+              fontSize: '11px',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              color: 'var(--text-muted)',
+              fontFamily: 'var(--font-body)',
+            }}>
+              In progress
+            </span>
+          </div>
+          <button
+            onClick={dismiss}
+            style={{
+              color: 'var(--text-muted)',
+              fontSize: '20px',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              lineHeight: 1,
+              padding: '0',
+              fontFamily: 'var(--font-body)',
+            }}
+          >
+            ×
+          </button>
+        </div>
+
+        <h2 style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 'clamp(20px, 4vw, 26px)',
+          fontWeight: '500',
+          letterSpacing: '-0.02em',
+          lineHeight: '1.2',
+          color: 'var(--text-primary)',
+          marginBottom: '12px',
+        }}>
+          Always building.
+        </h2>
+
+        <p style={{
+          fontSize: '14px',
+          color: 'var(--text-secondary)',
+          lineHeight: '1.6',
+          fontFamily: 'var(--font-body)',
+          marginBottom: '28px',
+        }}>
+          The work shown here is a start, not a summary.
+          More projects and thinking coming soon.
+        </p>
+
+        <div style={{
+          display: 'flex',
+          gap: '8px',
+          flexWrap: 'wrap',
+        }}>
+          {['Falcon', 'CPKC', 'FOR/M', 'More soon...'].map((item, i) => (
+            <span
+              key={item}
+              style={{
+                padding: '6px 12px',
+                borderRadius: '100px',
+                border: '0.5px solid var(--border)',
+                fontSize: '12px',
+                color: i === 3 ? 'var(--text-muted)' : 'var(--text-primary)',
+                fontFamily: 'var(--font-body)',
+                background: i === 3 ? 'transparent' : 'var(--bg-card)',
+              }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+
         <button
           onClick={dismiss}
           style={{
-            color: '#888',
-            fontSize: '18px',
-            lineHeight: 1,
-            cursor: 'pointer',
-            background: 'none',
+            marginTop: '24px',
+            width: '100%',
+            padding: '12px',
+            background: 'var(--text-primary)',
+            color: 'var(--bg)',
             border: 'none',
-            padding: '0',
-            flexShrink: 0,
+            borderRadius: '100px',
+            fontSize: '13px',
             fontFamily: 'var(--font-body)',
+            fontWeight: '500',
+            cursor: 'pointer',
+            letterSpacing: '0.02em',
           }}
         >
-          ×
+          Got it
         </button>
+
       </div>
+
       <style>{`
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateX(-50%) translateY(12px); }
-          to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes dialogIn {
+          from { opacity: 0; transform: translate(-50%, -48%); }
+          to { opacity: 1; transform: translate(-50%, -50%); }
         }
       `}</style>
     </>
