@@ -72,6 +72,26 @@ export default function FalconPage() {
         </a>
 
         <div style={{
+          marginBottom: '48px',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          border: '0.5px solid var(--border)',
+          aspectRatio: '16/9',
+          width: '100%',
+        }}>
+          <iframe
+            width="100%"
+            height="100%"
+            src="https://www.youtube.com/embed/p-zotFmbpzw"
+            title="Falcon demo"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{ display: 'block' }}
+          />
+        </div>
+
+        <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
           gap: '12px',

@@ -55,7 +55,7 @@ export default function CPKCPage() {
         }}>
           {[
             { stat: '105+', label: 'Community of Practice members' },
-            { stat: '1st', label: 'AI-native chatbot at CPKC' },
+            { stat: '1st', label: 'Geo-specific AI chatbot experience designed' },
             { stat: '3', label: 'Enterprise frameworks built' },
             { stat: '∞', label: 'Whiteboards filled' },
           ].map(item => (
