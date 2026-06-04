@@ -1,78 +1,27 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Nav } from '../components/Nav'
-import { BentoGrid } from '../components/BentoGrid'
-import { FilterSelector } from '../components/FilterSelector'
-import { PillFilter } from '../components/PillFilter'
-import { ToggleProvider, useToggle } from '../components/ToggleSwitch'
-import { WorkInProgress } from '../components/WorkInProgress'
-import { DesktopSurface, FileContainer } from '@/components/FileContainer'
+import { useState } from 'react';
+import { DesktopSurface, FileContainer } from '@/components/FileContainer';
+import SiteHeader from '@/components/SiteHeader';
+import FileTabNav from '@/components/FileTabNav';
+import ProjectGrid from '@/components/ProjectGrid';
 
-function HomeContent() {
-  const { mode } = useToggle()
-  const [filter, setFilter] = useState('everything')
+export default function Home() {
+  const [activeTab, setActiveTab] = useState<
+    'all' | 'work' | 'about' | 'experience'
+  >('all');
 
   return (
     <DesktopSurface>
+      <SiteHeader />
       <FileContainer>
-        <main>
-          <Nav />
-          <div style={{
-            padding: 'clamp(40px, 6vw, 80px) clamp(20px, 5vw, 48px)',
-            maxWidth: '1200px',
-            margin: '0 auto',
-          }}>
-            <div style={{ marginBottom: 'clamp(40px, 6vw, 64px)' }}>
-              <h1 style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(40px, 10vw, 96px)',
-                fontWeight: '500',
-                letterSpacing: '-0.04em',
-                lineHeight: '1.0',
-                color: 'var(--text-primary)',
-                marginBottom: '16px',
-              }}>
-                Govind<br />Ahluwalia
-              </h1>
-              <p style={{
-                fontSize: 'clamp(13px, 2vw, 15px)',
-                color: 'var(--text-secondary)',
-                maxWidth: '400px',
-                lineHeight: '1.6',
-                fontFamily: 'var(--font-body)',
-              }}>
-                Designer working in rooms where design
-                does not have a seat yet.
-              </p>
-            </div>
+        <FileTabNav activeTab={activeTab} onTabChange={setActiveTab} />
 
-            <div>
-              {mode === 'curious' ? (
-                <FilterSelector
-                  selected={filter}
-                  onChange={setFilter}
-                />
-              ) : (
-                <PillFilter
-                  selected={filter}
-                  onChange={setFilter}
-                />
-              )}
-              <BentoGrid filter={filter} />
-            </div>
-          </div>
-          <WorkInProgress />
-        </main>
+        {/* Spacer between tab nav and grid */}
+        <div style={{ marginTop: '24px' }}>
+          <ProjectGrid />
+        </div>
       </FileContainer>
     </DesktopSurface>
-  )
-}
-
-export default function Home() {
-  return (
-    <ToggleProvider>
-      <HomeContent />
-    </ToggleProvider>
-  )
+  );
 }

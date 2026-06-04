@@ -16,6 +16,8 @@
   --color-accent:         #C8B89A; /* bone / sand */
   --color-accent-hover:   #B8A78A; /* slightly darker for hover */
   --color-accent-subtle:  #F0EBE4; /* very light accent tint — backgrounds */
+  --color-accent-cpkc:    #B5C4A8; /* muted sage — CPKC placeholder */
+  --color-accent-falcon:  #A8B5C4; /* cool slate — Falcon placeholder */
 
   /* SHADOW TOKENS — iOS-glass multi-layer */
   --shadow-file:
