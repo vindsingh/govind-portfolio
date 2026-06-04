@@ -1,56 +1,121 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+@import "tailwindcss";
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* ─── Design Tokens ──────────────────────────────────────────────── */
+:root {
+
+  /* COLOR TOKENS */
+  --color-bg:             #F9F7F5; /* off-white, warm — desktop surface */
+  --color-surface:        #FFFFFF; /* pure white — file container */
+  --color-border:         #E8E4DF; /* soft warm border */
+  --color-border-strong:  #C4BDB5; /* stronger border for active states */
+
+  --color-text-primary:   #1A1A1A; /* near black */
+  --color-text-secondary: #6B6560; /* warm grey */
+  --color-text-muted:     #A09890; /* muted warm grey — metadata, labels */
+
+  --color-accent:         #C8B89A; /* bone / sand */
+  --color-accent-hover:   #B8A78A; /* slightly darker for hover */
+  --color-accent-subtle:  #F0EBE4; /* very light accent tint — backgrounds */
+
+  /* SHADOW TOKENS — iOS-glass multi-layer */
+  --shadow-file:
+    0 2px 4px  rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 32px 64px rgba(0, 0, 0, 0.06),
+    0 0 0 0.5px rgba(0, 0, 0, 0.06);
+
+  --shadow-card:
+    0 1px 3px  rgba(0, 0, 0, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+
+  --shadow-card-hover:
+    0 2px 6px  rgba(0, 0, 0, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.10);
+
+  /* RADIUS TOKENS */
+  --radius-file: 20px; /* main file container */
+  --radius-card: 12px; /* project cards */
+  --radius-sm:    6px; /* badges, small elements */
+
+  /* SPACING TOKENS */
+  --file-padding:        32px;
+  --file-padding-mobile: 16px;
+
+  /* TRANSITION TOKENS */
+  --transition-base:   200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* TYPE SCALE TOKENS */
+  --text-xs:   clamp(10px, 1vw, 11px);    /* ref codes, timestamps */
+  --text-sm:   clamp(12px, 1.2vw, 13px);  /* metadata, labels */
+  --text-base: clamp(14px, 1.4vw, 15px);  /* body text */
+  --text-md:   clamp(16px, 1.6vw, 18px);  /* subheadings */
+  --text-lg:   clamp(20px, 2vw, 24px);    /* section headings */
+  --text-xl:   clamp(28px, 3vw, 36px);    /* display small */
+  --text-2xl:  clamp(40px, 5vw, 56px);    /* display large */
 }
 
-:root {
-  --bg: #f5f4f0;
-  --bg-card: #eeede9;
-  --border: #d8d7d3;
-  --text-primary: #0a0a0a;
-  --text-secondary: #666660;
-  --text-muted: #999992;
-  --font-body: 'DM Sans', -apple-system, sans-serif;
-  --font-display: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+/* ─── Global Base Styles ─────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 html {
-  font-size: 16px;
+  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--bg);
-  color: var(--text-primary);
-  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-geist-sans);
   font-weight: 400;
   line-height: 1.5;
   min-height: 100vh;
 }
 
-a { color: inherit; text-decoration: none; }
-button { cursor: pointer; border: none; background: none; font-family: var(--font-body); }
+/* ─── Selection ──────────────────────────────────────────────────── */
+::selection {
+  background-color: var(--color-accent);
+  color: #ffffff;
+}
 
-@media (max-width: 768px) {
-  .bento-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-  }
+/* ─── Scrollbar (WebKit) ─────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
 
-  .bento-card {
-    width: 100% !important;
-    min-height: 160px !important;
-  }
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
 
-  .hero-title {
-    font-size: clamp(36px, 10vw, 64px) !important;
-  }
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
 
-  .hero-section {
-    padding: 40px 20px 32px !important;
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-strong);
+}
+
+/* ─── Base resets ────────────────────────────────────────────────── */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+/* ─── Typography Utilities ───────────────────────────────────────── */
+.font-mono {
+  font-feature-settings: "tnum" 1; /* tabular numbers for data alignment */
 }
