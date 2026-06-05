@@ -16,12 +16,12 @@ export default function SiteHeader() {
         alignItems: 'center',
         background: 'transparent',
         padding: '20px 32px',
-        borderBottom: '1px solid var(--color-border)',
+        borderBottom: '1px solid #E8E4DF',
       }}
     >
       {/* Left: Wordmark */}
       <Link href="/" style={{ display: 'block', lineHeight: 0 }}>
-        <Image src="/govindlogo.svg" alt="Govind" height={20} width={78} />
+        <Image src="/govindlogo.svg" alt="Govind" height={26} width={101} />
       </Link>
 
       {/* Right: Contact */}

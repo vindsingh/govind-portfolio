@@ -84,7 +84,7 @@ export function FileContainer({ children, className = '' }: FileContainerProps) 
         maxWidth: '1320px',
         marginInline: 'auto',
         backgroundColor: 'var(--color-surface)',
-        borderRadius: 'var(--radius-file)',
+        borderRadius: '0 20px 20px 20px',
         boxShadow: 'var(--shadow-file)',
         border: '1px solid var(--color-border)',
         padding: 'clamp(var(--file-padding-mobile), 3vw, var(--file-padding))',

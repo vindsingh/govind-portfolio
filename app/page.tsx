@@ -28,14 +28,12 @@ export default function Home() {
   return (
     <DesktopSurface>
       <SiteHeader />
-      <FileContainer>
+      <div style={{ position: 'relative', marginTop: '24px' }}>
         <FileTabNav activeTab={activeTab} onTabChange={setActiveTab} />
-
-        {/* Spacer between tab nav and grid */}
-        <div style={{ marginTop: '24px' }}>
+        <FileContainer>
           <ProjectGrid onProjectHover={setHovered} activeTab={activeTab} />
-        </div>
-      </FileContainer>
+        </FileContainer>
+      </div>
       <CursorLabel visible={hovered} x={mousePos.x} y={mousePos.y} />
     </DesktopSurface>
   );

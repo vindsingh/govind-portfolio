@@ -1,3 +1,5 @@
+'use client';
+
 type Tab = 'all' | 'work' | 'about' | 'experience';
 
 interface FileTabNavProps {
@@ -33,18 +35,27 @@ function GridIcon() {
 
 export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) {
   return (
-    <div>
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '1320px',
+        marginInline: 'auto',
+        position: 'relative',
+        zIndex: 2, // ensure tabs render above container shadow/border
+      }}
+    >
       {/* ── Tab row ──────────────────────────────────────────────────── */}
       <div
         style={{
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'flex-end',
-          justifyContent: 'space-between',
+          gap: '0',
+          paddingLeft: '0',
         }}
       >
         {/* Left: folder tabs */}
-        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: '0' }}>
           {TABS.map((tab) => {
             const isActive = tab.id === activeTab;
 
@@ -54,22 +65,20 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
                 style={{
-                  /* Shape */
-                  clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 100%, 0 100%)',
+                  background: '#FFFFFF',
+                  borderLeft: '1px solid #E8E4DF',
+                  borderTop: '1px solid #E8E4DF',
+                  borderRight: '1px solid #E8E4DF',
+                  borderBottom: 'none',
                   borderRadius: '6px 6px 0 0',
-                  padding: '6px 24px 6px 14px', /* extra right padding to compensate clip */
-
-                  /* Color */
-                  background: '#1A1A1A',
-                  color: '#FFFFFF',
-                  border: 'none',
-
-                  /* Typography */
+                  padding: '7px 16px',
                   fontFamily: 'var(--font-geist-sans)',
                   fontSize: '13px',
                   fontWeight: 500,
-
-                  /* Layout */
+                  color: '#1A1A1A',
+                  position: 'relative',
+                  zIndex: 1,
+                  marginBottom: '-1px',
                   cursor: 'pointer',
                   userSelect: 'none',
                   whiteSpace: 'nowrap',
@@ -84,9 +93,9 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
                 style={{
-                  padding: '6px 14px',
-                  background: 'none',
+                  background: 'transparent',
                   border: 'none',
+                  padding: '7px 16px',
                   color: '#6B6560',
                   fontFamily: 'var(--font-geist-sans)',
                   fontSize: '13px',
@@ -119,9 +128,10 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
             alignItems: 'center',
             gap: '6px',
             opacity: 0.5,
-            paddingBottom: '6px', /* align baseline with tab text */
+            paddingBottom: '7px', /* align baseline with tab text */
             cursor: 'default',
             userSelect: 'none',
+            marginLeft: 'auto',
           }}
         >
           <span style={{ color: 'var(--color-text-muted)', display: 'flex' }}>
@@ -139,15 +149,6 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
           </span>
         </div>
       </div>
-
-      {/* ── Separator line ────────────────────────────────────────────── */}
-      <div
-        style={{
-          width: '100%',
-          height: '1px',
-          background: 'var(--color-border)',
-        }}
-      />
     </div>
   );
 }
