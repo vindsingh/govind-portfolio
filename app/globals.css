@@ -4,7 +4,7 @@
 :root {
 
   /* COLOR TOKENS */
-  --color-bg:             #F9F7F5; /* off-white, warm — desktop surface */
+  --color-bg:             #FFFFFF; /* pure white — desktop surface */
   --color-surface:        #FFFFFF; /* pure white — file container */
   --color-border:         #E8E4DF; /* soft warm border */
   --color-border-strong:  #C4BDB5; /* stronger border for active states */

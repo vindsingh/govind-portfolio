@@ -28,7 +28,7 @@ export default function Home() {
   return (
     <DesktopSurface>
       <SiteHeader />
-      <div style={{ position: 'relative', marginTop: '24px' }}>
+      <div style={{ position: 'relative', marginTop: '12px' }}>
         <FileTabNav activeTab={activeTab} onTabChange={setActiveTab} />
         <FileContainer>
           <ProjectGrid onProjectHover={setHovered} activeTab={activeTab} />

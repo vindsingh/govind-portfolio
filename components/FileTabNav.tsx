@@ -71,6 +71,7 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
                   borderRight: '1px solid #E8E4DF',
                   borderBottom: 'none',
                   borderRadius: '6px 6px 0 0',
+                  clipPath: 'polygon(0 0, calc(100% - 12px) 0, 100% 100%, 0 100%)',
                   padding: '7px 16px',
                   fontFamily: 'var(--font-geist-sans)',
                   fontSize: '13px',
