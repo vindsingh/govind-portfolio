@@ -56,23 +56,17 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
                 style={{
                   /* Shape */
                   clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 100%, 0 100%)',
-                  borderRadius: '6px 0 0 0',
-                  padding: '6px 28px 6px 16px', /* extra right padding to compensate clip */
+                  borderRadius: '6px 6px 0 0',
+                  padding: '6px 24px 6px 14px', /* extra right padding to compensate clip */
 
                   /* Color */
-                  background: 'var(--color-surface)',
-                  color: 'var(--color-text-primary)',
-
-                  /* Border — top, left, right only; clip-path masks the corners */
-                  outline: '1px solid var(--color-border)',
-                  outlineOffset: '-1px',
-
-                  /* The bottom edge merges with the container (no bottom border) */
-                  borderBottom: 'none',
+                  background: '#1A1A1A',
+                  color: '#FFFFFF',
+                  border: 'none',
 
                   /* Typography */
                   fontFamily: 'var(--font-geist-sans)',
-                  fontSize: 'var(--text-sm)',
+                  fontSize: '13px',
                   fontWeight: 500,
 
                   /* Layout */
@@ -80,8 +74,6 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
                   userSelect: 'none',
                   whiteSpace: 'nowrap',
                   lineHeight: 1,
-
-                  /* No Tailwind transition needed — active tab doesn't animate */
                 }}
               >
                 {tab.label}
@@ -92,26 +84,24 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
                 style={{
-                  padding: '6px 16px',
+                  padding: '6px 14px',
                   background: 'none',
                   border: 'none',
-                  color: 'var(--color-text-secondary)',
+                  color: '#6B6560',
                   fontFamily: 'var(--font-geist-sans)',
-                  fontSize: 'var(--text-sm)',
+                  fontSize: '13px',
                   fontWeight: 400,
                   cursor: 'pointer',
                   userSelect: 'none',
                   whiteSpace: 'nowrap',
                   lineHeight: 1,
-                  transition: 'color var(--transition-base)',
+                  transition: 'color 150ms ease',
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.color =
-                    'var(--color-text-primary)';
+                  (e.currentTarget as HTMLButtonElement).style.color = '#1A1A1A';
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.color =
-                    'var(--color-text-secondary)';
+                  (e.currentTarget as HTMLButtonElement).style.color = '#6B6560';
                 }}
               >
                 {tab.label}

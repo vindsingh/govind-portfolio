@@ -4,31 +4,50 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import ProjectCard from '@/components/ProjectCard';
 
-/* ── Project data ───────────────────────────────────────────────────── */
-const projects = [
+/* ── Card data ──────────────────────────────────────────────────────── */
+const CARDS = [
   {
     id: 'form',
     title: 'FOR/M',
-    descriptor: 'Exhibition Design & Strategy',
+    category: 'EXHIBITION DESIGN & STRATEGY',
+    descriptor: 'Direction, curation, public programming',
+    type: 'project' as const,
+    filterCategory: 'work' as const,
     href: '/form',
-    accentColor: '#C8B89A',
-    gridPosition: 'large-left' as const,
   },
   {
     id: 'falcon',
     title: 'Falcon',
-    descriptor: 'Venture Platform Design',
+    category: 'VENTURE PLATFORM DESIGN',
+    descriptor: 'Shared interpretation layer for investors and founders',
+    type: 'project' as const,
+    filterCategory: 'work' as const,
     href: '/falcon',
-    accentColor: '#A8B5C4',
-    gridPosition: 'medium-right' as const,
+  },
+  {
+    id: 'about',
+    title: 'About',
+    category: 'WHO I AM',
+    descriptor: 'Designer, strategist, systems thinker',
+    type: 'about' as const,
+    filterCategory: 'about' as const,
   },
   {
     id: 'cpkc',
     title: 'CPKC',
-    descriptor: 'Enterprise Design & AI',
+    category: 'ENTERPRISE UX & STRATEGY',
+    descriptor: 'AI tooling, design thinking, community of practice',
+    type: 'project' as const,
+    filterCategory: 'work' as const,
     href: '/cpkc',
-    accentColor: '#B5C4A8',
-    gridPosition: 'medium-left-row2' as const,
+  },
+  {
+    id: 'experience',
+    title: 'Experience',
+    category: "WHERE I'VE WORKED",
+    descriptor: 'CPKC · OCAD · Freelance',
+    type: 'experience' as const,
+    filterCategory: 'experience' as const,
   },
 ];
 
@@ -43,26 +62,20 @@ const containerVariants = {
 };
 
 const cardVariants = {
-  hidden:  { opacity: 0, y: 16 },
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" as const },
+    transition: { duration: 0.4, ease: 'easeOut' as const },
   },
 };
 
-/* ── Grid positions ─────────────────────────────────────────────────── */
-// Desktop: explicit grid-column / grid-row placements
-const DESKTOP_PLACEMENT: Record<
-  typeof projects[number]['gridPosition'],
-  React.CSSProperties
-> = {
-  'large-left':       { gridColumn: '1', gridRow: '1' },
-  'medium-right':     { gridColumn: '2', gridRow: '1' },
-  'medium-left-row2': { gridColumn: '1', gridRow: '2' },
-};
+interface ProjectGridProps {
+  activeTab?: 'all' | 'work' | 'about' | 'experience';
+  onProjectHover?: (visible: boolean) => void;
+}
 
-export default function ProjectGrid() {
+export default function ProjectGrid({ activeTab = 'all', onProjectHover }: ProjectGridProps) {
   /* Track viewport width to switch between desktop and mobile layout */
   const [isMobile, setIsMobile] = useState(false);
 
@@ -73,6 +86,11 @@ export default function ProjectGrid() {
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
   }, []);
+
+  const filteredCards = CARDS.filter((card) => {
+    if (activeTab === 'all') return true;
+    return card.filterCategory === activeTab;
+  });
 
   return (
     <motion.div
@@ -89,34 +107,29 @@ export default function ProjectGrid() {
               width: '100%',
             }
           : {
-              /* ── Desktop: asymmetric two-column grid ── */
+              /* ── Desktop: 3-column, 2-row grid ── */
               display: 'grid',
-              gridTemplateColumns: '58fr 42fr',
+              gridTemplateColumns: 'repeat(3, 1fr)',
               gap: '16px',
               width: '100%',
             }
       }
     >
-      {projects.map((project) => {
-        const isLarge =
-          !isMobile && project.gridPosition === 'large-left';
-
+      {filteredCards.map((card) => {
         return (
           <motion.div
-            key={project.id}
+            key={card.id}
             variants={cardVariants}
-            style={
-              isMobile
-                ? { width: '100%' }
-                : DESKTOP_PLACEMENT[project.gridPosition]
-            }
+            style={isMobile ? { width: '100%' } : {}}
           >
             <ProjectCard
-              title={project.title}
-              descriptor={project.descriptor}
-              href={project.href}
-              accentColor={project.accentColor}
-              size={isLarge ? 'large' : 'medium'}
+              title={card.title}
+              category={card.category}
+              descriptor={card.descriptor}
+              type={card.type}
+              filterCategory={card.filterCategory}
+              href={card.href}
+              onProjectHover={onProjectHover}
             />
           </motion.div>
         );

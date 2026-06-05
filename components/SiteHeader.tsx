@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 export default function SiteHeader() {
@@ -11,27 +12,16 @@ export default function SiteHeader() {
       transition={{ duration: 0.4, ease: 'easeOut' }}
       style={{
         display: 'flex',
-        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: '100%',
         background: 'transparent',
-        paddingBottom: '16px',
+        padding: '20px 32px',
+        borderBottom: '1px solid var(--color-border)',
       }}
     >
       {/* Left: Wordmark */}
-      <Link
-        href="/"
-        style={{
-          fontFamily: 'var(--font-geist-sans)',
-          fontSize: 'var(--text-sm)',
-          fontWeight: 500,
-          color: 'var(--color-text-primary)',
-          textDecoration: 'none',
-          letterSpacing: '-0.01em',
-        }}
-      >
-        Govind
+      <Link href="/" style={{ display: 'block', lineHeight: 0 }}>
+        <Image src="/govindlogo.svg" alt="Govind" height={20} width={78} />
       </Link>
 
       {/* Right: Contact */}
@@ -39,11 +29,11 @@ export default function SiteHeader() {
         href="mailto:govindsingh.ahluwalia@gmail.com"
         style={{
           fontFamily: 'var(--font-geist-sans)',
-          fontSize: 'var(--text-sm)',
+          fontSize: '13px',
           fontWeight: 400,
           color: 'var(--color-text-secondary)',
           textDecoration: 'none',
-          transition: 'color var(--transition-base)',
+          transition: 'color 150ms',
         }}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLAnchorElement).style.color =
