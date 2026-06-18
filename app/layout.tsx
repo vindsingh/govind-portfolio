@@ -1,7 +1,15 @@
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
+import { Space_Mono } from 'next/font/google'
 import './globals.css'
+
+const spaceMono = Space_Mono({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  variable: '--font-space-mono',
+  display: 'swap',
+})
 
 export { GeistSans, GeistMono }
 
@@ -17,7 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={GeistSans.className}>{children}</body>
+      <body className={`${GeistSans.variable} ${GeistMono.variable} ${spaceMono.variable}`}>{children}</body>
     </html>
   )
 }

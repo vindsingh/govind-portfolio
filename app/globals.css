@@ -55,6 +55,9 @@
   --text-lg:   clamp(20px, 2vw, 24px);    /* section headings */
   --text-xl:   clamp(28px, 3vw, 36px);    /* display small */
   --text-2xl:  clamp(40px, 5vw, 56px);    /* display large */
+
+  /* FONT FAMILY TOKENS */
+  --font-space-mono: var(--font-space-mono), 'Courier New', monospace;
 }
 
 /* ─── Global Base Styles ─────────────────────────────────────────── */
@@ -82,8 +85,7 @@ body {
 
 /* ─── Selection ──────────────────────────────────────────────────── */
 ::selection {
-  background-color: var(--color-accent);
-  color: #ffffff;
+  background-color: rgba(26, 26, 26, 0.12);
 }
 
 /* ─── Scrollbar (WebKit) ─────────────────────────────────────────── */

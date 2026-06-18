@@ -13,7 +13,7 @@ const CARDS = [
     descriptor: 'Direction, curation, public programming',
     type: 'project' as const,
     filterCategory: 'work' as const,
-    href: '/form',
+    slug: '/projects/form',
   },
   {
     id: 'falcon',
@@ -22,7 +22,7 @@ const CARDS = [
     descriptor: 'Shared interpretation layer for investors and founders',
     type: 'project' as const,
     filterCategory: 'work' as const,
-    href: '/falcon',
+    slug: '/projects/falcon',
   },
   {
     id: 'about',
@@ -39,7 +39,7 @@ const CARDS = [
     descriptor: 'AI tooling, design thinking, community of practice',
     type: 'project' as const,
     filterCategory: 'work' as const,
-    href: '/cpkc',
+    slug: '/projects/cpkc',
   },
   {
     id: 'experience',
@@ -128,7 +128,7 @@ export default function ProjectGrid({ activeTab = 'all', onProjectHover }: Proje
               descriptor={card.descriptor}
               type={card.type}
               filterCategory={card.filterCategory}
-              href={card.href}
+              slug={card.slug}
               onProjectHover={onProjectHover}
             />
           </motion.div>

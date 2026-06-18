@@ -9,7 +9,7 @@ interface ProjectCardProps {
   descriptor: string;
   type: 'project' | 'about' | 'experience';
   filterCategory: 'work' | 'about' | 'experience';
-  href?: string;
+  slug?: string;
   onProjectHover?: (visible: boolean) => void;
 }
 
@@ -19,7 +19,7 @@ export default function ProjectCard({
   descriptor,
   type,
   filterCategory,
-  href,
+  slug,
   onProjectHover,
 }: ProjectCardProps) {
   const [isHovered, setIsHovered] = useState(false);
@@ -114,9 +114,9 @@ export default function ProjectCard({
     </article>
   );
 
-  if (href) {
+  if (slug && type === 'project') {
     return (
-      <Link href={href} style={{ textDecoration: 'none', display: 'block' }}>
+      <Link href={slug} style={{ textDecoration: 'none', display: 'block' }}>
         {CardContent}
       </Link>
     );
