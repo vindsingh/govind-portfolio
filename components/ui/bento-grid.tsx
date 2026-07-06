@@ -1,9 +1,7 @@
 import { type ComponentPropsWithoutRef, type ReactNode } from "react"
-import { ArrowRightIcon } from "@radix-ui/react-icons"
 import Link from "next/link"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 
 interface BentoGridProps extends ComponentPropsWithoutRef<"div"> {
   children: ReactNode
@@ -13,9 +11,9 @@ interface BentoGridProps extends ComponentPropsWithoutRef<"div"> {
 interface BentoCardProps extends Omit<ComponentPropsWithoutRef<typeof Link>, "name" | "description"> {
   name: string
   background: ReactNode
-  Icon: React.ElementType
+  Icon?: React.ElementType
   description: ReactNode
-  cta: string
+  cta?: string
 }
 
 const BentoGrid = ({ children, className, ...props }: BentoGridProps) => {
@@ -36,9 +34,11 @@ const BentoCard = ({
   name,
   className,
   background,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Icon,
   description,
   href,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   cta,
   ...props
 }: BentoCardProps) => (
@@ -54,45 +54,19 @@ const BentoCard = ({
     )}
     {...props}
   >
-    <div>{background}</div>
-    <div className="p-4">
-      <div className="pointer-events-none z-10 flex transform-gpu flex-col gap-1 transition-all duration-300 lg:group-hover:-translate-y-10">
-        <Icon className="h-12 w-12 origin-left transform-gpu text-neutral-700 transition-all duration-300 ease-in-out group-hover:scale-75" />
-        <h3 className="font-sans text-[13px] font-medium text-neutral-900 dark:text-neutral-100">
-          {name}
-        </h3>
-        <div className="max-w-lg text-neutral-400">{description}</div>
-      </div>
-
-      <div
-        className={cn(
-          "pointer-events-none flex w-full translate-y-0 transform-gpu flex-row items-center transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 lg:hidden"
-        )}
-      >
-        <Button
-          variant="link"
-          size="sm"
-          className="p-0 text-neutral-600"
-        >
-          {cta}
-          <ArrowRightIcon className="ms-2 h-4 w-4 rtl:rotate-180" />
-        </Button>
-      </div>
-    </div>
-
+    <div className="absolute inset-0 z-0">{background}</div>
     <div
-      className={cn(
-        "pointer-events-none absolute bottom-0 hidden w-full translate-y-10 transform-gpu flex-row items-center p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 lg:flex"
-      )}
+      className="z-10 mt-auto pointer-events-none"
+      style={{
+        paddingBottom: '16px',
+        paddingLeft: '16px',
+        paddingRight: '16px',
+        paddingTop: '12px',
+      }}
     >
-      <Button
-        variant="link"
-        size="sm"
-        className="p-0 text-neutral-600"
-      >
-        {cta}
-        <ArrowRightIcon className="ms-2 h-4 w-4 rtl:rotate-180" />
-      </Button>
+      <div className="flex flex-col">
+        {description}
+      </div>
     </div>
 
     <div className="pointer-events-none absolute inset-0 transform-gpu transition-all duration-300 group-hover:bg-black/3 group-hover:dark:bg-neutral-800/10" />

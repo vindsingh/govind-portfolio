@@ -112,7 +112,7 @@ export default function ExperiencePage() {
           overflow: visible !important;
           background: #FFFFFF !important;
           border: 1px solid #E8E4DF !important;
-          border-radius: var(--radius-file) !important;
+          border-radius: 0 20px 20px 20px !important;
           box-shadow: var(--shadow-file) !important;
           padding: 32px;
         }

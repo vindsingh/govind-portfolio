@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { HyperText } from '@/components/ui/hyper-text';
 
 type Tab = 'all' | 'work' | 'about' | 'experience';
 
@@ -72,7 +73,7 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
       >
         {/* Left: folder tabs */}
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: '0' }}>
-          {TABS.map((tab) => {
+          {TABS.map((tab, index) => {
             const isActive = tab.id === activeTab;
 
             return isActive ? (
@@ -84,7 +85,9 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
                   background: '#1A1A1A',
                   border: 'none',
                   borderRadius: 0,
-                  clipPath: 'polygon(0 0, calc(100% - 12px) 0, 100% 100%, 0 100%)',
+                  clipPath: tab.id === 'all'
+                    ? 'polygon(0 0, calc(100% - 12px) 0, 100% 100%, 0 100%)'
+                    : 'polygon(12px 0, calc(100% - 12px) 0, 100% 100%, 0 100%)',
                   padding: '7px 16px',
                   fontFamily: 'var(--font-helvetica-neue)',
                   fontSize: '13px',
@@ -97,7 +100,17 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
                   lineHeight: 1,
                 }}
               >
-                {tab.label}
+                <HyperText
+                  as="span"
+                  animateOnHover={false}
+                  startOnView={false}
+                  delay={index * 80}
+                  duration={600}
+                  className="py-0 text-inherit text-[length:inherit]"
+                  style={{ fontWeight: 'inherit' }}
+                >
+                  {tab.label}
+                </HyperText>
               </button>
             ) : (
               /* ── Inactive tab ────────────────────────────────────── */
@@ -125,7 +138,17 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
                   (e.currentTarget as HTMLButtonElement).style.color = '#6B6560';
                 }}
               >
-                {tab.label}
+                <HyperText
+                  as="span"
+                  animateOnHover={false}
+                  startOnView={false}
+                  delay={index * 80}
+                  duration={600}
+                  className="py-0 text-inherit text-[length:inherit]"
+                  style={{ fontWeight: 'inherit' }}
+                >
+                  {tab.label}
+                </HyperText>
               </button>
             );
           })}

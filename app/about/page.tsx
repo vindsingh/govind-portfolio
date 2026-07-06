@@ -37,18 +37,18 @@ export default function AboutPage() {
           overflow: visible !important;
           background: #FFFFFF !important;
           border: 1px solid #E8E4DF !important;
-          border-radius: var(--radius-file) !important;
+          border-radius: 0 20px 20px 20px !important;
           box-shadow: var(--shadow-file) !important;
           padding: 32px;
         }
 
         .about-content-wrapper {
           max-width: 680px;
-          margin: 0 auto;
-          text-align: center;
+          margin-left: 0;
+          margin-right: auto;
           display: flex;
           flex-direction: column;
-          align-items: center;
+          align-items: flex-start;
         }
 
         .social-icon-btn {
@@ -78,13 +78,6 @@ export default function AboutPage() {
           width: 100%;
           min-height: 420px;
           overflow: hidden;
-        }
-
-        .artwork-grid-mobile {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-          width: 100%;
         }
 
         @media (max-width: 767px) {
@@ -128,7 +121,7 @@ export default function AboutPage() {
 
                 <p
                   style={{
-                    fontFamily: 'var(--font-space-mono), monospace',
+                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
                     fontSize: 'clamp(13px, 1.4vw, 15px)',
                     color: '#1A1A1A',
                     lineHeight: '1.7',
@@ -141,7 +134,7 @@ export default function AboutPage() {
 
                 <p
                   style={{
-                    fontFamily: 'var(--font-space-mono), monospace',
+                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
                     fontSize: 'clamp(13px, 1.4vw, 15px)',
                     color: '#1A1A1A',
                     lineHeight: '1.7',
@@ -156,7 +149,7 @@ export default function AboutPage() {
 
                 <p
                   style={{
-                    fontFamily: 'var(--font-space-mono), monospace',
+                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
                     fontSize: 'clamp(12px, 1.2vw, 13px)',
                     color: '#6B6560',
                     lineHeight: '1.6',
@@ -169,7 +162,7 @@ export default function AboutPage() {
               </motion.div>
 
               {/* SECTION 2 — SOCIAL ICONS */}
-              <div style={{ marginTop: '32px', display: 'flex', gap: '16px', justifyContent: 'center', alignItems: 'center' }}>
+              <div style={{ marginTop: '32px', display: 'flex', gap: '16px', justifyContent: 'flex-start', alignItems: 'center' }}>
                 {/* Icon 1: Email */}
                 <a
                   href="mailto:govindsingh.ahluwalia@gmail.com"
@@ -204,8 +197,7 @@ export default function AboutPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, ease: 'easeOut' }}
                 >
-                  {/* Desktop Grid Layout (hidden on mobile, visible from sm screen) */}
-                  <div className="artwork-grid-desktop hidden sm:grid">
+                  <div className="artwork-grid-desktop">
                     {/* L-TOP */}
                     <div style={{ gridColumn: 1, gridRow: 1 }}>
                       <img
@@ -259,26 +251,6 @@ export default function AboutPage() {
                         style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 4 }}
                       />
                     </div>
-                  </div>
-
-                  {/* Mobile Stack Layout (visible on mobile, hidden from sm screen) */}
-                  <div className="artwork-grid-mobile block sm:hidden">
-                    {[
-                      { src: '/about/L-TOP.jpeg', alt: 'L-TOP' },
-                      { src: '/about/L.jpeg', alt: 'L' },
-                      { src: '/about/L-BOTTOM.jpeg', alt: 'L-BOTTOM' },
-                      { src: '/about/R-TOP.jpeg', alt: 'R-TOP' },
-                      { src: '/about/R.jpeg', alt: 'R' },
-                      { src: '/about/R-BOTTOM.jpeg', alt: 'R-BOTTOM' },
-                    ].map((imgItem) => (
-                      <div key={imgItem.alt} style={{ width: '100%', height: '240px', overflow: 'hidden', borderRadius: 4 }}>
-                        <img
-                          src={imgItem.src}
-                          alt=""
-                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                        />
-                      </div>
-                    ))}
                   </div>
                 </motion.div>
 

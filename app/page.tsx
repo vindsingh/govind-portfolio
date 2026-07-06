@@ -6,6 +6,7 @@ import SiteHeader from '@/components/SiteHeader';
 import FileTabNav from '@/components/FileTabNav';
 import ProjectGrid from '@/components/ProjectGrid';
 import CursorLabel from '@/components/CursorLabel';
+import SiteFooter from '@/components/SiteFooter';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<
@@ -34,6 +35,7 @@ export default function Home() {
           <ProjectGrid onProjectHover={setHovered} activeTab={activeTab} />
         </FileContainer>
       </div>
+      <SiteFooter />
       <CursorLabel visible={hovered} x={mousePos.x} y={mousePos.y} />
     </DesktopSurface>
   );

@@ -8,7 +8,6 @@ import SiteHeader from '@/components/SiteHeader';
 import FileTabNav from '@/components/FileTabNav';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import IndexBox from '@/components/IndexBox';
-import OrbitingCircles from '@/components/ui/orbiting-circles';
 
 const ANCHORS = [
   { label: 'THE FILM', id: 'film' },
@@ -54,11 +53,15 @@ function FalconIndexBox() {
       <style dangerouslySetInnerHTML={{ __html: `
         .index-box-container {
           width: 220px;
+          position: sticky;
+          top: 32px;
+          align-self: flex-start;
           border: 1px solid var(--color-border);
           border-radius: var(--radius-card);
           padding: 20px;
           background: var(--color-surface);
           box-sizing: border-box;
+          z-index: 10;
         }
 
         .index-box-anchors {
@@ -90,6 +93,21 @@ function FalconIndexBox() {
           color: var(--color-text-primary);
           border-left-color: #C8910A; /* Falcon amber */
         }
+
+        .sidebar-metadata {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          padding-left: 10px;
+        }
+
+        @media (max-width: 767px) {
+          .index-box-container {
+            position: static !important;
+            width: 100% !important;
+            margin-bottom: 24px;
+          }
+        }
       ` }} />
 
       <div className="index-box-container">
@@ -103,6 +121,23 @@ function FalconIndexBox() {
               {anchor.label}
             </button>
           ))}
+        </div>
+
+        <div className="sidebar-metadata" style={{ marginTop: '24px' }}>
+          <div>
+            <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#A09890' }}>ROLE</div>
+            <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500 }}>Independent Researcher &amp; Designer</div>
+          </div>
+          <div>
+            <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#A09890' }}>CATEGORY</div>
+            <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500 }}>Performance Intelligence · Venture Design</div>
+          </div>
+          <div>
+            <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#A09890' }}>STATUS</div>
+            <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500, lineHeight: '1.4' }}>
+              Research complete · <span style={{ color: '#C8910A' }}>Product in development</span>
+            </div>
+          </div>
         </div>
       </div>
     </>
@@ -190,24 +225,6 @@ export default function FalconCaseStudy() {
           width: 100%;
         }
 
-        .sidebar-container {
-          position: sticky;
-          top: 32px;
-          align-self: flex-start;
-          width: 220px;
-          flex-shrink: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 24px;
-        }
-
-        .sidebar-metadata {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-          padding-left: 10px;
-        }
-
         .article-content {
           flex: 1;
           max-width: 720px;
@@ -266,11 +283,6 @@ export default function FalconCaseStudy() {
             flex-direction: column !important;
             padding: 16px !important;
           }
-          .sidebar-container {
-            position: static !important;
-            width: 100% !important;
-            margin-bottom: 24px;
-          }
         }
       ` }} />
 
@@ -288,26 +300,7 @@ export default function FalconCaseStudy() {
           <FileContainer className="file-container-custom">
             <div className="case-study-layout">
               {/* Left Column (Sticky Sidebar) */}
-              <div className="sidebar-container">
-                <FalconIndexBox />
-
-                <div className="sidebar-metadata">
-                  <div>
-                    <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#A09890' }}>ROLE</div>
-                    <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500 }}>Independent Researcher &amp; Designer</div>
-                  </div>
-                  <div>
-                    <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#A09890' }}>CATEGORY</div>
-                    <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500 }}>Performance Intelligence · Venture Design</div>
-                  </div>
-                  <div>
-                    <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#A09890' }}>STATUS</div>
-                    <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500, lineHeight: '1.4' }}>
-                      Research complete · <span style={{ color: '#C8910A' }}>Product in development</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <FalconIndexBox />
 
               {/* Right Column (Content) */}
               <div className="article-content">
@@ -399,7 +392,7 @@ export default function FalconCaseStudy() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     <p
                       style={{
-                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
                         fontSize: 'var(--text-base)',
                         color: '#1A1A1A',
                         lineHeight: '1.65',
@@ -414,7 +407,7 @@ export default function FalconCaseStudy() {
                     </p>
                     <p
                       style={{
-                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
                         fontSize: 'var(--text-base)',
                         color: '#1A1A1A',
                         lineHeight: '1.65',
@@ -430,7 +423,7 @@ export default function FalconCaseStudy() {
                     </p>
                     <p
                       style={{
-                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
                         fontSize: 'var(--text-md)',
                         fontWeight: 500,
                         color: '#1A1A1A',
@@ -448,43 +441,107 @@ export default function FalconCaseStudy() {
 
                 {/* ORBITING CIRCLES DIAGRAM */}
                 <div style={{ marginTop: '56px', marginBottom: '56px' }}>
-                  <div className="relative flex h-[480px] w-full items-center justify-center overflow-hidden">
+                  <div style={{
+                    position: 'relative',
+                    width: '100%',
+                    height: '480px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden'
+                  }}>
+                    {/* Orbit path circles */}
+                    <div style={{
+                      position: 'absolute',
+                      width: 240, height: 240,
+                      borderRadius: '50%',
+                      border: '1px solid rgba(0,0,0,0.08)',
+                      top: '50%', left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      pointerEvents: 'none'
+                    }} />
+                    <div style={{
+                      position: 'absolute',
+                      width: 400, height: 400,
+                      borderRadius: '50%',
+                      border: '1px solid rgba(0,0,0,0.08)',
+                      top: '50%', left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      pointerEvents: 'none'
+                    }} />
 
-                    {/* Center */}
+                    {/* Center brain */}
                     <img
                       src="/projects/falcon/brain.svg"
-                      style={{ width: 72, height: 72, objectFit: 'contain',
-                        position: 'relative', zIndex: 10 }}
+                      style={{
+                        width: 64, height: 64,
+                        objectFit: 'contain',
+                        position: 'relative',
+                        zIndex: 10
+                      }}
                       alt="Falcon"
                     />
 
-                    {/* Inner orbit — product tools */}
-                    <OrbitingCircles radius={120} duration={18} delay={0}>
+                    {/* Inner orbit items — use CSS animation via style tag */}
+                    <style>{`
+                      @keyframes orbitCW {
+                        from { transform: translate(-50%, -50%) rotate(0deg) translateX(120px) rotate(0deg); }
+                        to   { transform: translate(-50%, -50%) rotate(360deg) translateX(120px) rotate(-360deg); }
+                      }
+                      @keyframes orbitCCW {
+                        from { transform: translate(-50%, -50%) rotate(0deg) translateX(200px) rotate(0deg); }
+                        to   { transform: translate(-50%, -50%) rotate(-360deg) translateX(200px) rotate(360deg); }
+                      }
+                      .orbit-item-inner-1 {
+                        position: absolute;
+                        top: 50%; left: 50%;
+                        animation: orbitCW 18s linear infinite;
+                      }
+                      .orbit-item-inner-2 {
+                        position: absolute;
+                        top: 50%; left: 50%;
+                        animation: orbitCW 18s linear infinite;
+                        animation-delay: -9s;
+                      }
+                      .orbit-item-outer-1 {
+                        position: absolute;
+                        top: 50%; left: 50%;
+                        animation: orbitCCW 30s linear infinite;
+                      }
+                      .orbit-item-outer-2 {
+                        position: absolute;
+                        top: 50%; left: 50%;
+                        animation: orbitCCW 30s linear infinite;
+                        animation-delay: -10s;
+                      }
+                      .orbit-item-outer-3 {
+                        position: absolute;
+                        top: 50%; left: 50%;
+                        animation: orbitCCW 30s linear infinite;
+                        animation-delay: -20s;
+                      }
+                    `}</style>
+
+                    <div className="orbit-item-inner-1">
                       <img src="/projects/falcon/Heap.svg"
-                        style={{ width: 28, height: 28, objectFit: 'contain' }} />
-                    </OrbitingCircles>
-
-                    <OrbitingCircles radius={120} duration={18} delay={9}>
+                        style={{ width: 28, height: 28, objectFit: 'contain', display: 'block' }} />
+                    </div>
+                    <div className="orbit-item-inner-2">
                       <img src="/projects/falcon/Amplitude.svg"
-                        style={{ width: 28, height: 28, objectFit: 'contain' }} />
-                    </OrbitingCircles>
-
-                    {/* Outer orbit — finance tools */}
-                    <OrbitingCircles radius={200} duration={30} delay={0} reverse>
+                        style={{ width: 28, height: 28, objectFit: 'contain', display: 'block' }} />
+                    </div>
+                    <div className="orbit-item-outer-1">
                       <img src="/projects/falcon/carta.svg"
-                        style={{ width: 32, height: 32, objectFit: 'contain' }} />
-                    </OrbitingCircles>
-
-                    <OrbitingCircles radius={200} duration={30} delay={10} reverse>
+                        style={{ width: 32, height: 32, objectFit: 'contain', display: 'block' }} />
+                    </div>
+                    <div className="orbit-item-outer-2">
                       <img src="/projects/falcon/standardmetrics.svg"
-                        style={{ width: 32, height: 32, objectFit: 'contain' }} />
-                    </OrbitingCircles>
-
-                    <OrbitingCircles radius={200} duration={30} delay={20} reverse>
+                        style={{ width: 32, height: 32, objectFit: 'contain', display: 'block' }} />
+                    </div>
+                    <div className="orbit-item-outer-3">
                       <img src="/projects/falcon/pulley.svg"
-                        style={{ width: 32, height: 32, objectFit: 'contain' }} />
-                    </OrbitingCircles>
-
+                        style={{ width: 32, height: 32, objectFit: 'contain', display: 'block' }} />
+                    </div>
                   </div>
 
                   {/* Caption */}
@@ -502,7 +559,7 @@ export default function FalconCaseStudy() {
                     </div>
                     <div
                       style={{
-                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
                         fontSize: 'var(--text-sm)',
                         color: '#6B6560',
                         marginTop: '6px',
@@ -519,7 +576,7 @@ export default function FalconCaseStudy() {
                   <SectionHeading>Three artifacts. One shared language.</SectionHeading>
                   <p
                     style={{
-                      fontFamily: 'var(--font-space-mono), monospace',
+                      fontFamily: 'var(--font-helvetica-neue), sans-serif',
                       fontSize: 'var(--text-base)',
                       color: '#1A1A1A',
                       lineHeight: '1.65',
@@ -537,7 +594,7 @@ export default function FalconCaseStudy() {
                     <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-md)', fontWeight: 500, color: '#1A1A1A', marginBottom: '16px' }}>A persistent, accumulating workspace.</div>
                     <p
                       style={{
-                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
                         fontSize: 'var(--text-base)',
                         color: '#1A1A1A',
                         lineHeight: '1.65',
@@ -579,7 +636,7 @@ export default function FalconCaseStudy() {
                     <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-md)', fontWeight: 500, color: '#1A1A1A', marginBottom: '16px' }}>Time as the organizing principle.</div>
                     <p
                       style={{
-                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
                         fontSize: 'var(--text-base)',
                         color: '#1A1A1A',
                         lineHeight: '1.65',
@@ -640,7 +697,7 @@ export default function FalconCaseStudy() {
                     <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-md)', fontWeight: 500, color: '#1A1A1A', marginBottom: '16px' }}>The most honest sentence in the room.</div>
                     <p
                       style={{
-                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
                         fontSize: 'var(--text-base)',
                         color: '#1A1A1A',
                         lineHeight: '1.65',
@@ -677,7 +734,7 @@ export default function FalconCaseStudy() {
                       </div>
 
                       {/* Headline */}
-                      <p style={{ fontFamily: 'var(--font-space-mono), monospace', fontSize: '14px', color: '#1A1A1A', lineHeight: 1.5, fontWeight: 500, marginTop: '16px', marginBottom: 0 }}>
+                      <p style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: '14px', color: '#1A1A1A', lineHeight: 1.5, fontWeight: 500, marginTop: '16px', marginBottom: 0 }}>
                         Activation rate changes preceded MRR changes by 5.3 weeks.
                       </p>
 
@@ -725,7 +782,7 @@ export default function FalconCaseStudy() {
 
                   <div
                     style={{
-                      fontFamily: 'var(--font-space-mono), monospace',
+                      fontFamily: 'var(--font-helvetica-neue), sans-serif',
                       fontSize: 'var(--text-base)',
                       color: '#1A1A1A',
                       marginTop: '8px',
@@ -740,7 +797,7 @@ export default function FalconCaseStudy() {
                     padding: '40px 0'
                   }}>
                     <p style={{
-                      fontFamily: 'var(--font-space-mono)',
+                      fontFamily: 'var(--font-helvetica-neue)',
                       fontSize: '15px',
                       color: '#1A1A1A',
                       lineHeight: 1.65,
@@ -771,38 +828,6 @@ export default function FalconCaseStudy() {
                     >
                       Get in touch →
                     </a>
-                  </div>
-
-                  {/* CLOSING BLOCK */}
-                  <div style={{ marginTop: '48px', paddingTop: '40px', borderTop: '1px solid #E8E4DF' }}>
-                    <div
-                      style={{
-                        fontFamily: 'var(--font-space-mono), monospace',
-                        fontSize: 'var(--text-md)',
-                        color: '#1A1A1A',
-                        fontWeight: 500,
-                        marginBottom: '16px',
-                      }}
-                    >
-                      Working in this space? I would like to hear about it.
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                      <a
-                        href="https://falcondemo.vercel.app/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="cta-primary"
-                      >
-                        Try the demo →
-                      </a>
-                      <a
-                        href="mailto:govindsingh.ahluwalia@gmail.com"
-                        className="cta-text-link"
-                      >
-                        Get in touch
-                      </a>
-                    </div>
                   </div>
                 </div>
 
