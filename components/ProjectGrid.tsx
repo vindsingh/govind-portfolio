@@ -1,74 +1,84 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import ProjectCard from '@/components/ProjectCard';
+import React, { useEffect, useState } from 'react';
+import Lottie from 'lottie-react';
+import { BentoGrid, BentoCard } from '@/components/ui/bento-grid';
 
-/* ── Card data ──────────────────────────────────────────────────────── */
-const CARDS = [
+interface Project {
+  id: string;
+  title: string;
+  descriptor: string;
+  headline: string;
+  subline: string;
+  href: string;
+  accentColor: string;
+  visualType: 'lottie' | 'image' | 'color';
+  visualSrc: string;
+  visualBg?: string;
+  gridPosition: 'large-left' | 'medium-right' | 'medium-left-row2';
+  size: 'large' | 'medium';
+}
+
+const projects: Project[] = [
   {
     id: 'form',
     title: 'FOR/M',
-    category: 'EXHIBITION DESIGN & STRATEGY',
-    descriptor: 'Direction, curation, public programming',
-    type: 'project' as const,
-    filterCategory: 'work' as const,
-    slug: '/projects/form',
+    descriptor: 'Exhibition Design & Strategy',
+    headline: 'Made a graduating show take a position.',
+    subline: 'Exhibition Director · GradEx 111 · 2026',
+    href: '/projects/form',
+    accentColor: '#C8B89A',
+    visualType: 'lottie',
+    visualSrc: '/projects/form/form-animation.json',
+    gridPosition: 'large-left',
+    size: 'large',
   },
   {
     id: 'falcon',
     title: 'Falcon',
-    category: 'VENTURE PLATFORM DESIGN',
-    descriptor: 'Shared interpretation layer for investors and founders',
-    type: 'project' as const,
-    filterCategory: 'work' as const,
-    slug: '/projects/falcon',
-  },
-  {
-    id: 'about',
-    title: 'About',
-    category: 'WHO I AM',
-    descriptor: 'Designer, strategist, systems thinker',
-    type: 'about' as const,
-    filterCategory: 'about' as const,
+    descriptor: 'Research & Platform Design',
+    headline: 'Named the gap between investors and founders. Then built the translation.',
+    subline: 'Independent Researcher · 2025–2026',
+    href: '/projects/falcon',
+    accentColor: '#C8910A',
+    visualType: 'image',
+    visualSrc: '/projects/falcon/falcon-wordmark.svg',
+    visualBg: '#FDF8F0',
+    gridPosition: 'medium-right',
+    size: 'medium',
   },
   {
     id: 'cpkc',
     title: 'CPKC',
-    category: 'ENTERPRISE UX & STRATEGY',
-    descriptor: 'AI tooling, design thinking, community of practice',
-    type: 'project' as const,
-    filterCategory: 'work' as const,
-    slug: '/projects/cpkc',
-  },
-  {
-    id: 'experience',
-    title: 'Experience',
-    category: "WHERE I'VE WORKED",
-    descriptor: 'CPKC · OCAD · Freelance',
-    type: 'experience' as const,
-    filterCategory: 'experience' as const,
+    descriptor: 'Enterprise Design & AI',
+    headline: 'Built the design practice inside a freight railway from scratch.',
+    subline: 'Innovation Catalyst · 2025–2026',
+    href: '/projects/cpkc',
+    accentColor: '#B5C4A8',
+    visualType: 'image',
+    visualSrc: '/cpkc-mitacslogo.svg',
+    visualBg: '#F5F7F5',
+    gridPosition: 'medium-left-row2',
+    size: 'medium',
   },
 ];
 
-/* ── Framer Motion variants ─────────────────────────────────────────── */
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: 'easeOut' as const },
-  },
-};
+const ArrowIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={props.className}
+  >
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  </svg>
+);
 
 interface ProjectGridProps {
   activeTab?: 'all' | 'work' | 'about' | 'experience';
@@ -76,64 +86,140 @@ interface ProjectGridProps {
 }
 
 export default function ProjectGrid({ activeTab = 'all', onProjectHover }: ProjectGridProps) {
-  /* Track viewport width to switch between desktop and mobile layout */
-  const [isMobile, setIsMobile] = useState(false);
+  const [formAnimation, setFormAnimation] = useState<any>(null);
 
   useEffect(() => {
-    const mq = window.matchMedia('(max-width: 767px)');
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    setIsMobile(mq.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
+    fetch('/projects/form/form-animation.json')
+      .then((res) => res.json())
+      .then((data) => setFormAnimation(data))
+      .catch((err) => console.error('Failed to load FOR/M animation:', err));
   }, []);
 
-  const filteredCards = CARDS.filter((card) => {
-    if (activeTab === 'all') return true;
-    return card.filterCategory === activeTab;
+  const filteredCards = projects.filter((card) => {
+    if (activeTab === 'all' || activeTab === 'work') return true;
+    return false;
   });
 
+  const getCardClassName = (cardId: string) => {
+    switch (cardId) {
+      case 'form':
+        return 'col-span-3 md:col-span-2 border-l-[3.5px] border-l-[#C8B89A]';
+      case 'falcon':
+        return 'col-span-3 md:col-span-1 border-l-[3.5px] border-l-[#C8910A]';
+      case 'cpkc':
+        return 'col-span-3 md:col-span-2 border-l-[3.5px] border-l-[#B5C4A8]';
+      default:
+        return 'col-span-3';
+    }
+  };
+
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      style={
-        isMobile
-          ? {
-              /* ── Mobile: single column stack ── */
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-              width: '100%',
-            }
-          : {
-              /* ── Desktop: 3-column, 2-row grid ── */
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '16px',
-              width: '100%',
-            }
-      }
-    >
+    <BentoGrid className="auto-rows-[18rem]">
       {filteredCards.map((card) => {
-        return (
-          <motion.div
-            key={card.id}
-            variants={cardVariants}
-            style={isMobile ? { width: '100%' } : {}}
-          >
-            <ProjectCard
-              title={card.title}
-              category={card.category}
-              descriptor={card.descriptor}
-              type={card.type}
-              filterCategory={card.filterCategory}
-              slug={card.slug}
-              onProjectHover={onProjectHover}
+        let backgroundElement: React.ReactNode = null;
+
+        if (card.id === 'form' && formAnimation) {
+          backgroundElement = (
+            <Lottie
+              animationData={formAnimation}
+              loop={true}
+              autoplay={true}
+              className="absolute inset-0 w-full h-full object-cover"
             />
-          </motion.div>
+          );
+        } else if (card.id === 'falcon') {
+          backgroundElement = (
+            <div
+              className="absolute inset-0 w-full h-full"
+              style={{
+                background: '#FDF8F0',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingBottom: '48px',
+              }}
+            >
+              <img
+                src="/projects/falcon/falcon-wordmark.svg"
+                style={{ width: '60%', objectFit: 'contain' }}
+                alt="Falcon Wordmark"
+              />
+            </div>
+          );
+        } else if (card.id === 'cpkc') {
+          backgroundElement = (
+            <div
+              className="absolute inset-0 w-full h-full"
+              style={{
+                background: '#F5F7F5',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingBottom: '48px',
+              }}
+            >
+              <img
+                src="/cpkc-mitacslogo.svg"
+                style={{ width: '60%', objectFit: 'contain' }}
+                alt="CPKC Logo"
+              />
+            </div>
+          );
+        }
+
+        return (
+          <BentoCard
+            key={card.id}
+            name={card.title}
+            className={getCardClassName(card.id)}
+            background={backgroundElement}
+            Icon={ArrowIcon}
+            description={
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-geist-mono), monospace',
+                    fontSize: '10px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.12em',
+                    color: '#A09890',
+                    lineHeight: 1.2,
+                    order: -1,
+                  }}
+                >
+                  {card.descriptor}
+                </span>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-geist-sans), sans-serif',
+                    fontSize: 'var(--text-base)',
+                    fontWeight: 400,
+                    color: '#1A1A1A',
+                    lineHeight: 1.4,
+                    marginTop: '6px',
+                  }}
+                >
+                  {card.headline}
+                </span>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-geist-mono), monospace',
+                    fontSize: '10px',
+                    color: '#A09890',
+                    marginTop: '8px',
+                  }}
+                >
+                  {card.subline}
+                </span>
+              </div>
+            }
+            href={card.href}
+            cta="View case study"
+            onMouseEnter={() => onProjectHover && onProjectHover(true)}
+            onMouseLeave={() => onProjectHover && onProjectHover(false)}
+          />
         );
       })}
-    </motion.div>
+    </BentoGrid>
   );
 }

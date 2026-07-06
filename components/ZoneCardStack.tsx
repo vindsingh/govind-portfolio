@@ -52,28 +52,27 @@ function Card({ zone, i, scrollYProgress }: CardProps) {
       }}
       className="w-full h-[360px] md:h-[480px] bg-[#FFFFFF] border border-[#E8E4DF] rounded-[12px] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] overflow-hidden flex flex-row"
     >
-      {/* LEFT COLUMN (40% width, padding 32px) */}
-      <div className="w-[40%] p-8 flex flex-col justify-start">
+      {/* LEFT COLUMN */}
+      <div className="w-[40%] p-8 flex items-center justify-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={zone.logo}
           alt={zone.label}
-          className="h-[40px] object-contain block self-start"
+          className="h-[64px] object-contain block"
         />
-        <div
-          style={{ fontFamily: 'var(--font-geist-mono)' }}
-          className="text-[11px] uppercase tracking-[0.1em] text-[#A09890] mt-4"
-        >
-          {zone.label}
-        </div>
       </div>
 
-      {/* RIGHT COLUMN (60% width, padding 32px 32px 32px 0) */}
+      {/* RIGHT COLUMN */}
       <div className="w-[60%] py-8 pr-8 pl-0 flex items-center">
         <div
           style={{ borderLeft: `3px solid ${zone.accentColor}` }}
-          className="pl-6 h-full flex items-center"
+          className="pl-6 h-full flex flex-col justify-center"
         >
+          <div
+            style={{ fontFamily: 'var(--font-fragment-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#A09890', marginBottom: '12px' }}
+          >
+            {zone.label}
+          </div>
           <p
             style={{ fontFamily: 'var(--font-space-mono)' }}
             className="text-[clamp(18px,2vw,24px)] font-normal text-[#1A1A1A] leading-[1.45]"

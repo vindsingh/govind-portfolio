@@ -9,6 +9,7 @@ import Lottie from 'lottie-react';
 import formAnimation from '../../../public/projects/form/form-animation.json';
 import Image from 'next/image';
 import ZoneCardStack from '@/components/ZoneCardStack'
+import FloorPlan from '@/components/FloorPlan';
 
 const stats = [
   { value: 6000, display: '6,000+', suffix: '', label: 'VISITORS OVER 5 DAYS' },
@@ -60,7 +61,7 @@ export default function FormCaseStudy() {
         .desktop-surface-custom {
           min-height: 100vh !important;
           background: #FFFFFF !important;
-          font-family: var(--font-geist-sans), sans-serif !important;
+          font-family: var(--font-helvetica-neue), sans-serif !important;
         }
 
         .folder-wrapper {
@@ -82,7 +83,7 @@ export default function FormCaseStudy() {
         .active-tab {
           background: #1A1A1A;
           color: #FFFFFF;
-          font-family: var(--font-geist-sans), sans-serif;
+          font-family: var(--font-helvetica-neue), sans-serif;
           font-size: 13px;
           font-weight: 500;
           padding: 7px 16px;
@@ -96,7 +97,7 @@ export default function FormCaseStudy() {
         .inactive-tab {
           background: transparent;
           color: #6B6560;
-          font-family: var(--font-geist-sans), sans-serif;
+          font-family: var(--font-helvetica-neue), sans-serif;
           font-size: 13px;
           font-weight: 400;
           padding: 7px 16px;
@@ -135,7 +136,7 @@ export default function FormCaseStudy() {
         }
 
         .page-header-subtitle {
-          font-family: var(--font-geist-sans), sans-serif;
+          font-family: var(--font-helvetica-neue), sans-serif;
           font-size: 14px;
           font-style: italic;
           color: #6B6560;
@@ -156,7 +157,7 @@ export default function FormCaseStudy() {
 
         /* 3. Mandate Block */
         .mandate-label {
-          font-family: var(--font-geist-mono), monospace;
+          font-family: var(--font-fragment-mono), monospace;
           font-size: 10px;
           text-transform: uppercase;
           color: #A09890;
@@ -173,17 +174,17 @@ export default function FormCaseStudy() {
         }
 
         .mandate-left {
-          font-family: var(--font-geist-sans), sans-serif;
-          font-size: 14px;
+          font-family: var(--font-helvetica-neue), sans-serif;
+          font-size: 16px;
           line-height: 1.65;
           color: #1A1A1A;
         }
 
         .mandate-right {
-          font-family: var(--font-geist-sans), sans-serif;
-          font-size: 14px;
+          font-family: var(--font-helvetica-neue), sans-serif;
+          font-size: 16px;
           line-height: 1.65;
-          color: #6B6560;
+          color: #1A1A1A;
         }
 
         /* 4. Results Block */
@@ -198,14 +199,14 @@ export default function FormCaseStudy() {
         }
 
         .stat-number {
-          font-family: var(--font-geist-sans), sans-serif;
+          font-family: var(--font-helvetica-neue), sans-serif;
           font-size: clamp(28px, 3vw, 36px);
           font-weight: 600;
           color: #1A1A1A;
         }
 
         .stat-label {
-          font-family: var(--font-geist-mono), monospace;
+          font-family: var(--font-fragment-mono), monospace;
           font-size: 10px;
           text-transform: uppercase;
           color: #A09890;
@@ -231,7 +232,7 @@ export default function FormCaseStudy() {
         }
 
         .role-title {
-          font-family: var(--font-geist-sans), sans-serif;
+          font-family: var(--font-helvetica-neue), sans-serif;
           font-size: 20px;
           font-weight: 500;
           color: #1A1A1A;
@@ -256,7 +257,7 @@ export default function FormCaseStudy() {
         }
 
         .role-cat-header {
-          font-family: var(--font-geist-mono), monospace;
+          font-family: var(--font-fragment-mono), monospace;
           font-size: 10px;
           font-weight: 600;
           text-transform: uppercase;
@@ -267,15 +268,15 @@ export default function FormCaseStudy() {
         }
 
         .role-cat-item {
-          font-family: var(--font-geist-sans), sans-serif;
+          font-family: var(--font-helvetica-neue), sans-serif;
           font-size: 13px;
           color: #6B6560;
           line-height: 1.6;
         }
 
         .role-right {
-          font-family: var(--font-geist-sans), sans-serif;
-          font-size: 14px;
+          font-family: var(--font-helvetica-neue), sans-serif;
+          font-size: 16px;
           line-height: 1.65;
           color: #1A1A1A;
         }
@@ -285,14 +286,14 @@ export default function FormCaseStudy() {
           padding: 24px;
           margin-left: -24px;
           margin-right: -24px;
-          margin-bottom: 20px;
+          margin-bottom: 14px;
           border-radius: 12px;
           transition: background-color 1200ms ease;
           scroll-margin-top: 64px;
         }
 
         .section-heading {
-          font-family: var(--font-geist-sans), sans-serif;
+          font-family: var(--font-helvetica-neue), sans-serif;
           font-size: 18px;
           font-weight: 500;
           color: #1A1A1A;
@@ -303,8 +304,8 @@ export default function FormCaseStudy() {
         }
 
         .section-body {
-          font-family: var(--font-geist-sans), sans-serif;
-          font-size: 14px;
+          font-family: var(--font-helvetica-neue), sans-serif;
+          font-size: 16px;
           line-height: 1.7;
           color: #1A1A1A;
           max-width: 640px;
@@ -335,7 +336,7 @@ export default function FormCaseStudy() {
         }
 
         .zone-card-label {
-          font-family: var(--font-geist-mono), monospace;
+          font-family: var(--font-fragment-mono), monospace;
           font-size: 11px;
           text-transform: uppercase;
           color: #A09890;
@@ -343,14 +344,14 @@ export default function FormCaseStudy() {
         }
 
         .zone-card-name {
-          font-family: var(--font-geist-sans), sans-serif;
+          font-family: var(--font-helvetica-neue), sans-serif;
           font-size: 15px;
           font-weight: 500;
           color: #1A1A1A;
         }
 
         .zone-card-desc {
-          font-family: var(--font-geist-sans), sans-serif;
+          font-family: var(--font-helvetica-neue), sans-serif;
           font-size: 13px;
           color: #6B6560;
           line-height: 1.5;
@@ -517,28 +518,28 @@ export default function FormCaseStudy() {
                 </div>
 
                 {/* 7. Content sections */}
-                <div id="context" className="case-study-section">
-                  <h2 className="section-heading" style={{ marginTop: '28px' }}>Context</h2>
+                <div id="my-role" className="case-study-section">
+                  <h2 className="section-heading" style={{ marginTop: '12px' }}>My Role</h2>
                   <p className="section-body">
-                    Graduating exhibitions are a fixture of every design school, and most of them look exactly alike. Tables, projects, name cards. FOR/M was GradEx 111 — the Industrial Design graduating show at OCAD University, May 2026. 50 graduates of Industrial Design. Five days. One building at 115 McCaul St.
+                    I came in as Exhibition Director with one conviction: the show needed a point of view before it needed a layout. I developed the curatorial framework — three zones, each making a distinct argument about what industrial design does, before a single piece of student work was placed. That decision set the terms for everything else: the spatial programming, the FOR/TALKS speaker series, the pre-exhibition editorial strategy, and the five-day installation.
                   </p>
                 </div>
 
                 <div id="the-problem" className="case-study-section">
-                  <h2 className="section-heading" style={{ marginTop: '28px' }}>The Problem</h2>
+                  <h2 className="section-heading" style={{ marginTop: '12px' }}>The Problem</h2>
                   <p className="section-body">
                     The default format flattens everything. Seventeen different design practices presented as seventeen equal squares makes it harder, not easier, to understand any of them. The risk was a show that was technically complete and experientially inert — visitors would come, walk through, and leave without a frame for what they'd seen.
                   </p>
                 </div>
 
                 <div id="key-decision" className="case-study-section">
-                  <h2 className="section-heading" style={{ marginTop: '28px' }}>Key Decision</h2>
+                  <h2 className="section-heading" style={{ marginTop: '12px' }}>Key Decision</h2>
                   <p className="section-body">
                     The call was to build a curatorial argument before building a floor plan. Three zones, each anchored by a different proposition about what industrial design does at different scales of resolution.
                   </p>
 
                   <div style={{
-                    fontFamily: 'var(--font-geist-mono), monospace',
+                    fontFamily: 'var(--font-fragment-mono), monospace',
                     fontSize: 'var(--text-xs)',
                     textTransform: 'uppercase' as const,
                     letterSpacing: '0.1em',
@@ -548,15 +549,17 @@ export default function FormCaseStudy() {
                   <ZoneCardStack />
 
                   <p className="section-body">
-                    Student work was placed into those frames — which meant some pieces had to be moved, grouped differently than students expected, and presented with editorial context rather than just labels. That friction was necessary. The zones gave visitors a reason to move through the space with intention.
+                    Placing student work into those frames was the real design act. Some pieces moved. Some groupings didn't match what students had imagined for their own work. The editorial call had to hold — because the zones only work if the argument is consistent. That friction was necessary.
                   </p>
                 </div>
 
                 <div id="execution" className="case-study-section">
-                  <h2 className="section-heading" style={{ marginTop: '28px' }}>Execution</h2>
+                  <h2 className="section-heading" style={{ marginTop: '12px' }}>Execution</h2>
                   <p className="section-body">
-                    The exhibition website was built from scratch — vanilla HTML/CSS/JS with a Google Apps Script backend connected to Sheets for RSVP and registration flows. FOR/TALKS ran across four days of the exhibition: 15-minute practitioner talks, open to the public, one project and one problem per speaker. The Instagram account was built as a pre-exhibition editorial channel — behind-the-scenes process documentation that reached 21,473 accounts before opening day.
+                    115 McCaul's layout didn't carve itself into three distinct arguments. The architecture was shared, continuous, and indifferent to the curatorial thesis. Making the zones spatially legible meant working against the building's default flow: controlling sightlines, establishing thresholds between scales, and placing work with enough conviction that visitors felt the shift rather than just read a label. Some pieces ended up in positions their makers hadn't envisioned. The argument had to hold anyway.
                   </p>
+
+                  <FloorPlan />
 
                   {/* Photo Block 2 */}
                   <div className="photo-block-2">
@@ -568,12 +571,29 @@ export default function FormCaseStudy() {
                       style={{ objectFit: 'cover', objectPosition: 'center' }}
                     />
                   </div>
+
+                  <p className="section-body">
+                    FOR/TALKS ran across four days: 15-minute practitioner talks, one project and one problem per speaker, open to the public. Short enough to hold a general audience. Specific enough to mean something. The format treated the exhibition as a venue, not just a display. I presented on Day 3: Falcon, a venture platform project, to an audience of founders and investors.
+                  </p>
+                  <p className="section-body" style={{ marginTop: '20px' }}>
+                    The Instagram channel launched six weeks before opening day as an editorial pre-exhibition layer — process documentation, not promotional content. It reached 21,473 accounts before a single visitor walked through the door. The website was built from scratch: HTML/CSS/JS with a Google Apps Script backend connected to Sheets for RSVP and registration.
+                  </p>
                 </div>
 
                 <div id="impact" className="case-study-section">
-                  <h2 className="section-heading" style={{ marginTop: '28px' }}>Impact</h2>
+                  <h2 className="section-heading" style={{ marginTop: '12px' }}>Impact</h2>
                   <p className="section-body">
-                    6,000+ visitors over five days. 205,252 Instagram views between April 1 and May 12. 50.7% of those views came from outside the existing follower base — reaching audiences that don't typically show up to graduating shows. Accounts reached grew 6,849% against the prior period baseline. The three-zone structure was cited by multiple visitors as what made the exhibition feel like it had something to say.
+                    6,000+ visitors over five days. 205,252 Instagram views between April 1 and May 12, 50.7% from outside the existing follower base, reaching audiences that don't typically show up to graduating shows. Accounts reached grew 6,849% against the prior period baseline.
+                  </p>
+                  <p className="section-body" style={{ marginTop: '20px' }}>
+                    Multiple visitors cited the three-zone structure as what made the exhibition feel like it had something to say.
+                  </p>
+                </div>
+
+                <div id="reflection" className="case-study-section">
+                  <h2 className="section-heading" style={{ marginTop: '12px' }}>Reflection</h2>
+                  <p className="section-body">
+                    What made FOR/M work wasn't the build — it was the decision to start with a position. A show without an argument is just a display. The hardest design work was upstream: naming the three scales, holding the curatorial frame against real spatial constraints, and making sure visitors moved through the space with intention. Everything else followed from that.
                   </p>
                 </div>
               </div>

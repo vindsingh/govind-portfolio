@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 const ANCHORS = [
-  { label: 'CONTEXT', id: 'context' },
+  { label: 'MY ROLE', id: 'my-role' },
   { label: 'THE PROBLEM', id: 'the-problem' },
   { label: 'KEY DECISION', id: 'key-decision' },
   { label: 'EXECUTION', id: 'execution' },
   { label: 'IMPACT', id: 'impact' },
+  { label: 'REFLECTION', id: 'reflection' },
 ];
 
 const METADATA = [
@@ -70,17 +71,17 @@ export default function IndexBox() {
         .index-box-anchors {
           display: flex;
           flex-direction: column;
-          gap: 4px;
+          gap: 2px;
         }
 
         .index-box-anchor {
-          font-family: var(--font-geist-mono), monospace;
+          font-family: var(--font-fragment-mono), monospace;
           font-size: 11px;
           font-weight: 500;
           text-transform: uppercase;
           color: #A09890;
           letter-spacing: 0.06em;
-          padding: 4px 0 4px 10px;
+          padding: 2px 0 2px 10px;
           border-left: 2px solid transparent;
           cursor: pointer;
           transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1), border-left-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -110,7 +111,7 @@ export default function IndexBox() {
         }
 
         .index-box-meta-label {
-          font-family: var(--font-geist-mono), monospace;
+          font-family: var(--font-fragment-mono), monospace;
           font-size: 10px;
           text-transform: uppercase;
           color: #A09890;
@@ -120,7 +121,7 @@ export default function IndexBox() {
         }
 
         .index-box-meta-value {
-          font-family: var(--font-geist-sans), sans-serif;
+          font-family: var(--font-helvetica-neue), sans-serif;
           font-size: 12px;
           font-weight: 500;
           color: #1A1A1A;
@@ -184,18 +185,18 @@ export default function IndexBox() {
           style={{
             display: 'block',
             marginTop: '20px',
-            border: '1px solid #E8E4DF',
+            border: '1px solid var(--color-border-strong)',
             borderRadius: '6px',
             padding: '8px 14px',
-            fontFamily: 'GeistSans',
+            fontFamily: 'var(--font-helvetica-neue)',
             fontSize: '12px',
-            color: '#6B6560',
+            color: 'var(--color-text-primary)',
             textAlign: 'center',
             textDecoration: 'none',
             transition: '200ms cubic-bezier(0.4, 0, 0.2, 1)',
           }}
-          onMouseEnter={e => (e.currentTarget.style.color = '#1A1A1A')}
-          onMouseLeave={e => (e.currentTarget.style.color = '#6B6560')}
+          onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-text-primary)')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-text-primary)')}
         >
           Visit website ↗
         </a>

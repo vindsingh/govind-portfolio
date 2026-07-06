@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 type Tab = 'all' | 'work' | 'about' | 'experience';
 
 interface FileTabNavProps {
@@ -34,6 +36,20 @@ function GridIcon() {
 }
 
 export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) {
+  const router = useRouter();
+
+  const handleTabClick = (id: Tab) => {
+    if (id === 'experience') {
+      router.push('/experience');
+      return;
+    }
+    if (id === 'about') {
+      router.push('/about');
+      return;
+    }
+    onTabChange(id);
+  };
+
   return (
     <div
       style={{
@@ -63,14 +79,14 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
               /* ── Active tab ─────────────────────────────────────── */
               <button
                 key={tab.id}
-                onClick={() => onTabChange(tab.id)}
+                onClick={() => handleTabClick(tab.id)}
                 style={{
                   background: '#1A1A1A',
                   border: 'none',
                   borderRadius: 0,
                   clipPath: 'polygon(0 0, calc(100% - 12px) 0, 100% 100%, 0 100%)',
                   padding: '7px 16px',
-                  fontFamily: 'var(--font-geist-sans)',
+                  fontFamily: 'var(--font-helvetica-neue)',
                   fontSize: '13px',
                   fontWeight: 500,
                   color: '#FFFFFF',
@@ -87,13 +103,13 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
               /* ── Inactive tab ────────────────────────────────────── */
               <button
                 key={tab.id}
-                onClick={() => onTabChange(tab.id)}
+                onClick={() => handleTabClick(tab.id)}
                 style={{
                   background: 'transparent',
                   border: 'none',
                   padding: '7px 16px',
                   color: '#6B6560',
-                  fontFamily: 'var(--font-geist-sans)',
+                  fontFamily: 'var(--font-helvetica-neue)',
                   fontSize: '13px',
                   fontWeight: 400,
                   cursor: 'pointer',
@@ -135,7 +151,7 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
           </span>
           <span
             style={{
-              fontFamily: 'var(--font-geist-mono)',
+              fontFamily: 'var(--font-fragment-mono)',
               fontSize: 'var(--text-xs)',
               color: 'var(--color-text-muted)',
               lineHeight: 1,

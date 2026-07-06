@@ -1,0 +1,816 @@
+'use client';
+
+import React, { useRef, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { DesktopSurface, FileContainer } from '@/components/FileContainer';
+import SiteHeader from '@/components/SiteHeader';
+import FileTabNav from '@/components/FileTabNav';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import IndexBox from '@/components/IndexBox';
+import OrbitingCircles from '@/components/ui/orbiting-circles';
+
+const ANCHORS = [
+  { label: 'THE FILM', id: 'film' },
+  { label: 'THE PROBLEM', id: 'problem' },
+  { label: 'THE ARTIFACTS', id: 'artifacts' },
+  { label: 'NOW', id: 'now' },
+] as const;
+
+function FalconIndexBox() {
+  const timeoutsRef = useRef<{ [key: string]: ReturnType<typeof setTimeout>[] }>({});
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsCollapsed(window.scrollY > 220);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleAnchorClick = (id: string) => {
+    const target = document.getElementById(id);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+
+      // Clear any existing timeouts for this target to avoid overlaps
+      if (timeoutsRef.current[id]) {
+        timeoutsRef.current[id].forEach(clearTimeout);
+      }
+
+      const t1 = setTimeout(() => {
+        target.classList.add('section-highlight');
+      }, 600);
+
+      const t2 = setTimeout(() => {
+        target.classList.remove('section-highlight');
+      }, 1500);
+
+      timeoutsRef.current[id] = [t1, t2];
+    }
+  };
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .index-box-container {
+          width: 220px;
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-card);
+          padding: 20px;
+          background: var(--color-surface);
+          box-sizing: border-box;
+        }
+
+        .index-box-anchors {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
+        .index-box-anchor {
+          font-family: var(--font-fragment-mono), monospace;
+          font-size: 11px;
+          font-weight: 500;
+          text-transform: uppercase;
+          color: var(--color-text-muted);
+          letter-spacing: 0.06em;
+          padding: 2px 0 2px 10px;
+          border-left: 2px solid transparent;
+          cursor: pointer;
+          transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1), border-left-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+          text-align: left;
+          width: 100%;
+          background: transparent;
+          border-top: none;
+          border-right: none;
+          border-bottom: none;
+        }
+
+        .index-box-anchor:hover {
+          color: var(--color-text-primary);
+          border-left-color: #C8910A; /* Falcon amber */
+        }
+      ` }} />
+
+      <div className="index-box-container">
+        <div className="index-box-anchors">
+          {ANCHORS.map((anchor) => (
+            <button
+              key={anchor.id}
+              onClick={() => handleAnchorClick(anchor.id)}
+              className="index-box-anchor"
+            >
+              {anchor.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      style={{
+        borderLeft: '3px solid #C8910A',
+        paddingLeft: '12px',
+        fontFamily: 'var(--font-fragment-mono), monospace',
+        fontSize: '11px',
+        textTransform: 'uppercase',
+        letterSpacing: '0.1em',
+        color: '#C8910A',
+        lineHeight: '1',
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+interface SectionHeadingProps {
+  children: React.ReactNode;
+}
+
+function SectionHeading({ children }: SectionHeadingProps) {
+  return (
+    <motion.h2
+      initial={{ opacity: 0, y: 8 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: 0.06, ease: "easeOut" }}
+      style={{
+        fontFamily: 'var(--font-helvetica-neue), sans-serif',
+        fontSize: 'var(--text-lg)',
+        fontWeight: 500,
+        color: '#1A1A1A',
+        marginTop: '12px',
+        marginBottom: '28px',
+      }}
+    >
+      {children}
+    </motion.h2>
+  );
+}
+
+export default function FalconCaseStudy() {
+  const router = useRouter();
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .desktop-surface-custom {
+          min-height: 100vh !important;
+          background: #F9F7F5 !important;
+          font-family: var(--font-helvetica-neue), sans-serif !important;
+        }
+
+        .folder-wrapper {
+          position: relative;
+          margin-top: 12px;
+        }
+
+        .file-container-custom {
+          overflow: visible !important;
+          background: #FFFFFF !important;
+          border: 1px solid #E8E4DF !important;
+          border-radius: var(--radius-file) !important;
+          box-shadow: var(--shadow-card) !important;
+        }
+
+        .case-study-layout {
+          display: flex;
+          gap: 40px;
+          padding: 32px;
+          align-items: flex-start;
+          width: 100%;
+        }
+
+        .sidebar-container {
+          position: sticky;
+          top: 32px;
+          align-self: flex-start;
+          width: 220px;
+          flex-shrink: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+
+        .sidebar-metadata {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          padding-left: 10px;
+        }
+
+        .article-content {
+          flex: 1;
+          max-width: 720px;
+        }
+
+        .case-study-section {
+          padding: 24px;
+          margin-left: -24px;
+          margin-right: -24px;
+          margin-bottom: 14px;
+          border-radius: var(--radius-card);
+          transition: background-color 1200ms ease;
+          scroll-margin-top: 64px;
+        }
+
+        .section-highlight {
+          background-color: rgba(200, 145, 10, 0.06) !important;
+          transition: background-color 1200ms ease !important;
+        }
+
+        .cta-primary {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: #C8910A;
+          color: #FFFFFF;
+          padding: 10px 20px;
+          border-radius: 6px;
+          font-family: var(--font-fragment-mono), monospace;
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          font-weight: 500;
+          transition: var(--transition-base);
+          text-decoration: none;
+        }
+        .cta-primary:hover {
+          background: #B8800A;
+        }
+
+        .cta-text-link {
+          font-family: var(--font-fragment-mono), monospace;
+          font-size: 12px;
+          color: #6B6560;
+          text-decoration: underline;
+          text-underline-offset: 3px;
+          cursor: pointer;
+          transition: color var(--transition-base);
+        }
+        .cta-text-link:hover {
+          color: #1A1A1A;
+        }
+
+        @media (max-width: 767px) {
+          .case-study-layout {
+            flex-direction: column !important;
+            padding: 16px !important;
+          }
+          .sidebar-container {
+            position: static !important;
+            width: 100% !important;
+            margin-bottom: 24px;
+          }
+        }
+      ` }} />
+
+      <DesktopSurface className="desktop-surface-custom">
+        <SiteHeader />
+
+        <div className="folder-wrapper">
+          <FileTabNav
+            activeTab="work"
+            onTabChange={() => {
+              router.push('/');
+            }}
+          />
+
+          <FileContainer className="file-container-custom">
+            <div className="case-study-layout">
+              {/* Left Column (Sticky Sidebar) */}
+              <div className="sidebar-container">
+                <FalconIndexBox />
+
+                <div className="sidebar-metadata">
+                  <div>
+                    <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#A09890' }}>ROLE</div>
+                    <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500 }}>Independent Researcher &amp; Designer</div>
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#A09890' }}>CATEGORY</div>
+                    <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500 }}>Performance Intelligence · Venture Design</div>
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#A09890' }}>STATUS</div>
+                    <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500, lineHeight: '1.4' }}>
+                      Research complete · <span style={{ color: '#C8910A' }}>Product in development</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column (Content) */}
+              <div className="article-content">
+                {/* SECTION 0 — HERO */}
+                <div style={{ marginBottom: '48px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <img
+                      src="/projects/falcon/falcon-icon.svg"
+                      style={{ height: 36, width: 'auto', display: 'block' }}
+                      alt="Falcon Icon"
+                    />
+                    <img
+                      src="/projects/falcon/falcon-wordmark.svg"
+                      style={{ height: 36, width: 'auto', display: 'block' }}
+                      alt="Falcon Wordmark"
+                    />
+                  </div>
+
+                  <div style={{ marginTop: '20px' }}>
+                    <div
+                      style={{
+                        fontFamily: 'var(--font-fragment-mono), monospace',
+                        fontSize: '11px',
+                        textTransform: 'uppercase',
+                        color: '#A09890',
+                        letterSpacing: '0.1em',
+                      }}
+                    >
+                      Performance Intelligence · 2025–2026
+                    </div>
+
+                    <div style={{ marginTop: '16px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+                      <a
+                        href="https://falcondemo.vercel.app/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="cta-primary"
+                      >
+                        Try the demo →
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Separator */}
+                <div style={{ width: '100%', height: '1px', backgroundColor: '#E8E4DF', marginTop: '40px', marginBottom: '48px' }} />
+
+                {/* SECTION 1 — THE FILM */}
+                <div id="film" className="case-study-section" style={{ padding: 0, marginLeft: 0, marginRight: 0, marginBottom: '64px' }}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, ease: 'easeOut' }}
+                  >
+                    <div
+                      style={{
+                        position: 'relative',
+                        width: '100%',
+                        paddingBottom: '56.25%',
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        border: '1px solid #E8E4DF',
+                      }}
+                    >
+                      <iframe
+                        src="https://www.youtube.com/embed/Ijp7a1J9mrU?rel=0&modestbranding=1"
+                        title="Falcon — Research to Platform"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          border: 'none',
+                        }}
+                      />
+                    </div>
+                  </motion.div>
+                </div>
+
+                {/* SECTION 2 — THE PROBLEM */}
+                <div id="problem" className="case-study-section" style={{ marginTop: 0 }}>
+                  <SectionLabel>THE PROBLEM</SectionLabel>
+                  <SectionHeading>Three people. The same company. None of them looking at the same thing.</SectionHeading>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <p
+                      style={{
+                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontSize: 'var(--text-base)',
+                        color: '#1A1A1A',
+                        lineHeight: '1.65',
+                        margin: 0,
+                      }}
+                    >
+                      The investor sees a revenue number and a retention rate. The founder sees
+                      a sprint velocity and an activation metric. The product holds the relationship
+                      between all of them. There is no tool that surfaces it. Every tool in the
+                      venture stack was built for one side. Financial tools for the investor.
+                      Product tools for the team. Nothing for the conversation between them.
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontSize: 'var(--text-base)',
+                        color: '#1A1A1A',
+                        lineHeight: '1.65',
+                        margin: 0,
+                      }}
+                    >
+                      I started with a simpler question: who loses when a company misses its
+                      number? The answer is always everyone in that room. Usually because the
+                      signal existed weeks earlier, in a place no one was looking. Activation rate
+                      changes preceded MRR changes by 5.3 weeks on average. The correlation was
+                      strong. The confidence was high. The product already knew what the business
+                      was about to learn.
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontSize: 'var(--text-md)',
+                        fontWeight: 500,
+                        color: '#1A1A1A',
+                        marginTop: '36px',
+                        paddingTop: '28px',
+                        borderTop: '1px solid #E8E4DF',
+                        lineHeight: '1.65',
+                        margin: 0,
+                      }}
+                    >
+                      This is not a data problem. It is a meaning problem.
+                    </p>
+                  </div>
+                </div>
+
+                {/* ORBITING CIRCLES DIAGRAM */}
+                <div style={{ marginTop: '56px', marginBottom: '56px' }}>
+                  <div className="relative flex h-[480px] w-full items-center justify-center overflow-hidden">
+
+                    {/* Center */}
+                    <img
+                      src="/projects/falcon/brain.svg"
+                      style={{ width: 72, height: 72, objectFit: 'contain',
+                        position: 'relative', zIndex: 10 }}
+                      alt="Falcon"
+                    />
+
+                    {/* Inner orbit — product tools */}
+                    <OrbitingCircles radius={120} duration={18} delay={0}>
+                      <img src="/projects/falcon/Heap.svg"
+                        style={{ width: 28, height: 28, objectFit: 'contain' }} />
+                    </OrbitingCircles>
+
+                    <OrbitingCircles radius={120} duration={18} delay={9}>
+                      <img src="/projects/falcon/Amplitude.svg"
+                        style={{ width: 28, height: 28, objectFit: 'contain' }} />
+                    </OrbitingCircles>
+
+                    {/* Outer orbit — finance tools */}
+                    <OrbitingCircles radius={200} duration={30} delay={0} reverse>
+                      <img src="/projects/falcon/carta.svg"
+                        style={{ width: 32, height: 32, objectFit: 'contain' }} />
+                    </OrbitingCircles>
+
+                    <OrbitingCircles radius={200} duration={30} delay={10} reverse>
+                      <img src="/projects/falcon/standardmetrics.svg"
+                        style={{ width: 32, height: 32, objectFit: 'contain' }} />
+                    </OrbitingCircles>
+
+                    <OrbitingCircles radius={200} duration={30} delay={20} reverse>
+                      <img src="/projects/falcon/pulley.svg"
+                        style={{ width: 32, height: 32, objectFit: 'contain' }} />
+                    </OrbitingCircles>
+
+                  </div>
+
+                  {/* Caption */}
+                  <div style={{ marginTop: '24px', textAlign: 'center' }}>
+                    <div
+                      style={{
+                        fontFamily: 'var(--font-fragment-mono), monospace',
+                        fontSize: '11px',
+                        color: '#A09890',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em',
+                      }}
+                    >
+                      The financial stack and the product stack.
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontSize: 'var(--text-sm)',
+                        color: '#6B6560',
+                        marginTop: '6px',
+                      }}
+                    >
+                      Two separate languages. Falcon is the translation.
+                    </div>
+                  </div>
+                </div>
+
+                {/* SECTION 3 — THE ARTIFACTS */}
+                <div id="artifacts" className="case-study-section" style={{ marginTop: '64px' }}>
+                  <SectionLabel>THE DESIGN RESPONSE</SectionLabel>
+                  <SectionHeading>Three artifacts. One shared language.</SectionHeading>
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-space-mono), monospace',
+                      fontSize: 'var(--text-base)',
+                      color: '#1A1A1A',
+                      lineHeight: '1.65',
+                      marginTop: '12px',
+                      marginBottom: '40px',
+                    }}
+                  >
+                    Falcon has three design interventions. Each answers a different dimension
+                    of the same gap.
+                  </p>
+
+                  {/* Artifact 1 — The Canvas */}
+                  <div>
+                    <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#1A1A1A', marginBottom: '8px' }}>01 : THE CANVAS</div>
+                    <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-md)', fontWeight: 500, color: '#1A1A1A', marginBottom: '16px' }}>A persistent, accumulating workspace.</div>
+                    <p
+                      style={{
+                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontSize: 'var(--text-base)',
+                        color: '#1A1A1A',
+                        lineHeight: '1.65',
+                        margin: 0,
+                      }}
+                    >
+                      A dashboard is a window. It shows what is true right now. A canvas is a
+                      surface. It holds everything placed on it in relationship to everything
+                      else. The canvas does not refresh. It grows. September is still there in
+                      March, not as archive, but as context. That is what makes it useful
+                      for the kind of thinking a founder does at the end of a quarter.
+                    </p>
+
+                    <div style={{ marginTop: '24px' }}>
+                      <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, ease: 'easeOut' }}
+                      >
+                        <img
+                          src="/projects/falcon/falcon-main-screen.svg"
+                          alt="Falcon canvas interface"
+                          style={{
+                            width: '100%',
+                            height: 'auto',
+                            display: 'block',
+                            borderRadius: '8px',
+                            border: '1px solid #E8E4DF',
+                          }}
+                        />
+                      </motion.div>
+                    </div>
+                  </div>
+
+                  {/* Artifact 2 — Pods */}
+                  <div style={{ marginTop: '48px' }}>
+                    <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#1A1A1A', marginBottom: '8px' }}>02 : PODS</div>
+                    <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-md)', fontWeight: 500, color: '#1A1A1A', marginBottom: '16px' }}>Time as the organizing principle.</div>
+                    <p
+                      style={{
+                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontSize: 'var(--text-base)',
+                        color: '#1A1A1A',
+                        lineHeight: '1.65',
+                        margin: 0,
+                      }}
+                    >
+                      Most analytics tools organize by category. Revenue metrics here.
+                      Product metrics there. The questions a founder actually asks are not
+                      categorical. They are temporal. Pods are monthly containers, everything
+                      that mattered about the business in that month, held together, comparable
+                      to the month before and the month after. The unit of analysis becomes
+                      time, not type.
+                    </p>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginTop: '24px' }}>
+                      <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: 0, ease: 'easeOut' }}
+                      >
+                        <img
+                          src="/projects/falcon/pod-gen-1.svg"
+                          style={{
+                            width: '100%',
+                            height: 'auto',
+                            borderRadius: '8px',
+                            border: '1px solid #E8E4DF',
+                            display: 'block',
+                          }}
+                          alt="Pod Gen 1"
+                        />
+                      </motion.div>
+                      <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: 0.08, ease: 'easeOut' }}
+                      >
+                        <img
+                          src="/projects/falcon/pod-gen-2.svg"
+                          style={{
+                            width: '100%',
+                            height: 'auto',
+                            borderRadius: '8px',
+                            border: '1px solid #E8E4DF',
+                            display: 'block',
+                          }}
+                          alt="Pod Gen 2"
+                        />
+                      </motion.div>
+                    </div>
+                  </div>
+
+                  {/* Artifact 3 — Signal Cards */}
+                  <div style={{ marginTop: '48px' }}>
+                    <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#1A1A1A', marginBottom: '8px' }}>03 : SIGNAL CARDS</div>
+                    <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-md)', fontWeight: 500, color: '#1A1A1A', marginBottom: '16px' }}>The most honest sentence in the room.</div>
+                    <p
+                      style={{
+                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontSize: 'var(--text-base)',
+                        color: '#1A1A1A',
+                        lineHeight: '1.65',
+                        margin: 0,
+                      }}
+                    >
+                      Signal Cards surface the relationship between two data streams.
+                      Stated plainly. Correlation shown. Confidence level shown.
+                      Causation never claimed. This is not a disclaimer, it is the only
+                      foundation trust can be built on. An investor who receives a Signal
+                      Card is not being told what to do. They are being shown what is true,
+                      at what confidence, with what lag. That is a different kind of
+                      conversation.
+                    </p>
+
+                    {/* Inline Signal Card Mockup */}
+                    <div
+                      style={{
+                        background: '#FFFFFF',
+                        border: '1px solid #E8E4DF',
+                        borderRadius: '12px',
+                        padding: '24px',
+                        marginTop: '24px',
+                        maxWidth: '460px',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06)',
+                      }}
+                    >
+                      {/* Top row */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#A09890' }}>
+                          Signal Card
+                        </span>
+                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#C8910A' }} />
+                      </div>
+
+                      {/* Headline */}
+                      <p style={{ fontFamily: 'var(--font-space-mono), monospace', fontSize: '14px', color: '#1A1A1A', lineHeight: 1.5, fontWeight: 500, marginTop: '16px', marginBottom: 0 }}>
+                        Activation rate changes preceded MRR changes by 5.3 weeks.
+                      </p>
+
+                      {/* Stats row */}
+                      <div style={{ display: 'flex', gap: '24px', marginTop: '16px' }}>
+                        {[
+                          { label: 'CORRELATION', value: 'r = −0.84' },
+                          { label: 'CONFIDENCE', value: 'High' },
+                          { label: 'LAG', value: '5.3 weeks' },
+                        ].map((stat) => (
+                          <div key={stat.label}>
+                            <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#A09890' }}>
+                              {stat.label}
+                            </div>
+                            <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: '13px', fontWeight: 500, color: '#1A1A1A', marginTop: '4px' }}>
+                              {stat.value}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Footer */}
+                      <div
+                        style={{
+                          marginTop: '20px',
+                          paddingTop: '16px',
+                          borderTop: '1px solid #E8E4DF',
+                          fontFamily: 'var(--font-fragment-mono), monospace',
+                          fontSize: '10px',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.1em',
+                          color: '#A09890',
+                        }}
+                      >
+                        Correlation shown. Causation not claimed.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* SECTION 4 — NOW */}
+                <div id="now" className="case-study-section" style={{ marginTop: '72px' }}>
+                  <SectionLabel>CURRENT STATE</SectionLabel>
+                  <SectionHeading>Built and building.</SectionHeading>
+
+                  <div
+                    style={{
+                      fontFamily: 'var(--font-space-mono), monospace',
+                      fontSize: 'var(--text-base)',
+                      color: '#1A1A1A',
+                      marginTop: '8px',
+                      marginBottom: '32px',
+                    }}
+                  >
+                    The prototype works. The production version is in development.
+                  </div>
+
+                  <div style={{
+                    textAlign: 'center',
+                    padding: '40px 0'
+                  }}>
+                    <p style={{
+                      fontFamily: 'var(--font-space-mono)',
+                      fontSize: '15px',
+                      color: '#1A1A1A',
+                      lineHeight: 1.65,
+                      maxWidth: 480,
+                      margin: '0 auto 32px'
+                    }}>
+                      The research is complete. The platform is in development.
+                      If you are working in this space — venture intelligence,
+                      founder-investor communication, or performance data —
+                      I would like to hear from you.
+                    </p>
+                    <a
+                      href="mailto:govindsingh.ahluwalia@gmail.com"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        fontFamily: 'var(--font-fragment-mono)',
+                        fontSize: 12,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.08em',
+                        color: '#FFFFFF',
+                        background: '#C8910A',
+                        borderRadius: 6,
+                        padding: '10px 20px',
+                        textDecoration: 'none'
+                      }}
+                    >
+                      Get in touch →
+                    </a>
+                  </div>
+
+                  {/* CLOSING BLOCK */}
+                  <div style={{ marginTop: '48px', paddingTop: '40px', borderTop: '1px solid #E8E4DF' }}>
+                    <div
+                      style={{
+                        fontFamily: 'var(--font-space-mono), monospace',
+                        fontSize: 'var(--text-md)',
+                        color: '#1A1A1A',
+                        fontWeight: 500,
+                        marginBottom: '16px',
+                      }}
+                    >
+                      Working in this space? I would like to hear about it.
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                      <a
+                        href="https://falcondemo.vercel.app/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="cta-primary"
+                      >
+                        Try the demo →
+                      </a>
+                      <a
+                        href="mailto:govindsingh.ahluwalia@gmail.com"
+                        className="cta-text-link"
+                      >
+                        Get in touch
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </FileContainer>
+        </div>
+      </DesktopSurface>
+    </>
+  );
+}

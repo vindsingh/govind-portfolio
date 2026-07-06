@@ -16,7 +16,7 @@ export default function CursorLabel({ visible, x, y }: CursorLabelProps) {
         transform: 'translateX(-50%)',
         background: '#1A1A1A',
         color: '#FFFFFF',
-        fontFamily: 'var(--font-geist-mono)',
+        fontFamily: 'var(--font-fragment-mono)',
         fontSize: '11px',
         textTransform: 'uppercase',
         letterSpacing: '0.08em',

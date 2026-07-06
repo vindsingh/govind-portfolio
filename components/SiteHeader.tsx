@@ -28,7 +28,7 @@ export default function SiteHeader() {
       <a
         href="mailto:govindsingh.ahluwalia@gmail.com"
         style={{
-          fontFamily: 'var(--font-geist-sans)',
+          fontFamily: 'var(--font-helvetica-neue)',
           fontSize: '13px',
           fontWeight: 400,
           color: 'var(--color-text-secondary)',
