@@ -79,7 +79,7 @@ export default function IndexBox() {
           font-size: 11px;
           font-weight: 500;
           text-transform: uppercase;
-          color: #A09890;
+          color: #1A1A1A;
           letter-spacing: 0.06em;
           padding: 2px 0 2px 10px;
           border-left: 2px solid transparent;

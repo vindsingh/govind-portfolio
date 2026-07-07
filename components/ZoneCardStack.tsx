@@ -69,7 +69,7 @@ function Card({ zone, i, scrollYProgress }: CardProps) {
           className="pl-6 h-full flex flex-col justify-center"
         >
           <div
-            style={{ fontFamily: 'var(--font-fragment-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#A09890', marginBottom: '12px' }}
+            style={{ fontFamily: 'var(--font-fragment-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#1A1A1A', marginBottom: '12px' }}
           >
             {zone.label}
           </div>

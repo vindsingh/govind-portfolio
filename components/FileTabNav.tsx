@@ -1,13 +1,17 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { HyperText } from '@/components/ui/hyper-text';
+import { useState, useEffect } from 'react';
 
 type Tab = 'all' | 'work' | 'about' | 'experience';
 
 interface FileTabNavProps {
   activeTab: Tab;
   onTabChange: (tab: Tab) => void;
+  isCuriousMode?: boolean;
+  onToggleCuriousMode?: () => void;
+  filter?: string;
+  setFilter?: (f: string) => void;
 }
 
 const TABS: { id: Tab; label: string }[] = [
@@ -17,27 +21,23 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'experience', label: 'Experience' },
 ];
 
-/* ── Inline SVG: 2×2 grid icon ─────────────────────────────────────── */
-function GridIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <rect x="1" y="1" width="5" height="5" rx="1" fill="currentColor" />
-      <rect x="8" y="1" width="5" height="5" rx="1" fill="currentColor" />
-      <rect x="1" y="8" width="5" height="5" rx="1" fill="currentColor" />
-      <rect x="8" y="8" width="5" height="5" rx="1" fill="currentColor" />
-    </svg>
-  );
-}
-
-export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) {
+export default function FileTabNav({
+  activeTab,
+  onTabChange,
+  isCuriousMode,
+  onToggleCuriousMode,
+  filter,
+  setFilter,
+}: FileTabNavProps) {
   const router = useRouter();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   const handleTabClick = (id: Tab) => {
     if (id === 'experience') {
@@ -51,6 +51,10 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
     onTabChange(id);
   };
 
+  if (isCuriousMode && isMobile) {
+    return null;
+  }
+
   return (
     <div
       style={{
@@ -59,131 +63,206 @@ export default function FileTabNav({ activeTab, onTabChange }: FileTabNavProps) 
         marginInline: 'auto',
         position: 'relative',
         zIndex: 2, // ensure tabs render above container shadow/border
+        paddingTop: 0,
+        marginTop: 0,
       }}
     >
-      {/* ── Tab row ──────────────────────────────────────────────────── */}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          gap: '0',
-          paddingLeft: '0',
-        }}
-      >
-        {/* Left: folder tabs */}
-        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: '0' }}>
-          {TABS.map((tab, index) => {
-            const isActive = tab.id === activeTab;
-
-            return isActive ? (
-              /* ── Active tab ─────────────────────────────────────── */
-              <button
-                key={tab.id}
-                onClick={() => handleTabClick(tab.id)}
-                style={{
-                  background: '#1A1A1A',
-                  border: 'none',
-                  borderRadius: 0,
-                  clipPath: tab.id === 'all'
-                    ? 'polygon(0 0, calc(100% - 12px) 0, 100% 100%, 0 100%)'
-                    : 'polygon(12px 0, calc(100% - 12px) 0, 100% 100%, 0 100%)',
-                  padding: '7px 16px',
-                  fontFamily: 'var(--font-helvetica-neue)',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  color: '#FFFFFF',
-                  marginBottom: '-1px',
-                  cursor: 'pointer',
-                  userSelect: 'none',
-                  whiteSpace: 'nowrap',
-                  lineHeight: 1,
-                }}
-              >
-                <HyperText
-                  as="span"
-                  animateOnHover={false}
-                  startOnView={false}
-                  delay={index * 80}
-                  duration={600}
-                  className="py-0 text-inherit text-[length:inherit]"
-                  style={{ fontWeight: 'inherit' }}
-                >
-                  {tab.label}
-                </HyperText>
-              </button>
-            ) : (
-              /* ── Inactive tab ────────────────────────────────────── */
-              <button
-                key={tab.id}
-                onClick={() => handleTabClick(tab.id)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: '7px 16px',
-                  color: '#6B6560',
-                  fontFamily: 'var(--font-helvetica-neue)',
-                  fontSize: '13px',
-                  fontWeight: 400,
-                  cursor: 'pointer',
-                  userSelect: 'none',
-                  whiteSpace: 'nowrap',
-                  lineHeight: 1,
-                  transition: 'color 150ms ease',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.color = '#1A1A1A';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.color = '#6B6560';
-                }}
-              >
-                <HyperText
-                  as="span"
-                  animateOnHover={false}
-                  startOnView={false}
-                  delay={index * 80}
-                  duration={600}
-                  className="py-0 text-inherit text-[length:inherit]"
-                  style={{ fontWeight: 'inherit' }}
-                >
-                  {tab.label}
-                </HyperText>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Right: Node view placeholder ───────────────────────────── */}
+      {isCuriousMode ? (
+        /* ── Curious Mode sentence filter ────────────────────────────── */
         <div
-          title="Coming soon"
           style={{
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'center',
-            gap: '6px',
-            opacity: 0.5,
-            paddingBottom: '7px', /* align baseline with tab text */
-            cursor: 'default',
-            userSelect: 'none',
-            marginLeft: 'auto',
+            alignItems: 'flex-end',
+            gap: '0',
+            paddingLeft: '0',
           }}
         >
-          <span style={{ color: 'var(--color-text-muted)', display: 'flex' }}>
-            <GridIcon />
-          </span>
-          <span
+          <div
             style={{
-              fontFamily: 'var(--font-fragment-mono)',
-              fontSize: 'var(--text-xs)',
-              color: 'var(--color-text-muted)',
-              lineHeight: 1,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              background: '#1A1A1A',
+              padding: '7px 16px',
+              clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 100%, 0 100%)',
+              borderRadius: '6px 0 0 0',
+              marginBottom: '-1px',
             }}
           >
-            Node view
-          </span>
+            <span
+              style={{
+                fontFamily: 'var(--font-helvetica-neue)',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: '#FFFFFF',
+              }}
+            >
+              I am curious about
+            </span>
+            <select
+              value={filter || 'everything'}
+              onChange={(e) => setFilter?.(e.target.value)}
+              style={{
+                fontFamily: 'var(--font-helvetica-neue)',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: '#FFFFFF',
+                background: 'transparent',
+                border: 'none',
+                borderBottom: '1px solid rgba(255,255,255,0.5)',
+                cursor: 'pointer',
+                appearance: 'none',
+                paddingRight: 14,
+                outline: 'none',
+              }}
+            >
+              <option value="everything" style={{ color: '#1A1A1A' }}>Everything</option>
+              <option value="work" style={{ color: '#1A1A1A' }}>Work</option>
+              <option value="research" style={{ color: '#1A1A1A' }}>Research</option>
+              <option value="making" style={{ color: '#1A1A1A' }}>Making</option>
+              <option value="personal" style={{ color: '#1A1A1A' }}>Personal</option>
+            </select>
+            <span
+              style={{
+                fontFamily: 'var(--font-fragment-mono)',
+                fontSize: 10,
+                color: 'rgba(255,255,255,0.7)',
+                pointerEvents: 'none',
+              }}
+            >
+              ∨
+            </span>
+          </div>
+          {!isMobile && (
+            <button
+              onClick={onToggleCuriousMode}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                fontFamily: 'var(--font-fragment-mono)',
+                fontSize: 11,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                color: '#6B6560',
+                background: 'transparent',
+                border: '1px solid #E8E4DF',
+                borderRadius: 4,
+                padding: '5px 10px',
+                cursor: 'pointer',
+                transition: 'all 200ms ease',
+                marginLeft: 'auto',
+                marginBottom: '7px',
+              }}
+            >
+              {isCuriousMode ? '⊞ File View' : '✦ Curious Mode'}
+            </button>
+          )}
         </div>
-      </div>
+      ) : (
+        /* ── Tab row ──────────────────────────────────────────────────── */
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-end',
+            gap: '0',
+            paddingLeft: '0',
+            overflowX: 'auto',
+          }}
+        >
+          {/* Left: folder tabs */}
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: '0' }}>
+            {TABS.map((tab) => {
+              const isActive = tab.id === activeTab;
+
+              return isActive ? (
+                /* ── Active tab ─────────────────────────────────────── */
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabClick(tab.id)}
+                  style={{
+                    background: '#1A1A1A',
+                    border: 'none',
+                    borderRadius: 0,
+                    clipPath: tab.id === 'all'
+                      ? 'polygon(0 0, calc(100% - 12px) 0, 100% 100%, 0 100%)'
+                      : 'polygon(12px 0, calc(100% - 12px) 0, 100% 100%, 0 100%)',
+                    padding: isMobile ? '4px 8px' : '7px 16px',
+                    fontFamily: 'var(--font-helvetica-neue)',
+                    fontSize: isMobile ? '10px' : '13px',
+                    fontWeight: 500,
+                    color: '#FFFFFF',
+                    marginBottom: '-1px',
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                    whiteSpace: 'nowrap',
+                    lineHeight: 1,
+                  }}
+                >
+                  {tab.label}
+                </button>
+              ) : (
+                /* ── Inactive tab ────────────────────────────────────── */
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabClick(tab.id)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    padding: isMobile ? '4px 8px' : '7px 16px',
+                    color: '#6B6560',
+                    fontFamily: 'var(--font-helvetica-neue)',
+                    fontSize: isMobile ? '10px' : '13px',
+                    fontWeight: 400,
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                    whiteSpace: 'nowrap',
+                    lineHeight: 1,
+                    transition: 'color 150ms ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.color = '#1A1A1A';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.color = '#6B6560';
+                  }}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right: Curious Mode toggle ───────────────────────────────── */}
+          {!isMobile && (
+            <button
+              onClick={onToggleCuriousMode}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                fontFamily: 'var(--font-fragment-mono)',
+                fontSize: 11,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                color: '#6B6560',
+                background: 'transparent',
+                border: '1px solid #E8E4DF',
+                borderRadius: 4,
+                padding: '5px 10px',
+                cursor: 'pointer',
+                transition: 'all 200ms ease',
+                marginLeft: 'auto',
+                marginBottom: '7px',
+              }}
+            >
+              {isCuriousMode ? '⊞ File View' : '✦ Curious Mode'}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

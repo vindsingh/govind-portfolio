@@ -378,6 +378,12 @@ export default function FormCaseStudy() {
             padding: 16px !important;
           }
 
+          .case-study-section {
+            margin-left: -16px !important;
+            margin-right: -16px !important;
+            width: calc(100% + 32px) !important;
+          }
+
           .mandate-cols {
             grid-template-columns: 1fr !important;
             gap: 16px !important;
@@ -436,7 +442,7 @@ export default function FormCaseStudy() {
                   <div className="mandate-cols">
                     <div className="mandate-left">
                       FOR/M was the graduating exhibition for OCAD University's Industrial
-                      Design program — GradEx 111, May 2026. 50 graduates of Industrial Design, five days,
+                      Design program, GradEx 111, May 2026. 50 graduates of Industrial Design, five days,
                       6,000+ visitors, 115 McCaul St. The brief wasn't to make a show.
                       It was to make a reason to show up.
                     </div>
@@ -473,7 +479,7 @@ export default function FormCaseStudy() {
                 <div className="photo-block-1">
                   <Image
                     src="/projects/form/form-photo-1.jpg"
-                    alt="FOR/M exhibition — 115 McCaul St"
+                    alt="FOR/M exhibition, 115 McCaul St"
                     fill
                     sizes="(max-width: 768px) 100vw, 720px"
                     style={{ objectFit: 'cover', objectPosition: 'center' }}
@@ -493,7 +499,7 @@ export default function FormCaseStudy() {
                       </div>
                       <div className="role-category" style={{ marginTop: '16px' }}>
                         <span className="role-cat-header">■ BUILD</span>
-                        <span className="role-cat-item">Exhibition website — HTML/CSS/JS</span>
+                        <span className="role-cat-item">Exhibition website: HTML/CSS/JS</span>
                         <span className="role-cat-item">Google Apps Script backend</span>
                         <span className="role-cat-item">Content and editorial direction</span>
                       </div>
@@ -507,11 +513,11 @@ export default function FormCaseStudy() {
                     <div className="role-right">
                       I came in as Exhibition Director with one early conviction:
                       the show needed a point of view before it needed a layout.
-                      I developed the curatorial framework — three zones, each with
-                      a distinct argument about design — before a single piece of
+                      I developed the curatorial framework, three zones, each with
+                      a distinct argument about design, before a single piece of
                       student work was placed. FOR/TALKS was added as a layer of
                       public programming that treated the exhibition as a venue,
-                      not just a display. I also spoke — presenting Falcon, a venture
+                      not just a display. I also spoke: presenting Falcon, a venture
                       platform project, to an audience of founders and investors on Day 3.
                     </div>
                   </div>
@@ -521,14 +527,14 @@ export default function FormCaseStudy() {
                 <div id="my-role" className="case-study-section">
                   <h2 className="section-heading" style={{ marginTop: '12px' }}>My Role</h2>
                   <p className="section-body">
-                    I came in as Exhibition Director with one conviction: the show needed a point of view before it needed a layout. I developed the curatorial framework — three zones, each making a distinct argument about what industrial design does, before a single piece of student work was placed. That decision set the terms for everything else: the spatial programming, the FOR/TALKS speaker series, the pre-exhibition editorial strategy, and the five-day installation.
+                    I came in as Exhibition Director with one conviction: the show needed a point of view before it needed a layout. I developed the curatorial framework, three zones, each making a distinct argument about what industrial design does, before a single piece of student work was placed. That decision set the terms for everything else: the spatial programming, the FOR/TALKS speaker series, the pre-exhibition editorial strategy, and the five-day installation.
                   </p>
                 </div>
 
                 <div id="the-problem" className="case-study-section">
                   <h2 className="section-heading" style={{ marginTop: '12px' }}>The Problem</h2>
                   <p className="section-body">
-                    The default format flattens everything. Seventeen different design practices presented as seventeen equal squares makes it harder, not easier, to understand any of them. The risk was a show that was technically complete and experientially inert — visitors would come, walk through, and leave without a frame for what they'd seen.
+                    The default format flattens everything. Seventeen different design practices presented as seventeen equal squares makes it harder, not easier, to understand any of them. The risk was a show that was technically complete and experientially inert. Visitors would come, walk through, and leave without a frame for what they'd seen.
                   </p>
                 </div>
 
@@ -543,13 +549,14 @@ export default function FormCaseStudy() {
                     fontSize: 'var(--text-xs)',
                     textTransform: 'uppercase' as const,
                     letterSpacing: '0.1em',
-                    color: 'var(--color-text-muted)',
-                    marginBottom: '16px',
+                    color: '#1A1A1A',
+                    marginTop: '48px',
+                    marginBottom: '24px',
                   }}>THREE CURATORIAL ZONES</div>
                   <ZoneCardStack />
 
                   <p className="section-body">
-                    Placing student work into those frames was the real design act. Some pieces moved. Some groupings didn't match what students had imagined for their own work. The editorial call had to hold — because the zones only work if the argument is consistent. That friction was necessary.
+                    Placing student work into those frames was the real design act. Some pieces moved. Some groupings didn't match what students had imagined for their own work. The editorial call had to hold: because the zones only work if the argument is consistent. That friction was necessary.
                   </p>
                 </div>
 
@@ -565,7 +572,7 @@ export default function FormCaseStudy() {
                   <div className="photo-block-2">
                     <Image
                       src="/projects/form/form-photo-2.jpg"
-                      alt="FOR/M — FOR/TALKS in session"
+                      alt="FOR/M, FOR/TALKS in session"
                       fill
                       sizes="(max-width: 768px) 100vw, 720px"
                       style={{ objectFit: 'cover', objectPosition: 'center' }}
@@ -576,7 +583,7 @@ export default function FormCaseStudy() {
                     FOR/TALKS ran across four days: 15-minute practitioner talks, one project and one problem per speaker, open to the public. Short enough to hold a general audience. Specific enough to mean something. The format treated the exhibition as a venue, not just a display. I presented on Day 3: Falcon, a venture platform project, to an audience of founders and investors.
                   </p>
                   <p className="section-body" style={{ marginTop: '20px' }}>
-                    The Instagram channel launched six weeks before opening day as an editorial pre-exhibition layer — process documentation, not promotional content. It reached 21,473 accounts before a single visitor walked through the door. The website was built from scratch: HTML/CSS/JS with a Google Apps Script backend connected to Sheets for RSVP and registration.
+                    The Instagram channel launched six weeks before opening day as an editorial pre-exhibition layer, process documentation, not promotional content. It reached 21,473 accounts before a single visitor walked through the door. The website was built from scratch: HTML/CSS/JS with a Google Apps Script backend connected to Sheets for RSVP and registration.
                   </p>
                 </div>
 
@@ -593,7 +600,7 @@ export default function FormCaseStudy() {
                 <div id="reflection" className="case-study-section">
                   <h2 className="section-heading" style={{ marginTop: '12px' }}>Reflection</h2>
                   <p className="section-body">
-                    What made FOR/M work wasn't the build — it was the decision to start with a position. A show without an argument is just a display. The hardest design work was upstream: naming the three scales, holding the curatorial frame against real spatial constraints, and making sure visitors moved through the space with intention. Everything else followed from that.
+                    What made FOR/M work wasn't the build. It was the decision to start with a position. A show without an argument is just a display. The hardest design work was upstream: naming the three scales, holding the curatorial frame against real spatial constraints, and making sure visitors moved through the space with intention. Everything else followed from that.
                   </p>
                 </div>
               </div>

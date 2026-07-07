@@ -82,7 +82,7 @@ function CPKCIndexBox({ onRequestClick }: { onRequestClick: () => void }) {
           font-size: 11px;
           font-weight: 500;
           text-transform: uppercase;
-          color: var(--color-text-muted);
+          color: #1A1A1A;
           letter-spacing: 0.06em;
           padding: 2px 0 2px 10px;
           border-left: 2px solid transparent;
@@ -379,6 +379,12 @@ export default function CPKCCaseStudy() {
           .case-study-layout {
             flex-direction: column !important;
             padding: 16px !important;
+          }
+
+          .case-study-section {
+            margin-left: -16px !important;
+            margin-right: -16px !important;
+            width: calc(100% + 32px) !important;
           }
 
           .mandate-cols {

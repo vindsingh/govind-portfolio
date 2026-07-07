@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Mail } from 'lucide-react';
@@ -10,6 +10,14 @@ import FileTabNav from '@/components/FileTabNav';
 
 export default function AboutPage() {
   const router = useRouter();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   const handleTabChange = (tab: string) => {
     if (tab === 'work' || tab === 'all') {
@@ -43,12 +51,16 @@ export default function AboutPage() {
         }
 
         .about-content-wrapper {
-          max-width: 680px;
-          margin-left: 0;
-          margin-right: auto;
           display: flex;
-          flex-direction: column;
+          flex-direction: row;
+          gap: 48px;
           align-items: flex-start;
+          width: 100%;
+        }
+
+        .about-right-col {
+          width: 380px;
+          flex-shrink: 0;
         }
 
         .social-icon-btn {
@@ -84,6 +96,12 @@ export default function AboutPage() {
           .file-container-custom {
             padding: 16px !important;
           }
+          .about-content-wrapper {
+            flex-direction: column;
+          }
+          .about-right-col {
+            width: 100% !important;
+          }
         }
       ` }} />
 
@@ -97,109 +115,111 @@ export default function AboutPage() {
           />
 
           <FileContainer className="file-container-custom">
-            <div className="about-content-wrapper">
-              
-              {/* SECTION 1 — TEXT */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
-                style={{ width: '100%' }}
-              >
-                <h1
-                  style={{
-                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                    fontSize: 'clamp(24px, 3vw, 32px)',
-                    fontWeight: 500,
-                    color: '#1A1A1A',
-                    marginBottom: '28px',
-                    lineHeight: '1.2',
-                  }}
-                >
-                  I'm Govind.
-                </h1>
+            <div
+              className="about-content-wrapper"
+              style={{ flexDirection: isMobile ? 'column' : 'row' }}
+            >
 
-                <p
-                  style={{
-                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                    fontSize: 'clamp(13px, 1.4vw, 15px)',
-                    color: '#1A1A1A',
-                    lineHeight: '1.7',
-                    marginBottom: '20px',
-                  }}
+              {/* LEFT COLUMN — TEXT */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                {/* SECTION 1 — TEXT */}
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                  style={{ width: '100%' }}
                 >
-                  Most of what I care about happens before anything gets made.
-                  Finding the problem worth solving, not just the solution worth building.
-                </p>
+                  <h1
+                    style={{
+                      fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                      fontSize: 'clamp(24px, 3vw, 32px)',
+                      fontWeight: 500,
+                      color: '#1A1A1A',
+                      marginBottom: '28px',
+                      lineHeight: '1.2',
+                    }}
+                  >
+                    I'm Govind.
+                  </h1>
 
-                <p
-                  style={{
-                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                    fontSize: 'clamp(13px, 1.4vw, 15px)',
-                    color: '#1A1A1A',
-                    lineHeight: '1.7',
-                    marginBottom: '20px',
-                  }}
-                >
-                  The work has lived inside a freight railway, a graduating exhibition,
-                  and eight months of research that became a product. What connects them
-                  is the same instinct: something more important is always hiding behind
-                  the obvious question.
-                </p>
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                      fontSize: 'clamp(13px, 1.4vw, 15px)',
+                      color: '#1A1A1A',
+                      lineHeight: '1.7',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    Most of what I care about happens before anything gets
+                    made. Every project starts the same way — pen on paper.
+                    Not habit — it's the fastest way to make a thought visible.
+                  </p>
 
-                <p
-                  style={{
-                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                    fontSize: 'clamp(12px, 1.2vw, 13px)',
-                    color: '#6B6560',
-                    lineHeight: '1.6',
-                    marginTop: '8px',
-                    marginBottom: '0',
-                  }}
-                >
-                  I paint, follow markets, and play tennis badly. Mississauga.
-                </p>
-              </motion.div>
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                      fontSize: 'clamp(13px, 1.4vw, 15px)',
+                      color: '#1A1A1A',
+                      lineHeight: '1.7',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    The work has lived inside a freight railway, a graduating
+                    exhibition, and eight months of research that became a
+                    product. What connects them is the same instinct: there's
+                    always a more important question hiding behind the obvious
+                    one.
+                  </p>
+                </motion.div>
 
-              {/* SECTION 2 — SOCIAL ICONS */}
-              <div style={{ marginTop: '32px', display: 'flex', gap: '16px', justifyContent: 'flex-start', alignItems: 'center' }}>
-                {/* Icon 1: Email */}
-                <a
-                  href="mailto:govindsingh.ahluwalia@gmail.com"
-                  aria-label="Email"
-                  className="social-icon-btn"
-                >
-                  <Mail size={14} strokeWidth={1.5} />
-                </a>
+                {/* SECTION 2 — SOCIAL ICONS */}
+                <div style={{ marginTop: '32px', display: 'flex', gap: '16px', justifyContent: 'flex-start', alignItems: 'center' }}>
+                  {/* Icon 1: Email */}
+                  <a
+                    href="mailto:ahluwaliagovindsingh@gmail.com"
+                    aria-label="Email"
+                    className="social-icon-btn"
+                  >
+                    <Mail size={14} strokeWidth={1.5} />
+                  </a>
 
-                {/* Icon 2: LinkedIn */}
-                <a
-                  href="https://linkedin.com/in/govind-singh-ahluwalia"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                  className="social-icon-btn"
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037 -1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046 c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286z M5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z" />
-                  </svg>
-                </a>
+                  {/* Icon 2: LinkedIn */}
+                  <a
+                    href="https://linkedin.com/in/govind-singh-ahluwalia"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="LinkedIn"
+                    className="social-icon-btn"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037 -1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046 c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286z M5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z" />
+                    </svg>
+                  </a>
+                </div>
               </div>
 
-              {/* SECTION 3 — ARTWORK GRID */}
-              <div style={{ marginTop: '48px', width: '100%' }}>
-                {/* Separator */}
-                <div style={{ width: '100%', height: '1px', backgroundColor: '#E8E4DF', marginBottom: '32px' }} />
-
+              {/* RIGHT COLUMN — ARTWORK GRID */}
+              <div
+                className="about-right-col"
+                style={{ width: isMobile ? '100%' : '380px' }}
+              >
                 <motion.div
                   initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, ease: 'easeOut' }}
                 >
-                  <div className="artwork-grid-desktop">
+                  <div
+                    className="artwork-grid-desktop"
+                    style={{
+                      gridTemplateColumns: isMobile ? '1fr 1fr' : undefined,
+                      gridTemplateRows: isMobile ? 'auto auto auto' : undefined,
+                      minHeight: isMobile ? 'auto' : '420px',
+                    }}
+                  >
                     {/* L-TOP */}
-                    <div style={{ gridColumn: 1, gridRow: 1 }}>
+                    <div style={{ gridColumn: isMobile ? 1 : 1, gridRow: isMobile ? 1 : 1 }}>
                       <img
                         src="/about/L-TOP.jpeg"
                         alt=""
@@ -207,17 +227,17 @@ export default function AboutPage() {
                       />
                     </div>
 
-                    {/* L-BOTTOM */}
-                    <div style={{ gridColumn: 1, gridRow: 2 }}>
+                    {/* R-TOP */}
+                    <div style={{ gridColumn: isMobile ? 2 : 4, gridRow: 1 }}>
                       <img
-                        src="/about/L-BOTTOM.jpeg"
+                        src="/about/R-TOP.jpeg"
                         alt=""
                         style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 4 }}
                       />
                     </div>
 
                     {/* L */}
-                    <div style={{ gridColumn: 2, gridRow: '1 / span 2' }}>
+                    <div style={{ gridColumn: isMobile ? '1 / span 2' : 2, gridRow: isMobile ? 2 : '1 / span 2' }}>
                       <img
                         src="/about/L.jpeg"
                         alt=""
@@ -226,7 +246,7 @@ export default function AboutPage() {
                     </div>
 
                     {/* R */}
-                    <div style={{ gridColumn: 3, gridRow: '1 / span 2' }}>
+                    <div style={{ gridColumn: isMobile ? '1 / span 2' : 3, gridRow: isMobile ? 3 : '1 / span 2' }}>
                       <img
                         src="/about/R.jpeg"
                         alt=""
@@ -234,17 +254,17 @@ export default function AboutPage() {
                       />
                     </div>
 
-                    {/* R-TOP */}
-                    <div style={{ gridColumn: 4, gridRow: 1 }}>
+                    {/* L-BOTTOM */}
+                    <div style={{ gridColumn: isMobile ? 1 : 1, gridRow: isMobile ? 4 : 2 }}>
                       <img
-                        src="/about/R-TOP.jpeg"
+                        src="/about/L-BOTTOM.jpeg"
                         alt=""
                         style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 4 }}
                       />
                     </div>
 
                     {/* R-BOTTOM */}
-                    <div style={{ gridColumn: 4, gridRow: 2 }}>
+                    <div style={{ gridColumn: isMobile ? 2 : 4, gridRow: isMobile ? 4 : 2 }}>
                       <img
                         src="/about/R-BOTTOM.jpeg"
                         alt=""

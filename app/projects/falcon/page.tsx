@@ -75,7 +75,7 @@ function FalconIndexBox() {
           font-size: 11px;
           font-weight: 500;
           text-transform: uppercase;
-          color: var(--color-text-muted);
+          color: #1A1A1A;
           letter-spacing: 0.06em;
           padding: 2px 0 2px 10px;
           border-left: 2px solid transparent;
@@ -283,6 +283,12 @@ export default function FalconCaseStudy() {
             flex-direction: column !important;
             padding: 16px !important;
           }
+
+          .case-study-section {
+            margin-left: -16px !important;
+            margin-right: -16px !important;
+            width: calc(100% + 32px) !important;
+          }
         }
       ` }} />
 
@@ -368,7 +374,7 @@ export default function FalconCaseStudy() {
                     >
                       <iframe
                         src="https://www.youtube.com/embed/Ijp7a1J9mrU?rel=0&modestbranding=1"
-                        title="Falcon — Research to Platform"
+                        title="Falcon: Research to Platform"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                         style={{
@@ -805,12 +811,12 @@ export default function FalconCaseStudy() {
                       margin: '0 auto 32px'
                     }}>
                       The research is complete. The platform is in development.
-                      If you are working in this space — venture intelligence,
-                      founder-investor communication, or performance data —
+                      If you are working in this space: venture intelligence,
+                      founder-investor communication, or performance data,
                       I would like to hear from you.
                     </p>
                     <a
-                      href="mailto:govindsingh.ahluwalia@gmail.com"
+                      href="mailto:ahluwaliagovindsingh@gmail.com"
                       style={{
                         display: 'inline-flex',
                         alignItems: 'center',

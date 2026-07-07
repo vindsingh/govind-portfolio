@@ -13,6 +13,7 @@ interface ExperienceItem {
   role: string;
   type: string;
   hasArrow: boolean;
+  description: string;
 }
 
 const experience: ExperienceItem[] = [
@@ -22,6 +23,7 @@ const experience: ExperienceItem[] = [
     role: 'Intern → Innovation Catalyst',
     type: 'Enterprise Design & AI',
     hasArrow: true,
+    description: "Built CPKC's first Design Thinking Framework, adopted at the CIO level. Co-owned end-to-end UX for the company's first AI-native chatbot. Grew a cross-departmental Community of Practice to 105 members across the Information Services organization.",
   },
   {
     year: '2026',
@@ -29,6 +31,7 @@ const experience: ExperienceItem[] = [
     role: 'Exhibition Director',
     type: 'Design & Strategy',
     hasArrow: false,
+    description: "Directed the Industrial Design graduating exhibition at OCAD University. Led a six-person committee across logistics, programming, and communications. Built the official exhibition website, coordinated a speaker series, and managed external sponsorships across a five-day public show reaching 6,000+ visitors.",
   },
   {
     year: '2025–2026',
@@ -36,6 +39,7 @@ const experience: ExperienceItem[] = [
     role: 'Independent Researcher',
     type: 'Performance Intelligence',
     hasArrow: false,
+    description: "Eight months of graduate research identifying a language failure between investors and founders. Designed and built Falcon — a performance intelligence platform correlating financial data with product behavior signals. Presented through a live product demo and brand film.",
   },
   {
     year: '2024–2025',
@@ -43,6 +47,7 @@ const experience: ExperienceItem[] = [
     role: 'Project Lead',
     type: 'Brand Strategy',
     hasArrow: false,
+    description: "Led branding and promotional strategy for Gather, a retail engagement platform concept across 255 Cadillac Fairview locations. Delivered a brand system and concept deck shortlisted for implementation consideration.",
   },
   {
     year: '2024',
@@ -50,6 +55,7 @@ const experience: ExperienceItem[] = [
     role: 'Design Research Intern',
     type: 'Accessibility & Research',
     hasArrow: false,
+    description: "Conducted market and accessibility research guiding a web platform redesign. Work informed a zero-waste materials collection system achieving 90% material reuse and improving overall platform accessibility.",
   },
   {
     year: '2024',
@@ -57,6 +63,7 @@ const experience: ExperienceItem[] = [
     role: 'Experience Design Intern',
     type: 'Content & Operations',
     hasArrow: false,
+    description: "Streamlined order fulfillment processes and standardized digital content workflows for a fashion label, reducing delivery timelines by 20% and increasing engagement across platforms.",
   },
   {
     year: '2024–Now',
@@ -64,6 +71,7 @@ const experience: ExperienceItem[] = [
     role: 'Team Member',
     type: 'Design Leadership',
     hasArrow: false,
+    description: "Active contributor to a design leadership community. Participated in events, discussions, and the annual Design Leadership Summit connecting designers across disciplines around leadership and design strategy.",
   },
 ];
 
@@ -85,6 +93,7 @@ const skills = [
 export default function ExperiencePage() {
   const router = useRouter();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const handleTabChange = (tab: string) => {
     if (tab === 'work' || tab === 'all') {
@@ -92,6 +101,10 @@ export default function ExperiencePage() {
     } else if (tab === 'about') {
       router.push('/about');
     }
+  };
+
+  const handleToggle = (index: number) => {
+    setExpandedIndex(prevIndex => prevIndex === index ? null : index);
   };
 
   return (
@@ -158,8 +171,8 @@ export default function ExperiencePage() {
         .column-headers-row {
           display: grid;
           grid-template-columns: 120px 1fr 1fr 180px;
-          padding: 12px 12px; /* aligns horizontally with row contents */
-          border-bottom: 1px solid #E8E4DF;
+          padding: 12px 12px;
+          border-bottom: 1px solid #1A1A1A;
           margin-top: 12px;
         }
 
@@ -180,9 +193,8 @@ export default function ExperiencePage() {
         .experience-row {
           display: grid;
           grid-template-columns: 120px 1fr 1fr 180px;
-          padding: 18px 0;
-          border-bottom: 1px solid #E8E4DF;
-          cursor: default;
+          padding: 18px 40px 18px 0;
+          cursor: pointer;
           position: relative;
           transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -190,7 +202,7 @@ export default function ExperiencePage() {
         .education-section {
           margin-top: 48px;
           padding-top: 40px;
-          border-top: 1px solid #E8E4DF;
+          border-top: 1px solid #1A1A1A;
           display: flex;
           flex-direction: column;
         }
@@ -239,7 +251,7 @@ export default function ExperiencePage() {
         .skills-section {
           margin-top: 40px;
           padding-top: 32px;
-          border-top: 1px solid #E8E4DF;
+          border-top: 1px solid #1A1A1A;
           display: flex;
           flex-direction: column;
         }
@@ -276,7 +288,7 @@ export default function ExperiencePage() {
           .experience-row {
             grid-template-columns: 1fr !important;
             gap: 8px;
-            padding: 16px 12px !important;
+            padding: 16px 40px 16px 12px !important;
           }
           .file-container-custom {
             padding: 16px !important;
@@ -324,6 +336,7 @@ export default function ExperiencePage() {
             <div className="experience-rows-container">
               {experience.map((item, i) => {
                 const isHovered = hoveredIndex === i;
+                const isExpanded = expandedIndex === i;
                 return (
                   <motion.div
                     key={item.org}
@@ -334,66 +347,112 @@ export default function ExperiencePage() {
                       borderLeft: isHovered ? '3px solid #C8B89A' : 'none',
                       paddingLeft: isHovered ? '9px' : '12px',
                       background: isHovered ? 'rgba(200, 184, 154, 0.06)' : 'transparent',
+                      borderBottom: isExpanded ? 'none' : '1px solid #1A1A1A',
                     }}
                     onMouseEnter={() => setHoveredIndex(i)}
                     onMouseLeave={() => setHoveredIndex(null)}
-                    className="experience-row"
                   >
-                    {/* Cell 1 — Year */}
+                    {/* The Row Grid */}
                     <div
-                      style={{
-                        fontFamily: 'var(--font-fragment-mono), monospace',
-                        fontSize: '13px',
-                        color: '#6B6560',
-                      }}
+                      className="experience-row"
+                      onClick={() => handleToggle(i)}
                     >
-                      {item.year}
+                      {/* Cell 1 — Year */}
+                      <div
+                        style={{
+                          fontFamily: 'var(--font-fragment-mono), monospace',
+                          fontSize: '13px',
+                          color: '#6B6560',
+                        }}
+                      >
+                        {item.year}
+                      </div>
+
+                      {/* Cell 2 — Organisation */}
+                      <div
+                        style={{
+                          fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                          fontSize: '15px',
+                          fontWeight: 500,
+                          color: '#1A1A1A',
+                        }}
+                      >
+                        {item.org}
+                      </div>
+
+                      {/* Cell 3 — Role */}
+                      <div
+                        style={{
+                          fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                          fontSize: '15px',
+                          fontWeight: 400,
+                          color: '#1A1A1A',
+                        }}
+                      >
+                        {item.hasArrow ? (
+                          <>
+                            <span>Intern</span>
+                            <span style={{ color: '#C8B89A', margin: '0 6px', fontFamily: 'var(--font-fragment-mono), monospace' }}>→</span>
+                            <span>Innovation Catalyst</span>
+                          </>
+                        ) : (
+                          item.role
+                        )}
+                      </div>
+
+                      {/* Cell 4 — Type */}
+                      <div
+                        style={{
+                          fontFamily: 'var(--font-fragment-mono), monospace',
+                          fontSize: '11px',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.08em',
+                          color: isHovered ? '#6B6560' : '#A09890',
+                          transition: 'color 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+                        }}
+                      >
+                        {item.type}
+                      </div>
+
+                      {/* Toggle Indicator */}
+                      <div
+                        style={{
+                          position: 'absolute',
+                          right: '12px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          fontFamily: 'var(--font-fragment-mono), monospace',
+                          fontSize: '12px',
+                          color: '#1A1A1A',
+                          cursor: 'pointer',
+                          userSelect: 'none',
+                        }}
+                      >
+                        {isExpanded ? '−' : '+'}
+                      </div>
                     </div>
 
-                    {/* Cell 2 — Organisation */}
+                    {/* Collapsible paragraph */}
                     <div
                       style={{
-                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                        fontSize: '15px',
-                        fontWeight: 500,
-                        color: '#1A1A1A',
+                        maxHeight: isExpanded ? '200px' : '0px',
+                        transition: 'max-height 300ms ease',
+                        overflow: 'hidden',
                       }}
                     >
-                      {item.org}
-                    </div>
-
-                    {/* Cell 3 — Role */}
-                    <div
-                      style={{
-                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                        fontSize: '15px',
-                        fontWeight: 400,
-                        color: '#1A1A1A',
-                      }}
-                    >
-                      {item.hasArrow ? (
-                        <>
-                          <span>Intern</span>
-                          <span style={{ color: '#C8B89A', margin: '0 6px', fontFamily: 'var(--font-fragment-mono), monospace' }}>→</span>
-                          <span>Innovation Catalyst</span>
-                        </>
-                      ) : (
-                        item.role
-                      )}
-                    </div>
-
-                    {/* Cell 4 — Type */}
-                    <div
-                      style={{
-                        fontFamily: 'var(--font-fragment-mono), monospace',
-                        fontSize: '11px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.08em',
-                        color: isHovered ? '#6B6560' : '#A09890',
-                        transition: 'color 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-                      }}
-                    >
-                      {item.type}
+                      <p
+                        style={{
+                          padding: '12px 0 16px 0',
+                          borderBottom: '1px solid #1A1A1A',
+                          fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                          fontSize: '13px',
+                          color: '#1A1A1A',
+                          lineHeight: '1.65',
+                          margin: 0,
+                        }}
+                      >
+                        {item.description}
+                      </p>
                     </div>
                   </motion.div>
                 );
