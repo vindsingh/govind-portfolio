@@ -22,6 +22,12 @@ const iconBtnStyle: React.CSSProperties = {
 const PEN_SIZES = [2, 4, 8]
 const STORAGE_KEY = 'footer-sketch-v1'
 
+function getOrdinalSuffix(n: number): string {
+  const s = ['th', 'st', 'nd', 'rd']
+  const v = n % 100
+  return s[(v - 20) % 10] || s[v] || s[0]
+}
+
 export default function Footer() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const isDrawingRef = useRef(false)
@@ -35,6 +41,8 @@ export default function Footer() {
   const [saveOpen, setSaveOpen] = useState(false)
   const [drawCount, setDrawCount] = useState<number | null>(null)
   const hasCountedRef = useRef(false)
+  const [hasDrawn, setHasDrawn] = useState(false)
+  const [displayCount, setDisplayCount] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
   const [hoveredNav, setHoveredNav] = useState<string | null>(null)
 
@@ -164,9 +172,25 @@ export default function Footer() {
       saveToStorage()
       if (!hasCountedRef.current) {
         hasCountedRef.current = true
+        setHasDrawn(true)
         fetch('/api/sketch-count', { method: 'POST' })
           .then(r => r.json())
-          .then(d => setDrawCount(d.count))
+          .then(d => {
+            setDrawCount(d.count)
+            const target = d.count
+            const duration = 800
+            const steps = 30
+            const interval = duration / steps
+            let current = 0
+            const timer = setInterval(() => {
+              current += 1
+              setDisplayCount(Math.round((current / steps) * target))
+              if (current >= steps) {
+                clearInterval(timer)
+                setDisplayCount(target)
+              }
+            }, interval)
+          })
           .catch(() => {})
       }
     }
@@ -586,8 +610,14 @@ export default function Footer() {
               color: '#000000',
               letterSpacing: '0.04em',
               margin: '6px 0 10px',
+              opacity: hasDrawn ? 1 : 0,
+              transform: hasDrawn ? 'translateY(0)' : 'translateY(4px)',
+              transition: 'opacity 0.6s ease, transform 0.6s ease',
+              minHeight: '16px',
             }}>
-              {drawCount !== null ? `${drawCount} ${drawCount === 1 ? 'person' : 'people'} drew here` : ''}
+              {hasDrawn
+                ? `You're the ${displayCount}${getOrdinalSuffix(displayCount)} person to draw here.`
+                : ''}
             </p>
 
             {/* Canvas */}

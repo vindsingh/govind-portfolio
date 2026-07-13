@@ -429,6 +429,7 @@ export default function FalconCaseStudy() {
                       src="/projects/falcon/falcon-introduction.mp4"
                       aspectRatio="16/9"
                       borderRadius="12px"
+                      showMuteToggle={true}
                     />
                   </div>
                 )}
