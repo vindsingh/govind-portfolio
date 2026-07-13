@@ -30,11 +30,13 @@ export default function FileTabNav({
   setFilter,
 }: FileTabNavProps) {
   const router = useRouter();
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 640);
     check();
+    setMounted(true);
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
@@ -133,7 +135,7 @@ export default function FileTabNav({
               </svg>
             </div>
           </div>
-          {!isMobile && onToggleCuriousMode && (
+          {mounted && !isMobile && onToggleCuriousMode && (
             <button
               onClick={onToggleCuriousMode}
               style={{
@@ -179,15 +181,16 @@ export default function FileTabNav({
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'flex-end',
-            gap: '0',
+            gap: isMobile ? '4px' : '0',
             paddingLeft: '0',
             overflowX: 'auto',
+            WebkitOverflowScrolling: 'touch',
             scrollbarWidth: 'none',
             msOverflowStyle: 'none',
           }}
         >
           {/* Left: folder tabs */}
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: '0' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: isMobile ? '4px' : '0' }}>
             {TABS.map((tab) => {
               const isActive = tab.id === activeTab;
 
@@ -199,13 +202,15 @@ export default function FileTabNav({
                   style={{
                     background: '#1A1A1A',
                     border: 'none',
-                    borderRadius: 0,
-                    clipPath: tab.id === 'all'
-                      ? 'polygon(0 0, calc(100% - 12px) 0, 100% 100%, 0 100%)'
-                      : 'polygon(12px 0, calc(100% - 12px) 0, 100% 100%, 0 100%)',
-                    padding: isMobile ? '4px 8px' : '7px 16px',
+                    clipPath: isMobile ? 'none' : (
+                      tab.id === 'all'
+                        ? 'polygon(0 0, calc(100% - 12px) 0, 100% 100%, 0 100%)'
+                        : 'polygon(12px 0, calc(100% - 12px) 0, 100% 100%, 0 100%)'
+                    ),
+                    borderRadius: isMobile ? '6px 6px 0 0' : '0',
+                    padding: isMobile ? '6px 12px' : '7px 16px',
                     fontFamily: 'var(--font-helvetica-neue)',
-                    fontSize: isMobile ? '10px' : '13px',
+                    fontSize: isMobile ? '11px' : '13px',
                     fontWeight: 500,
                     color: '#FFFFFF',
                     marginBottom: '-1px',
@@ -225,10 +230,10 @@ export default function FileTabNav({
                   style={{
                     background: 'transparent',
                     border: 'none',
-                    padding: isMobile ? '4px 8px' : '7px 16px',
+                    padding: isMobile ? '6px 12px' : '7px 16px',
                     color: '#6B6560',
                     fontFamily: 'var(--font-helvetica-neue)',
-                    fontSize: isMobile ? '10px' : '13px',
+                    fontSize: isMobile ? '11px' : '13px',
                     fontWeight: 400,
                     cursor: 'pointer',
                     userSelect: 'none',
@@ -250,7 +255,7 @@ export default function FileTabNav({
           </div>
 
           {/* Right: Curious Mode toggle ───────────────────────────────── */}
-          {!isMobile && onToggleCuriousMode && (
+          {mounted && !isMobile && onToggleCuriousMode && (
             <button
               onClick={onToggleCuriousMode}
               style={{

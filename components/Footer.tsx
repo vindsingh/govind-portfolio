@@ -43,7 +43,7 @@ export default function Footer() {
   const hasCountedRef = useRef(false)
   const [hasDrawn, setHasDrawn] = useState(false)
   const [displayCount, setDisplayCount] = useState(0)
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState(true)
   const [hoveredNav, setHoveredNav] = useState<string | null>(null)
 
   useEffect(() => {
@@ -430,178 +430,220 @@ export default function Footer() {
           <div>
 
             {/* Canvas toolbar */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              marginBottom: '10px',
-              flexWrap: isMobile ? 'wrap' : 'nowrap',
-            }}>
-              <span style={{
-                fontFamily: 'var(--font-helvetica-neue)',
-                fontSize: '16px',
-                fontWeight: 700,
-                color: '#000000',
-                letterSpacing: '0',
-                marginRight: 'auto',
+            <div style={{ marginBottom: '10px' }}>
+
+              {/* Title row — always full width */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: isMobile ? '10px' : '8px',
               }}>
-                The bottom half is yours.
-              </span>
+                <span style={{
+                  fontFamily: 'var(--font-helvetica-neue)',
+                  fontSize: isMobile ? '14px' : '16px',
+                  fontWeight: 700,
+                  color: '#000000',
+                  letterSpacing: '0',
+                }}>
+                  The bottom half is yours.
+                </span>
+                {/* Reset visible inline on mobile only */}
+                {isMobile && (
+                  <button
+                    onClick={resetCanvas}
+                    style={{
+                      height: '26px',
+                      padding: '0 8px',
+                      border: 'none',
+                      background: 'transparent',
+                      fontFamily: 'var(--font-fragment-mono)',
+                      fontSize: '10px',
+                      color: '#000000',
+                      cursor: 'pointer',
+                      letterSpacing: '0.04em',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
 
-              {PALETTE.map(c => (
+              {/* Tools row */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                flexWrap: 'nowrap',
+                overflowX: isMobile ? 'auto' : 'visible',
+                scrollbarWidth: 'none',
+                WebkitOverflowScrolling: 'touch' as any,
+                paddingBottom: isMobile ? '4px' : '0',
+              }}>
+                {/* Color palette */}
+                {PALETTE.map(c => (
+                  <button
+                    key={c}
+                    onClick={() => { setColor(c); setIsEraser(false) }}
+                    title={c}
+                    style={{
+                      width: isMobile ? '22px' : '26px',
+                      height: isMobile ? '22px' : '26px',
+                      borderRadius: '50%',
+                      background: c,
+                      border: color === c && !isEraser
+                        ? '2.5px solid #000'
+                        : '1.5px solid rgba(0,0,0,0.15)',
+                      cursor: 'pointer',
+                      padding: 0,
+                      flexShrink: 0,
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                ))}
+
+                {/* Pen sizes — hidden on mobile */}
+                {!isMobile && PEN_SIZES.map((size, i) => (
+                  <button
+                    key={i}
+                    onClick={() => { setPenSize(i); setIsEraser(false) }}
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                      borderRadius: '4px',
+                      border: `0.5px solid ${penSize === i && !isEraser ? '#000' : 'rgba(0,0,0,0.2)'}`,
+                      background: penSize === i && !isEraser ? '#000' : 'transparent',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      boxSizing: 'border-box',
+                      padding: 0,
+                    }}
+                  >
+                    <span style={{
+                      width: size + 1,
+                      height: size + 1,
+                      borderRadius: '50%',
+                      background: penSize === i && !isEraser ? '#fff' : '#000',
+                      display: 'block',
+                      flexShrink: 0,
+                    }} />
+                  </button>
+                ))}
+
+                {/* Eraser */}
                 <button
-                  key={c}
-                  onClick={() => { setColor(c); setIsEraser(false) }}
-                  title={c}
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    borderRadius: '50%',
-                    background: c,
-                    border: color === c && !isEraser
-                      ? '2.5px solid #000'
-                      : '1.5px solid rgba(0,0,0,0.15)',
-                    cursor: 'pointer',
-                    padding: 0,
-                    flexShrink: 0,
-                    boxSizing: 'border-box',
-                  }}
-                />
-              ))}
-
-              {PEN_SIZES.map((size, i) => (
-                <button
-                  key={i}
-                  onClick={() => { setPenSize(i); setIsEraser(false) }}
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    borderRadius: '4px',
-                    border: `0.5px solid ${penSize === i && !isEraser ? '#000' : 'rgba(0,0,0,0.2)'}`,
-                    background: penSize === i && !isEraser ? '#000' : 'transparent',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    boxSizing: 'border-box',
-                    padding: 0,
-                  }}
-                >
-                  <span style={{
-                    width: size + 1,
-                    height: size + 1,
-                    borderRadius: '50%',
-                    background: penSize === i && !isEraser ? '#fff' : '#000',
-                    display: 'block',
-                    flexShrink: 0,
-                  }} />
-                </button>
-              ))}
-
-              <button
-                onClick={() => setIsEraser(e => !e)}
-                style={{
-                  height: '26px',
-                  padding: '0 10px',
-                  border: `0.5px solid ${isEraser ? '#000' : 'rgba(0,0,0,0.2)'}`,
-                  borderRadius: '4px',
-                  background: isEraser ? '#000' : 'transparent',
-                  color: isEraser ? '#fff' : '#000',
-                  fontFamily: 'var(--font-fragment-mono)',
-                  fontSize: '10px',
-                  cursor: 'pointer',
-                  letterSpacing: '0.04em',
-                  flexShrink: 0,
-                  boxSizing: 'border-box',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                Eraser
-              </button>
-
-              <div style={{ position: 'relative', flexShrink: 0 }}>
-                <button
-                  onClick={() => setSaveOpen(o => !o)}
+                  onClick={() => setIsEraser(e => !e)}
                   style={{
                     height: '26px',
                     padding: '0 10px',
-                    border: `0.5px solid ${saveOpen ? '#000' : 'rgba(0,0,0,0.2)'}`,
+                    border: `0.5px solid ${isEraser ? '#000' : 'rgba(0,0,0,0.2)'}`,
                     borderRadius: '4px',
-                    background: saveOpen ? '#000' : 'transparent',
-                    color: saveOpen ? '#fff' : '#000',
+                    background: isEraser ? '#000' : 'transparent',
+                    color: isEraser ? '#fff' : '#000',
                     fontFamily: 'var(--font-fragment-mono)',
                     fontSize: '10px',
                     cursor: 'pointer',
                     letterSpacing: '0.04em',
+                    flexShrink: 0,
                     boxSizing: 'border-box',
                     display: 'flex',
                     alignItems: 'center',
                   }}
                 >
-                  Save
+                  Eraser
                 </button>
-                {saveOpen && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '100%', right: 0,
-                    marginTop: '4px',
-                    background: '#fff',
-                    border: '0.5px solid var(--border)',
-                    borderRadius: '6px',
-                    overflow: 'hidden',
-                    zIndex: 10,
-                    minWidth: '100px',
-                  }}>
-                    {(['jpg', 'png', 'pdf'] as const).map(fmt => (
-                      <button
-                        key={fmt}
-                        onClick={() => downloadAs(fmt)}
-                        style={{
-                          display: 'block',
-                          width: '100%',
-                          padding: '8px 14px',
-                          textAlign: 'left',
-                          background: 'transparent',
-                          border: 'none',
-                          borderBottom: fmt !== 'pdf' ? '0.5px solid var(--border)' : 'none',
-                          fontFamily: 'var(--font-fragment-mono)',
-                          fontSize: '10px',
-                          color: '#000',
-                          cursor: 'pointer',
-                          letterSpacing: '0.04em',
-                        }}
-                        onMouseEnter={e => (e.currentTarget.style.background = '#F5F4F0')}
-                        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                      >
-                        .{fmt.toUpperCase()}
-                      </button>
-                    ))}
-                  </div>
+
+                {/* Save dropdown */}
+                <div style={{ position: 'relative', flexShrink: 0 }}>
+                  <button
+                    onClick={() => setSaveOpen(o => !o)}
+                    style={{
+                      height: '26px',
+                      padding: '0 10px',
+                      border: `0.5px solid ${saveOpen ? '#000' : 'rgba(0,0,0,0.2)'}`,
+                      borderRadius: '4px',
+                      background: saveOpen ? '#000' : 'transparent',
+                      color: saveOpen ? '#fff' : '#000',
+                      fontFamily: 'var(--font-fragment-mono)',
+                      fontSize: '10px',
+                      cursor: 'pointer',
+                      letterSpacing: '0.04em',
+                      boxSizing: 'border-box',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    Save
+                  </button>
+                  {saveOpen && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '100%', right: 0,
+                      marginTop: '4px',
+                      background: '#fff',
+                      border: '0.5px solid var(--border)',
+                      borderRadius: '6px',
+                      overflow: 'hidden',
+                      zIndex: 10,
+                      minWidth: '100px',
+                    }}>
+                      {(['jpg', 'png', 'pdf'] as const).map(fmt => (
+                        <button
+                          key={fmt}
+                          onClick={() => downloadAs(fmt)}
+                          style={{
+                            display: 'block',
+                            width: '100%',
+                            padding: '8px 14px',
+                            textAlign: 'left',
+                            background: 'transparent',
+                            border: 'none',
+                            borderBottom: fmt !== 'pdf' ? '0.5px solid var(--border)' : 'none',
+                            fontFamily: 'var(--font-fragment-mono)',
+                            fontSize: '10px',
+                            color: '#000',
+                            cursor: 'pointer',
+                            letterSpacing: '0.04em',
+                          }}
+                          onMouseEnter={e => (e.currentTarget.style.background = '#F5F4F0')}
+                          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                        >
+                          .{fmt.toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Reset — desktop only (mobile version is in title row) */}
+                {!isMobile && (
+                  <button
+                    onClick={resetCanvas}
+                    style={{
+                      height: '26px',
+                      padding: '0 8px',
+                      border: 'none',
+                      background: 'transparent',
+                      fontFamily: 'var(--font-fragment-mono)',
+                      fontSize: '10px',
+                      color: '#000000',
+                      cursor: 'pointer',
+                      letterSpacing: '0.04em',
+                      flexShrink: 0,
+                      boxSizing: 'border-box',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    Reset
+                  </button>
                 )}
               </div>
-
-              <button
-                onClick={resetCanvas}
-                style={{
-                  height: '26px',
-                  padding: '0 8px',
-                  border: 'none',
-                  background: 'transparent',
-                  fontFamily: 'var(--font-fragment-mono)',
-                  fontSize: '10px',
-                  color: '#000000',
-                  cursor: 'pointer',
-                  letterSpacing: '0.04em',
-                  flexShrink: 0,
-                  boxSizing: 'border-box',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                Reset
-              </button>
             </div>
 
             <p style={{

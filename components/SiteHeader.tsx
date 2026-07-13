@@ -1,10 +1,19 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 export default function SiteHeader() {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
   return (
     <>
     <motion.header
@@ -16,12 +25,12 @@ export default function SiteHeader() {
         justifyContent: 'space-between',
         alignItems: 'center',
         background: 'transparent',
-        padding: '20px 32px',
+        padding: isMobile ? '14px 20px' : '20px 32px',
       }}
     >
       {/* Left: Wordmark */}
       <Link href="/" style={{ display: 'block', lineHeight: 0 }}>
-        <Image src="/govindlogo.svg" alt="Govind" height={26} width={101} />
+        <Image src="/govindlogo.svg" alt="Govind" height={isMobile ? 20 : 26} width={isMobile ? 78 : 101} />
       </Link>
 
       {/* Right: Contact */}
@@ -31,7 +40,9 @@ export default function SiteHeader() {
           style={{
             display: 'flex', alignItems: 'center',
             justifyContent: 'center',
-            width: 32, height: 32, borderRadius: '50%',
+            width: isMobile ? '28px' : '32px',
+            height: isMobile ? '28px' : '32px',
+            borderRadius: '50%',
             border: '1px solid #E8E4DF',
             color: '#6B6560', textDecoration: 'none',
             transition: 'all 200ms ease',
@@ -57,7 +68,9 @@ export default function SiteHeader() {
           style={{
             display: 'flex', alignItems: 'center',
             justifyContent: 'center',
-            width: 32, height: 32, borderRadius: '50%',
+            width: isMobile ? '28px' : '32px',
+            height: isMobile ? '28px' : '32px',
+            borderRadius: '50%',
             border: '1px solid #E8E4DF',
             color: '#6B6560', textDecoration: 'none',
             transition: 'all 200ms ease',

@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -40,6 +41,14 @@ interface FileContainerProps {
 }
 
 export function FileContainer({ children, className = '' }: FileContainerProps) {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
   return (
     <motion.div
       className={className}
@@ -52,10 +61,12 @@ export function FileContainer({ children, className = '' }: FileContainerProps) 
         maxWidth: '1320px',
         marginInline: 'auto',
         backgroundColor: 'var(--color-surface)',
-        borderRadius: '0 20px 20px 20px',
+        borderRadius: isMobile ? '0 12px 12px 12px' : '0 20px 20px 20px',
         boxShadow: 'var(--shadow-file)',
         border: '1px solid var(--color-border)',
-        padding: 'clamp(var(--file-padding-mobile), 3vw, var(--file-padding))',
+        padding: isMobile 
+          ? '12px 12px 16px' 
+          : 'clamp(var(--file-padding-mobile), 3vw, var(--file-padding))',
         overflow: 'hidden',
       }}
     >

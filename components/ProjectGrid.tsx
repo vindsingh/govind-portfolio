@@ -27,7 +27,7 @@ export default function ProjectGrid({ activeTab = 'all', onProjectHover }: Proje
   const [formAnim, setFormAnim] = useState<any>(null);
   const [falconAnim, setFalconAnim] = useState<any>(null);
   const [hovered, setHovered] = useState<string | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -60,8 +60,9 @@ export default function ProjectGrid({ activeTab = 'all', onProjectHover }: Proje
     <div style={{
       display: 'grid',
       gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
-      gridAutoRows: isMobile ? 'auto' : '300px',
-      gap: 10,
+      gridAutoRows: isMobile ? '260px' : '300px',
+      gap: isMobile ? 6 : 10,
+      padding: isMobile ? '4px 0 16px' : '0',
       width: '100%',
     }}>
       {filteredCards.map(card => {
@@ -71,8 +72,8 @@ export default function ProjectGrid({ activeTab = 'all', onProjectHover }: Proje
               key={card.id}
               data-cursor="Explore Experience"
               style={{
-                gridColumn: isMobile ? '1' : `span ${card.span}`,
-                aspectRatio: isMobile ? '16/9' : undefined,
+                gridColumn: isMobile ? '1 / -1' : `span ${card.span}`,
+                aspectRatio: undefined,
                 position: 'relative',
                 borderRadius: 12,
                 overflow: 'hidden',
@@ -93,9 +94,10 @@ export default function ProjectGrid({ activeTab = 'all', onProjectHover }: Proje
               style={{
                 display: 'block',
                 textDecoration: 'none',
-                gridColumn: isMobile ? '1' : `span ${card.span}`,
-                aspectRatio: isMobile ? '16/9' : undefined,
+                gridColumn: isMobile ? '1 / -1' : `span ${card.span}`,
+                aspectRatio: undefined,
                 height: '100%',
+                minHeight: 0,
               }}
             >
               <div
@@ -108,6 +110,7 @@ export default function ProjectGrid({ activeTab = 'all', onProjectHover }: Proje
                   background: card.bg,
                   cursor: 'none',
                   height: '100%',
+                  minHeight: 0,
                   boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
                   transition: 'box-shadow 200ms ease, transform 150ms ease',
                 }}
@@ -131,7 +134,7 @@ export default function ProjectGrid({ activeTab = 'all', onProjectHover }: Proje
                 <div style={{
                   position: 'absolute',
                   inset: 0,
-                  padding: '40px 16px 16px',
+                  padding: isMobile ? '32px 14px 14px' : '40px 16px 16px',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
@@ -149,7 +152,7 @@ export default function ProjectGrid({ activeTab = 'all', onProjectHover }: Proje
                     <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#FFBD2E' }} />
                     <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#27C93F' }} />
                   </div>
-                  <TerminalTypewriter showIconsOnComplete={true} textFontSize="16px" />
+                  <TerminalTypewriter showIconsOnComplete={true} textFontSize={isMobile ? '13px' : '16px'} />
                 </div>
               </div>
             </Link>
@@ -161,8 +164,8 @@ export default function ProjectGrid({ activeTab = 'all', onProjectHover }: Proje
             key={card.id}
             data-cursor="View Case Study"
             style={{
-              gridColumn: isMobile ? '1' : `span ${card.span}`,
-              aspectRatio: isMobile ? '16/9' : undefined,
+              gridColumn: isMobile ? '1 / -1' : `span ${card.span}`,
+              aspectRatio: undefined,
               position: 'relative',
               borderRadius: 12,
               overflow: 'hidden',
@@ -200,12 +203,17 @@ export default function ProjectGrid({ activeTab = 'all', onProjectHover }: Proje
             {/* TEXT AT BOTTOM LEFT — inside the card */}
             {card.type !== 'contact' && (
               <div style={{
-                position: 'absolute', bottom: 16, left: 20, zIndex: 5,
-                maxWidth: 'calc(100% - 40px)',
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: 5,
+                padding: '32px 20px 16px 20px',
+                background: 'linear-gradient(to top, rgba(255,255,255,0.95) 60%, rgba(255,255,255,0))',
               }}>
                 <p style={{
                   fontFamily: 'var(--font-fragment-mono)',
-                  fontSize: 10,
+                  fontSize: isMobile ? 9 : 10,
                   fontWeight: 500,
                   color: '#1A1A1A',
                   margin: '0 0 6px',
@@ -216,7 +224,7 @@ export default function ProjectGrid({ activeTab = 'all', onProjectHover }: Proje
                 </p>
                 <p style={{
                   fontFamily: 'var(--font-helvetica-neue)',
-                  fontSize: 13, fontWeight: 600,
+                  fontSize: isMobile ? 12 : 13, fontWeight: 600,
                   color: '#1A1A1A',
                   margin: 0, lineHeight: 1.3,
                 }}>{card.copy}</p>
