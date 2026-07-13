@@ -7,6 +7,13 @@ import { Mail } from 'lucide-react';
 import { DesktopSurface, FileContainer } from '@/components/FileContainer';
 import SiteHeader from '@/components/SiteHeader';
 import FileTabNav from '@/components/FileTabNav';
+import TerminalTypewriter from '@/components/TerminalTypewriter';
+
+const ABOUT_LINES = [
+  '> Glad you want to know more.',
+  '> The work is one side of it.',
+  '> This is the other.',
+];
 
 export default function AboutPage() {
   const router = useRouter();
@@ -115,178 +122,276 @@ export default function AboutPage() {
           />
 
           <FileContainer className="file-container-custom">
-            <div
-              className="about-content-wrapper"
-              style={{ flexDirection: isMobile ? 'column' : 'row' }}
-            >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '48px', width: '100%' }}>
+              
+              {/* TERMINAL REPLICA */}
+              <div
+                style={{
+                  width: '100%',
+                  background: '#000000',
+                  borderRadius: '12px',
+                  border: '1px solid #222222',
+                  padding: '40px 24px 24px',
+                  position: 'relative',
+                  color: '#FFFFFF',
+                  boxShadow: '0 4px 24px rgba(0,0,0,0.15)',
+                }}
+              >
+                {/* macOS window dots */}
+                <div style={{
+                  position: 'absolute',
+                  top: '14px',
+                  left: '16px',
+                  display: 'flex',
+                  gap: '6px',
+                }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#FF5F56' }} />
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#FFBD2E' }} />
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#27C93F' }} />
+                </div>
 
-              {/* LEFT COLUMN — TEXT */}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                {/* SECTION 1 — TEXT */}
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, ease: 'easeOut' }}
-                  style={{ width: '100%' }}
+                <TerminalTypewriter textFontSize="16px" lines={ABOUT_LINES}>
+                  {/* Icon buttons below typewriter lines */}
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+                    <a
+                      href="mailto:ahluwaliagovindsingh@gmail.com"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        border: '1px solid rgba(255,255,255,0.2)',
+                        color: '#FFFFFF',
+                        transition: 'background 200ms ease',
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                      <Mail size={16} strokeWidth={1.5} style={{ color: '#FFFFFF' }} />
+                    </a>
+                    <a
+                      href="https://linkedin.com/in/govind-singh-ahluwalia"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        border: '1px solid rgba(255,255,255,0.2)',
+                        color: '#FFFFFF',
+                        transition: 'background 200ms ease',
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#FFFFFF' }}>
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z"/>
+                      </svg>
+                    </a>
+                  </div>
+                </TerminalTypewriter>
+              </div>
+              
+              {/* SECTION 1 — BIO TEXT */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+                style={{ width: '100%' }}
+              >
+                <p
+                  style={{
+                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                    fontSize: 'clamp(13px, 1.4vw, 15px)',
+                    color: '#1A1A1A',
+                    lineHeight: '1.7',
+                    marginBottom: '20px',
+                  }}
                 >
-                  <h1
-                    style={{
-                      fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                      fontSize: 'clamp(24px, 3vw, 32px)',
-                      fontWeight: 500,
-                      color: '#1A1A1A',
-                      marginBottom: '28px',
-                      lineHeight: '1.2',
-                    }}
-                  >
-                    I'm Govind.
-                  </h1>
+                  I'm Govind. I work at the intersection of design, strategy, and research — drawn to problems that are too tangled to have obvious answers. A freight railway learning to think in human terms. Investors and founders trying to actually understand each other. Fifty graduates turning into an exhibition six thousand people walk through.
+                </p>
 
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                      fontSize: 'clamp(13px, 1.4vw, 15px)',
-                      color: '#1A1A1A',
-                      lineHeight: '1.7',
-                      marginBottom: '20px',
-                    }}
-                  >
-                    Most of what I care about happens before anything gets
-                    made. Every project starts the same way — pen on paper.
-                    Not habit — it's the fastest way to make a thought visible.
-                  </p>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                    fontSize: 'clamp(13px, 1.4vw, 15px)',
+                    color: '#1A1A1A',
+                    lineHeight: '1.7',
+                    marginBottom: '20px',
+                  }}
+                >
+                  My process starts with the question, not the tool. Most of what I do begins with research, ends with something built, and passes through a lot of diagrams, conversations, and paper in between. I'm most useful at the beginning of things — when the problem is still being defined and the right approach isn't obvious yet.
+                </p>
 
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                      fontSize: 'clamp(13px, 1.4vw, 15px)',
-                      color: '#1A1A1A',
-                      lineHeight: '1.7',
-                      marginBottom: '20px',
-                    }}
-                  >
-                    The work has lived inside a freight railway, a graduating
-                    exhibition, and eight months of research that became a
-                    product. What connects them is the same instinct: there's
-                    always a more important question hiding behind the obvious
-                    one.
-                  </p>
-                </motion.div>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                    fontSize: 'clamp(13px, 1.4vw, 15px)',
+                    color: '#1A1A1A',
+                    lineHeight: '1.7',
+                    marginBottom: 0,
+                  }}
+                >
+                  Based in Toronto. Curious about design strategy, strategic foresight, and the early edge of ventures.
+                </p>
+              </motion.div>
 
-                {/* SECTION 2 — SOCIAL ICONS */}
-                <div style={{ marginTop: '32px', display: 'flex', gap: '16px', justifyContent: 'flex-start', alignItems: 'center' }}>
-                  {/* Icon 1: Email */}
-                  <a
-                    href="mailto:ahluwaliagovindsingh@gmail.com"
-                    aria-label="Email"
-                    className="social-icon-btn"
-                  >
-                    <Mail size={14} strokeWidth={1.5} />
-                  </a>
+              {/* SECTION 2 — HOW I START */}
+              <div>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-fragment-mono), monospace',
+                    fontSize: '12px',
+                    fontWeight: 'normal',
+                    color: '#A09890',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em',
+                    marginBottom: '16px',
+                  }}
+                >
+                  how I start
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: isMobile ? 'column' : 'row',
+                    gap: '32px',
+                    alignItems: 'stretch',
+                  }}
+                >
+                  {/* Left Column (50% width) */}
+                  <div style={{ flex: '50 0 0%' }}>
+                    <p
+                      style={{
+                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                        fontSize: 'clamp(13px, 1.4vw, 15px)',
+                        color: '#1A1A1A',
+                        lineHeight: '1.7',
+                        margin: 0,
+                      }}
+                    >
+                      I reach for pen and paper before I open anything. Not because I distrust the tools — I use most of them — but because the thinking has to happen first. Software changes every year. The way I map a problem, trace a causal chain, or sketch a system doesn't. What looks like a product on screen usually started as a diagram, a question, or a half-finished map on paper.
+                    </p>
+                  </div>
 
-                  {/* Icon 2: LinkedIn */}
-                  <a
-                    href="https://linkedin.com/in/govind-singh-ahluwalia"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="LinkedIn"
-                    className="social-icon-btn"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037 -1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046 c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286z M5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z" />
-                    </svg>
-                  </a>
+                  {/* Right Column (50% width) */}
+                  <div style={{ flex: '50 0 0%', height: isMobile ? '320px' : '480px', position: 'relative' }}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 16 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5 }}
+                      style={{ width: '100%', height: '100%', position: isMobile ? 'relative' : 'absolute', inset: 0 }}
+                    >
+                      <img
+                        src="/about/Penpaperphoto.png"
+                        alt=""
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          objectPosition: 'top',
+                          borderRadius: '8px',
+                        }}
+                      />
+                    </motion.div>
+                  </div>
                 </div>
               </div>
 
-              {/* RIGHT COLUMN — ARTWORK GRID */}
-              <div
-                className="about-right-col"
-                style={{ width: isMobile ? '100%' : '380px' }}
-              >
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, ease: 'easeOut' }}
-                >
-                  <div
-                    className="artwork-grid-desktop"
-                    style={{
-                      gridTemplateColumns: isMobile ? '1fr 1fr' : undefined,
-                      gridTemplateRows: isMobile ? 'auto auto auto' : undefined,
-                      minHeight: isMobile ? 'auto' : '420px',
-                    }}
-                  >
-                    {/* L-TOP */}
-                    <div style={{ gridColumn: isMobile ? 1 : 1, gridRow: isMobile ? 1 : 1 }}>
-                      <img
-                        src="/about/L-TOP.jpeg"
-                        alt=""
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 4 }}
-                      />
-                    </div>
-
-                    {/* R-TOP */}
-                    <div style={{ gridColumn: isMobile ? 2 : 4, gridRow: 1 }}>
-                      <img
-                        src="/about/R-TOP.jpeg"
-                        alt=""
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 4 }}
-                      />
-                    </div>
-
-                    {/* L */}
-                    <div style={{ gridColumn: isMobile ? '1 / span 2' : 2, gridRow: isMobile ? 2 : '1 / span 2' }}>
-                      <img
-                        src="/about/L.jpeg"
-                        alt=""
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 4 }}
-                      />
-                    </div>
-
-                    {/* R */}
-                    <div style={{ gridColumn: isMobile ? '1 / span 2' : 3, gridRow: isMobile ? 3 : '1 / span 2' }}>
-                      <img
-                        src="/about/R.jpeg"
-                        alt=""
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 4 }}
-                      />
-                    </div>
-
-                    {/* L-BOTTOM */}
-                    <div style={{ gridColumn: isMobile ? 1 : 1, gridRow: isMobile ? 4 : 2 }}>
-                      <img
-                        src="/about/L-BOTTOM.jpeg"
-                        alt=""
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 4 }}
-                      />
-                    </div>
-
-                    {/* R-BOTTOM */}
-                    <div style={{ gridColumn: isMobile ? 2 : 4, gridRow: isMobile ? 4 : 2 }}>
-                      <img
-                        src="/about/R-BOTTOM.jpeg"
-                        alt=""
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 4 }}
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Caption */}
+              {/* SECTION 3 — OUTSIDE THE BRIEF */}
+              <div>
                 <div
                   style={{
-                    marginTop: '16px',
-                    textAlign: 'center',
                     fontFamily: 'var(--font-fragment-mono), monospace',
-                    fontSize: '10px',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
+                    fontSize: '12px',
+                    fontWeight: 'normal',
                     color: '#A09890',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em',
+                    marginBottom: '16px',
                   }}
                 >
-                  Vind, 2022 · Mixed media on stone
+                  outside the brief
+                </div>
+
+                <p
+                  style={{
+                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                    fontSize: 'clamp(13px, 1.4vw, 15px)',
+                    color: '#A09890',
+                    marginBottom: '24px',
+                    marginTop: 0,
+                  }}
+                >
+                  Observer by nature. Maker by instinct.
+                </p>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {/* Painting 1 */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0 }}
+                    style={{ width: '100%', height: '480px', position: 'relative' }}
+                  >
+                    <img
+                      src="/about/Painting_1.png"
+                      alt=""
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        borderRadius: '8px',
+                      }}
+                    />
+                  </motion.div>
+
+                  {/* Painting 2 */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.15 }}
+                    style={{ width: '100%', height: '320px', position: 'relative' }}
+                  >
+                    <img
+                      src="/about/Painting_2.jpg"
+                      alt=""
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        borderRadius: '8px',
+                      }}
+                    />
+                  </motion.div>
+
+                  {/* Painting 3 */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                    style={{ width: '100%', height: '400px', position: 'relative' }}
+                  >
+                    <img
+                      src="/about/Painting_3.jpg"
+                      alt=""
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        borderRadius: '8px',
+                      }}
+                    />
+                  </motion.div>
                 </div>
               </div>
 

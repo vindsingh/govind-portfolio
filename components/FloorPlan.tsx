@@ -55,7 +55,30 @@ const students = [
   { name: "Maxx", x: 95, y: 62, zone: "spaces" },
 ] as const;
 
-type Student = typeof students[number];
+function gridPoints(
+  count: number,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  cols: number
+): { cx: number; cy: number }[] {
+  const rows = Math.ceil(count / cols)
+  const xGap = width / (cols + 1)
+  const yGap = height / (rows + 1)
+  const points: { cx: number; cy: number }[] = []
+  for (let i = 0; i < count; i++) {
+    const col = i % cols
+    const row = Math.floor(i / cols)
+    points.push({
+      cx: x + xGap * (col + 1),
+      cy: y + yGap * (row + 1),
+    })
+  }
+  return points
+}
+
+type Student = { name: string; x: number; y: number; zone: "spaces" | "systems" | "body" };
 
 const ZONE_COLORS = {
   body: '#F15C2F',
@@ -66,33 +89,33 @@ const ZONE_COLORS = {
 export default function FloorPlan() {
   const [hoveredStudent, setHoveredStudent] = useState<Student | null>(null);
 
+  // Generate points on the 138 x 98 coordinate space
+  const spacesPoints = gridPoints(13, 8.3, 23.3, 20, 50, 2);
+  const systemsPoints = gridPoints(21, 35, 10, 70, 40, 7);
+  const bodyPoints = gridPoints(16, 26.6, 63.3, 56.6, 33.3, 4);
+
+  // Divide existing students into their zones and slice/pad to count
+  const spacesStudents = students.filter(s => s.zone === 'spaces').slice(0, 13);
+  const systemsStudents = students.filter(s => s.zone === 'systems').slice(0, 21);
+  const rawBody = students.filter(s => s.zone === 'body');
+  const bodyStudents = [...rawBody, { name: "Avery", zone: "body" as const }, { name: "Jordan", zone: "body" as const }, { name: "Taylor", zone: "body" as const }].slice(0, 16);
+
+  // Zip students with calculated points
+  const mappedSpaces: Student[] = spacesStudents.map((s, i) => ({ name: s.name, zone: s.zone, x: spacesPoints[i].cx, y: spacesPoints[i].cy }));
+  const mappedSystems: Student[] = systemsStudents.map((s, i) => ({ name: s.name, zone: s.zone, x: systemsPoints[i].cx, y: systemsPoints[i].cy }));
+  const mappedBody: Student[] = bodyStudents.map((s, i) => ({ name: s.name, zone: s.zone, x: bodyPoints[i].cx, y: bodyPoints[i].cy }));
+
+  const allMappedStudents: Student[] = [...mappedSpaces, ...mappedSystems, ...mappedBody];
+
   return (
     <div
       style={{
-        border: '1px solid var(--color-border)',
-        borderRadius: 'var(--radius-card)',
-        padding: '24px',
-        background: 'var(--color-surface)',
-        marginTop: '32px',
-        marginBottom: '32px',
         display: 'flex',
         flexDirection: 'column',
         gap: '20px',
         width: '100%',
       }}
     >
-      {/* Header text */}
-      <div
-        style={{
-          fontFamily: 'var(--font-fragment-mono), monospace',
-          fontSize: 'var(--text-xs)',
-          textTransform: 'uppercase',
-          color: 'var(--color-text-muted)',
-          letterSpacing: '0.06em',
-        }}
-      >
-        FLOOR PLAN — 115 MCCAUL ST, TORONTO
-      </div>
 
       {/* SVG Container */}
       <div
@@ -121,10 +144,10 @@ export default function FloorPlan() {
           />
 
           {/* Student Position Circles */}
-          {students.map((student, idx) => {
+          {allMappedStudents.map((student, idx) => {
             const isHovered = hoveredStudent?.name === student.name && hoveredStudent?.x === student.x && hoveredStudent?.y === student.y;
             const isAnyHovered = hoveredStudent !== null;
-            const dotColor = ZONE_COLORS[student.zone];
+            const dotColor = ZONE_COLORS[student.zone as keyof typeof ZONE_COLORS];
             
             // Visual accent logic: dim other dots slightly if one is hovered
             const opacity = isAnyHovered ? (isHovered ? 1 : 0.4) : 1;
@@ -218,7 +241,7 @@ export default function FloorPlan() {
               fontFamily: 'var(--font-fragment-mono), monospace',
               fontSize: 'var(--text-xs)',
               textTransform: 'uppercase',
-              color: 'var(--color-text-primary)',
+              color: '#000000',
               letterSpacing: '0.03em',
             }}
           >
@@ -241,7 +264,7 @@ export default function FloorPlan() {
               fontFamily: 'var(--font-fragment-mono), monospace',
               fontSize: 'var(--text-xs)',
               textTransform: 'uppercase',
-              color: 'var(--color-text-primary)',
+              color: '#000000',
               letterSpacing: '0.03em',
             }}
           >
@@ -264,7 +287,7 @@ export default function FloorPlan() {
               fontFamily: 'var(--font-fragment-mono), monospace',
               fontSize: 'var(--text-xs)',
               textTransform: 'uppercase',
-              color: 'var(--color-text-primary)',
+              color: '#000000',
               letterSpacing: '0.03em',
             }}
           >

@@ -7,13 +7,16 @@ import SiteHeader from '@/components/SiteHeader';
 import FileTabNav from '@/components/FileTabNav';
 import ProjectGrid from '@/components/ProjectGrid';
 import CuriousCanvas from '@/components/CuriousCanvas';
+import CustomCursor from '@/components/CustomCursor';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<
     'all' | 'work' | 'about' | 'experience'
   >('all');
   const [isCuriousMode, setIsCuriousMode] = useState(false);
-  const [filter, setFilter] = useState('everything');
+  const [curiousCategory, setCuriousCategory] = useState<
+    'everything' | 'process' | 'work' | 'personal'
+  >('everything');
 
   useEffect(() => {
     const check = () => {
@@ -26,47 +29,36 @@ export default function Home() {
   }, [isCuriousMode]);
 
   return (
-    <DesktopSurface>
-      <SiteHeader />
-      <div style={{ position: 'relative', marginTop: '12px' }}>
-        <FileTabNav
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          isCuriousMode={isCuriousMode}
-          onToggleCuriousMode={() => setIsCuriousMode((prev) => !prev)}
-          filter={filter}
-          setFilter={setFilter}
-        />
-        <FileContainer>
-          <AnimatePresence mode="wait">
-            {isCuriousMode ? (
-              <motion.div
-                key="curious"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-              >
-                <CuriousCanvas
-                  onExitCuriousMode={() => setIsCuriousMode(false)}
-                  filter={filter}
-                  setFilter={setFilter}
-                />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="file"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-              >
+    <>
+      <CustomCursor />
+      <DesktopSurface>
+        <SiteHeader />
+        <div style={{ position: 'relative', marginTop: '12px' }}>
+          <FileTabNav
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            isCuriousMode={isCuriousMode}
+            onToggleCuriousMode={() => setIsCuriousMode((prev) => !prev)}
+            filter={curiousCategory}
+            setFilter={(val) => setCuriousCategory(val as any)}
+          />
+          <FileContainer>
+            <div style={{
+              flex: 1,
+              position: 'relative',
+              overflow: 'hidden',
+              minHeight: 0,
+              ...(isCuriousMode ? { height: 'calc(100vh - 215px)', minHeight: '600px' } : {})
+            }}>
+              {isCuriousMode ? (
+                <CuriousCanvas category={curiousCategory} />
+              ) : (
                 <ProjectGrid activeTab={activeTab} />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </FileContainer>
-      </div>
-    </DesktopSurface>
+              )}
+            </div>
+          </FileContainer>
+        </div>
+      </DesktopSurface>
+    </>
   );
 }

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import { Space_Mono } from 'next/font/google'
 import './globals.css'
+import Footer from '@/components/Footer'
 
 const helveticaNeue = localFont({
   src: [
@@ -54,7 +55,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${helveticaNeue.variable} ${fragmentMono.variable} ${spaceMono.variable}`}>{children}</body>
+      <body className={`${helveticaNeue.variable} ${fragmentMono.variable} ${spaceMono.variable}`}>
+        {children}
+        <Footer />
+      </body>
     </html>
   )
 }

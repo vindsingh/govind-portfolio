@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
+import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
 
 const ANCHORS = [
   { label: 'MY ROLE', id: 'my-role' },
@@ -177,29 +178,26 @@ export default function IndexBox() {
           </div>
         </div>
 
-        {/* Visit website button */}
-        <a
-          href="https://formgradex.vercel.app"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: 'block',
-            marginTop: '20px',
-            border: '1px solid var(--color-border-strong)',
-            borderRadius: '6px',
-            padding: '8px 14px',
-            fontFamily: 'var(--font-helvetica-neue)',
-            fontSize: '12px',
-            color: 'var(--color-text-primary)',
-            textAlign: 'center',
-            textDecoration: 'none',
-            transition: '200ms cubic-bezier(0.4, 0, 0.2, 1)',
-          }}
-          onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-text-primary)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-text-primary)')}
-        >
-          Visit website ↗
-        </a>
+        {/* Action Buttons */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '20px' }}>
+          <InteractiveHoverButton
+            href="https://formgradex.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm"
+          >
+            Visit website
+          </InteractiveHoverButton>
+
+          <InteractiveHoverButton
+            href="https://www.instagram.com/ocadu.id"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm"
+          >
+            Instagram
+          </InteractiveHoverButton>
+        </div>
       </div>
     </>
   );

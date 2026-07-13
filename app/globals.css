@@ -153,6 +153,21 @@ button {
   font-family: inherit;
 }
 
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-row-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 /* ─── Typography Utilities ───────────────────────────────────────── */
 .font-mono {
   font-feature-settings: "tnum" 1; /* tabular numbers for data alignment */

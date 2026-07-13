@@ -78,91 +78,103 @@ export default function FileTabNav({
             paddingLeft: '0',
           }}
         >
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              background: '#1A1A1A',
-              padding: '7px 16px',
-              clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 100%, 0 100%)',
-              borderRadius: '6px 0 0 0',
-              marginBottom: '-1px',
-            }}
-          >
-            <span
-              style={{
-                fontFamily: 'var(--font-helvetica-neue)',
-                fontSize: '13px',
-                fontWeight: 500,
-                color: '#FFFFFF',
-              }}
-            >
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            background: '#111111',
+            borderRadius: '0',
+            clipPath: 'polygon(0 0, calc(100% - 16px) 0, 100% 100%, 0 100%)',
+            padding: '6px 28px 6px 14px',
+            color: '#FFFFFF',
+            marginBottom: '-1px',
+          }}>
+            <span style={{
+              fontFamily: 'var(--font-fragment-mono)',
+              fontSize: '11px',
+              color: '#FFFFFF',
+              letterSpacing: '0.04em',
+              whiteSpace: 'nowrap',
+            }}>
               I am curious about
             </span>
-            <select
-              value={filter || 'everything'}
-              onChange={(e) => setFilter?.(e.target.value)}
-              style={{
-                fontFamily: 'var(--font-helvetica-neue)',
-                fontSize: '13px',
-                fontWeight: 500,
-                color: '#FFFFFF',
-                background: 'transparent',
-                border: 'none',
-                borderBottom: '1px solid rgba(255,255,255,0.5)',
-                cursor: 'pointer',
-                appearance: 'none',
-                paddingRight: 14,
-                outline: 'none',
-              }}
-            >
-              <option value="everything" style={{ color: '#1A1A1A' }}>Everything</option>
-              <option value="work" style={{ color: '#1A1A1A' }}>Work</option>
-              <option value="research" style={{ color: '#1A1A1A' }}>Research</option>
-              <option value="making" style={{ color: '#1A1A1A' }}>Making</option>
-              <option value="personal" style={{ color: '#1A1A1A' }}>Personal</option>
-            </select>
-            <span
-              style={{
-                fontFamily: 'var(--font-fragment-mono)',
-                fontSize: 10,
-                color: 'rgba(255,255,255,0.7)',
-                pointerEvents: 'none',
-              }}
-            >
-              ∨
-            </span>
+            <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+              <select
+                value={filter || 'everything'}
+                onChange={e => setFilter?.(e.target.value as any)}
+                style={{
+                  fontFamily: 'var(--font-fragment-mono)',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  color: '#FFFFFF',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  outline: 'none',
+                  appearance: 'none',
+                  WebkitAppearance: 'none',
+                  paddingRight: '14px',
+                  textDecoration: 'underline',
+                  textDecorationStyle: 'dotted',
+                  textDecorationColor: 'rgba(255,255,255,0.5)',
+                  textUnderlineOffset: '3px',
+                }}
+              >
+                <option value="everything" style={{ background: '#111111' }}>Everything</option>
+                <option value="process" style={{ background: '#111111' }}>How things start</option>
+                <option value="work" style={{ background: '#111111' }}>What gets built</option>
+                <option value="personal" style={{ background: '#111111' }}>The person behind the work</option>
+              </select>
+              <svg
+                width="12" height="8" viewBox="0 0 12 8"
+                fill="none" style={{ position: 'absolute', right: 0, flexShrink: 0, pointerEvents: 'none' }}
+              >
+                <path d="M1 1.5L6 6.5L11 1.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
           </div>
-          {!isMobile && (
+          {!isMobile && onToggleCuriousMode && (
             <button
               onClick={onToggleCuriousMode}
               style={{
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
-                gap: 6,
-                fontFamily: 'var(--font-fragment-mono)',
-                fontSize: 11,
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                color: '#6B6560',
+                borderRadius: '8px',
+                border: '0.5px solid #000000',
                 background: 'transparent',
-                border: '1px solid #E8E4DF',
-                borderRadius: 4,
-                padding: '5px 10px',
+                color: '#000000',
+                padding: '5px 18px',
+                fontFamily: 'var(--font-fragment-mono)',
+                fontSize: '11px',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
                 cursor: 'pointer',
-                transition: 'all 200ms ease',
+                whiteSpace: 'nowrap',
+                minWidth: '140px',
+                justifyContent: 'center',
                 marginLeft: 'auto',
                 marginBottom: '7px',
+                transition: 'background 0.2s, color 0.2s',
+              }}
+              onMouseEnter={e => {
+                const btn = e.currentTarget
+                btn.style.background = '#000000'
+                btn.style.color = '#FFFFFF'
+              }}
+              onMouseLeave={e => {
+                const btn = e.currentTarget
+                btn.style.background = 'transparent'
+                btn.style.color = '#000000'
               }}
             >
-              {isCuriousMode ? '⊞ File View' : '✦ Curious Mode'}
+              {isCuriousMode ? 'File View' : 'Curious Mode'}
             </button>
           )}
         </div>
       ) : (
         /* ── Tab row ──────────────────────────────────────────────────── */
         <div
+          className="tab-row-scroll"
           style={{
             display: 'flex',
             flexDirection: 'row',
@@ -170,6 +182,8 @@ export default function FileTabNav({
             gap: '0',
             paddingLeft: '0',
             overflowX: 'auto',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
           }}
         >
           {/* Left: folder tabs */}
@@ -236,29 +250,41 @@ export default function FileTabNav({
           </div>
 
           {/* Right: Curious Mode toggle ───────────────────────────────── */}
-          {!isMobile && (
+          {!isMobile && onToggleCuriousMode && (
             <button
               onClick={onToggleCuriousMode}
               style={{
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
-                gap: 6,
-                fontFamily: 'var(--font-fragment-mono)',
-                fontSize: 11,
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                color: '#6B6560',
+                borderRadius: '8px',
+                border: '0.5px solid #000000',
                 background: 'transparent',
-                border: '1px solid #E8E4DF',
-                borderRadius: 4,
-                padding: '5px 10px',
+                color: '#000000',
+                padding: '5px 18px',
+                fontFamily: 'var(--font-fragment-mono)',
+                fontSize: '11px',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
                 cursor: 'pointer',
-                transition: 'all 200ms ease',
+                whiteSpace: 'nowrap',
+                minWidth: '140px',
+                justifyContent: 'center',
                 marginLeft: 'auto',
                 marginBottom: '7px',
+                transition: 'background 0.2s, color 0.2s',
+              }}
+              onMouseEnter={e => {
+                const btn = e.currentTarget
+                btn.style.background = '#000000'
+                btn.style.color = '#FFFFFF'
+              }}
+              onMouseLeave={e => {
+                const btn = e.currentTarget
+                btn.style.background = 'transparent'
+                btn.style.color = '#000000'
               }}
             >
-              {isCuriousMode ? '⊞ File View' : '✦ Curious Mode'}
+              {isCuriousMode ? 'File View' : 'Curious Mode'}
             </button>
           )}
         </div>

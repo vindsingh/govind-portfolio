@@ -2,29 +2,20 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion, useInView } from 'framer-motion';
 import { DesktopSurface, FileContainer } from '@/components/FileContainer';
 import SiteHeader from '@/components/SiteHeader';
-import IndexBox from '@/components/IndexBox'; // Required import statement
-import CPKCTimeline from '@/components/CPKCTimeline';
-import RequestModal from '@/components/RequestModal';
+import { Highlighter } from '@/components/ui/Highlighter';
+import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
 
 const ANCHORS = [
-  { label: 'MY ROLE', id: 'my-role' },
-  { label: 'THE PROBLEM', id: 'the-problem' },
-  { label: 'THE WORK', id: 'the-work' },
-  { label: 'IMPACT', id: 'impact' },
-  { label: 'REFLECTION', id: 'reflection' },
+  { label: 'Context', id: 'context' },
+  { label: 'The Room', id: 'the-room' },
+  { label: 'The Work', id: 'the-work' },
+  { label: 'Outcomes', id: 'outcomes' },
 ] as const;
 
-const METADATA = [
-  { label: 'ROLE', value: 'Innovation Catalyst' },
-  { label: 'CATEGORY', value: 'Enterprise Design' },
-  { label: 'INDUSTRY', value: 'Freight Rail' },
-  { label: 'YEAR', value: '2025' },
-  { label: 'TEAM', value: 'Mitacs BSI' },
-] as const;
-
-function CPKCIndexBox({ onRequestClick }: { onRequestClick: () => void }) {
+function CPKCIndexBox() {
   const timeoutsRef = useRef<{ [key: string]: ReturnType<typeof setTimeout>[] }>({});
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -53,6 +44,19 @@ function CPKCIndexBox({ onRequestClick }: { onRequestClick: () => void }) {
 
       timeoutsRef.current[id] = [t1, t2];
     }
+  };
+
+  const ctaButtonStyle = {
+    display: 'block',
+    border: '1px solid var(--color-border-strong, #E8E4DF)',
+    borderRadius: '6px',
+    padding: '8px 14px',
+    fontFamily: 'var(--font-helvetica-neue), sans-serif',
+    fontSize: '12px',
+    color: '#1A1A1A',
+    textAlign: 'center' as const,
+    textDecoration: 'none',
+    transition: '200ms cubic-bezier(0.4, 0, 0.2, 1)',
   };
 
   return (
@@ -98,41 +102,14 @@ function CPKCIndexBox({ onRequestClick }: { onRequestClick: () => void }) {
 
         .index-box-anchor:hover {
           color: var(--color-text-primary);
-          border-left-color: var(--color-accent);
+          border-left-color: #D3A122;
         }
 
-        .index-box-divider {
-          margin: 16px 0;
-          border: none;
-          border-top: 1px solid var(--color-border);
-        }
-
-        .index-box-meta-block {
+        .sidebar-metadata {
           display: flex;
           flex-direction: column;
-          gap: 12px;
-        }
-
-        .index-box-meta-item {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .index-box-meta-label {
-          font-family: var(--font-fragment-mono), monospace;
-          font-size: 10px;
-          text-transform: uppercase;
-          color: var(--color-text-muted);
-          letter-spacing: 0.06em;
-          display: block;
-          margin-bottom: 2px;
-        }
-
-        .index-box-meta-value {
-          font-family: var(--font-helvetica-neue), sans-serif;
-          font-size: 12px;
-          font-weight: 500;
-          color: var(--color-text-primary);
+          gap: 20px;
+          padding-left: 10px;
         }
 
         @media (max-width: 767px) {
@@ -159,53 +136,134 @@ function CPKCIndexBox({ onRequestClick }: { onRequestClick: () => void }) {
 
         <div style={{
           overflow: 'hidden',
-          maxHeight: isCollapsed ? '0px' : '400px',
+          maxHeight: isCollapsed ? '0px' : '450px',
           opacity: isCollapsed ? 0 : 1,
           marginTop: isCollapsed ? '0px' : '16px',
           transition: 'max-height 400ms ease, opacity 300ms ease, margin-top 300ms ease'
         }}>
-          <hr className="index-box-divider" />
+          <hr style={{ margin: '16px 0', border: 'none', borderTop: '1px solid var(--color-border)' }} />
 
-          <div className="index-box-meta-block">
-            {METADATA.map((item) => (
-              <div key={item.label} className="index-box-meta-item">
-                <span className="index-box-meta-label">{item.label}</span>
-                <span className="index-box-meta-value">{item.value}</span>
+          <div className="sidebar-metadata">
+            <div>
+              <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#000000' }}>ROLE</div>
+              <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500 }}>Innovation Catalyst</div>
+            </div>
+            <div>
+              <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#000000' }}>TYPE</div>
+              <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500 }}>Mitacs BSI · Enterprise Design &amp; AI</div>
+            </div>
+            <div>
+              <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#000000' }}>PERIOD</div>
+              <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500 }}>2025–26</div>
+            </div>
+            <div>
+              <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#000000' }}>STATUS</div>
+              <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500, lineHeight: '1.4' }}>
+                Contract complete
               </div>
-            ))}
+            </div>
           </div>
         </div>
 
-        <button
-          onClick={onRequestClick}
-          style={{
-            display: 'block',
-            width: '100%',
-            marginTop: '20px',
-            border: '1px solid var(--color-border-strong)',
-            borderRadius: '6px',
-            padding: '8px 14px',
-            fontFamily: 'var(--font-helvetica-neue), sans-serif',
-            fontSize: '12px',
-            color: 'var(--color-text-primary)',
-            textAlign: 'center',
-            background: 'none',
-            cursor: 'pointer',
-            transition: '200ms cubic-bezier(0.4, 0, 0.2, 1)',
-          }}
-          onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
-          onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-        >
-          Request case study
-        </button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '24px' }}>
+          <InteractiveHoverButton href="mailto:ahluwaliagovindsingh@gmail.com" className="text-sm">
+            Let's talk
+          </InteractiveHoverButton>
+        </div>
       </div>
     </>
   );
 }
 
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      style={{
+        borderLeft: '3px solid #D3A122',
+        paddingLeft: '12px',
+        fontFamily: 'var(--font-fragment-mono), monospace',
+        fontSize: '11px',
+        textTransform: 'uppercase',
+        letterSpacing: '0.15em',
+        color: '#000000',
+        lineHeight: '1',
+        marginBottom: '24px',
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function AnimatedCount({ target, suffix = '' }: { target: number; suffix?: string }) {
+  const [count, setCount] = useState(0)
+  const ref = useRef<HTMLSpanElement>(null)
+  const inView = useInView(ref, { once: true })
+
+  useEffect(() => {
+    if (!inView) return
+    let start = 0
+    const duration = 1500
+    const step = Math.ceil(target / (duration / 16))
+    const timer = setInterval(() => {
+      start += step
+      if (start >= target) {
+        setCount(target)
+        clearInterval(timer)
+      } else {
+        setCount(start)
+      }
+    }, 16)
+    return () => clearInterval(timer)
+  }, [inView, target])
+
+  return <span ref={ref}>{count}{suffix}</span>
+}
+
+const phases = [
+  {
+    number: '01',
+    label: 'METHODOLOGY',
+    title: 'Design Thinking Framework',
+    description: "CPKC had no shared methodology for problem framing. The framework gave the organization a structured approach to moving from \"we have a problem\" to \"here is the right problem to solve\", adapted to CPKC's existing project lifecycle so it could be adopted without displacing existing processes. Adopted by the CIO and integrated as standard practice.",
+    svg: '/projects/cpkc/phase-1.svg',
+  },
+  {
+    number: '02',
+    label: 'TOOLKIT',
+    title: 'AI Cards Toolkit',
+    description: "AI concepts don't translate easily across technical and non-technical teams. The AI Cards were designed as a facilitation tool: a set of cards that made model behaviour, edge cases, and human oversight legible to stakeholders who don't think in systems terms. Built for workshops and decision-making sessions, not documentation.",
+    svg: '/projects/cpkc/phase-2.svg',
+  },
+  {
+    number: '03',
+    label: 'PRODUCT',
+    title: 'Market Intelligence Chatbot',
+    description: "CPKC's first AI-native internal product. I co-owned the UX across the full build, from initial problem definition through interface design and handoff. The challenge wasn't the AI component. It was designing an interface that made the model's outputs legible and trustworthy to the people who would rely on it daily.",
+    svg: '/projects/cpkc/phase-3.svg',
+  },
+  {
+    number: '04',
+    label: 'COMMUNITY',
+    title: 'Community of Practice',
+    description: "Design thinking doesn't persist through documentation. The Community of Practice built the internal social infrastructure: 105+ members across departments, regular programming, a shared language that continued after the engagement. The goal was to make the methodology self-sustaining.",
+    svg: '/projects/cpkc/phase-4.svg',
+  },
+] as const;
+
+const outcomes = [
+  { value: '105+', label: "Community of Practice members across CPKC departments" },
+  { value: 'CIO', label: "Level adoption of the design thinking framework" },
+  { value: '01', label: "CPKC's first AI-native internal product, co-owned UX end to end" },
+  { value: 'Mitacs', label: "Business Strategy Internship grant recipient, 2025–26" },
+] as const;
+
 export default function CPKCCaseStudy() {
   const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <>
@@ -280,94 +338,14 @@ export default function CPKCCaseStudy() {
           max-width: 720px;
         }
 
-        .mandate-label {
-          font-family: var(--font-fragment-mono), monospace;
-          font-size: 10px;
-          text-transform: uppercase;
-          color: var(--color-text-muted);
-          letter-spacing: 0.06em;
-          display: block;
-          margin-bottom: 12px;
-        }
-
-        .mandate-cols {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 32px;
-          margin-bottom: 28px;
-        }
-
-        .mandate-left {
-          font-family: var(--font-helvetica-neue), sans-serif;
-          font-size: 16px;
-          line-height: 1.65;
-          color: var(--color-text-primary);
-        }
-
-        .mandate-right {
-          font-family: var(--font-helvetica-neue), sans-serif;
-          font-size: 16px;
-          line-height: 1.65;
-          color: var(--color-text-primary);
-        }
-
-        .results-block {
-          border-top: 1px solid var(--color-border);
-          border-bottom: 1px solid var(--color-border);
-          padding: 32px 0;
-          margin-bottom: 28px;
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 24px;
-        }
-
-        .stat-number {
-          font-family: var(--font-helvetica-neue), sans-serif;
-          font-size: clamp(28px, 3vw, 36px);
-          font-weight: 600;
-          color: var(--color-text-primary);
-        }
-
-        .stat-label {
-          font-family: var(--font-fragment-mono), monospace;
-          font-size: 10px;
-          text-transform: uppercase;
-          color: var(--color-text-muted);
-          letter-spacing: 0.06em;
-          max-width: 120px;
-          line-height: 1.4;
-          margin-top: 4px;
-        }
-
         .case-study-section {
           padding: 24px;
           margin-left: -24px;
           margin-right: -24px;
-          margin-bottom: 14px;
+          margin-bottom: 24px;
           border-radius: var(--radius-card);
           transition: background-color 1200ms ease;
           scroll-margin-top: 64px;
-        }
-
-        .section-heading {
-          font-family: var(--font-fragment-mono), monospace;
-          font-size: 13px;
-          font-weight: 600;
-          text-transform: uppercase;
-          color: var(--color-text-primary);
-          border-bottom: 1px solid var(--color-border);
-          padding-bottom: 8px;
-          margin-top: 24px;
-          margin-bottom: 20px;
-          letter-spacing: 0.06em;
-        }
-
-        .section-body {
-          font-family: var(--font-helvetica-neue), sans-serif;
-          font-size: 16px;
-          line-height: 1.7;
-          color: var(--color-text-primary);
-          max-width: 640px;
         }
 
         .section-highlight {
@@ -386,16 +364,6 @@ export default function CPKCCaseStudy() {
             margin-right: -16px !important;
             width: calc(100% + 32px) !important;
           }
-
-          .mandate-cols {
-            grid-template-columns: 1fr !important;
-            gap: 16px !important;
-          }
-
-          .results-block {
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 24px !important;
-          }
         }
       ` }} />
 
@@ -403,7 +371,6 @@ export default function CPKCCaseStudy() {
         <SiteHeader />
 
         <div className="folder-wrapper">
-          {/* Tab row (inline) */}
           <div className="tab-row-container">
             <button className="active-tab" onClick={() => router.push('/')}>
               ← Go back
@@ -419,115 +386,313 @@ export default function CPKCCaseStudy() {
             </button>
           </div>
 
-          {/* FileContainer */}
           <FileContainer className="file-container-custom">
             <div className="case-study-layout">
-              {/* Sidebar IndexBox for CPKC */}
-              <CPKCIndexBox onRequestClick={() => setIsModalOpen(true)} />
+              <CPKCIndexBox />
 
               <div className="article-content">
-                {/* Hero / Logotype */}
-                <div style={{ marginBottom: '32px' }}>
-                  <h1
-                    style={{
-                      fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                      fontSize: 'var(--text-2xl)',
-                      fontWeight: 600,
-                      color: 'var(--color-text-primary)',
-                      margin: 0,
-                      lineHeight: '1.1',
-                    }}
-                  >
-                    CPKC
+                {/* Headline Block */}
+                <div style={{ marginBottom: '48px' }}>
+                  <h1 style={{
+                    fontFamily: 'var(--font-helvetica)',
+                    fontSize: 'clamp(28px, 4.5vw, 52px)',
+                    fontWeight: 600,
+                    lineHeight: 1.1,
+                    letterSpacing: '-0.02em',
+                    color: '#000000',
+                    marginBottom: '16px',
+                  }}>
+                    The youngest person in the room. Rarely the one without an answer.
                   </h1>
-                </div>
-
-                {/* Mandate Block */}
-                <div className="mandate-block">
-                  <span className="mandate-label">MANDATE</span>
-                  <div className="mandate-cols">
-                    <div className="mandate-left">
-                      CPKC is one of the only freight railroads spanning the full length of North America, from Canada to Mexico, a network built on physical infrastructure, operational precision, and a workforce built around it. The Innovation Catalyst role existed to introduce a different kind of precision: the capacity to frame problems correctly before committing to solutions.
-                    </div>
-                    <div className="mandate-right">
-                      The engagement ran as a Mitacs Business Strategy Internship, a research-industry partnership embedded inside the CIO's organization. The brief wasn't to ship a product. It was to build the organizational conditions that make better products possible.
-                    </div>
-                  </div>
-                </div>
-
-                {/* Results / Stats Block */}
-                <div className="results-block">
-                  <div className="stat-item">
-                    <div className="stat-number">105+</div>
-                    <div className="stat-label">COMMUNITY OF PRACTICE MEMBERS</div>
-                  </div>
-                  <div className="stat-item">
-                    <div className="stat-number">4</div>
-                    <div className="stat-label">PRACTICE AREAS</div>
-                  </div>
-                  <div className="stat-item">
-                    <div className="stat-number">1</div>
-                    <div className="stat-label">FRAMEWORK ADOPTED BY CIO</div>
-                  </div>
-                  <div className="stat-item">
-                    <div className="stat-number">1</div>
-                    <div className="stat-label">AI-NATIVE CHATBOT SHIPPED</div>
-                  </div>
-                </div>
-
-                {/* Sections */}
-                <div id="my-role" className="case-study-section">
-                  <h2 className="section-heading">MY ROLE</h2>
-                  <p className="section-body">
-                    I came in as Innovation Catalyst, a role without precedent at CPKC. Not a consultant, not a product designer. The work was upstream: before any tool gets built, someone has to ask whether it's solving the right problem. I worked across the CIO's organization to introduce design thinking as a shared methodology, build a toolkit that made AI concepts legible across technical and non-technical teams, and grow the internal network that keeps that work alive after the engagement ends.
+                  <p style={{
+                    fontFamily: 'var(--font-fragment-mono)',
+                    fontSize: '12px',
+                    color: '#000000',
+                    letterSpacing: '0.04em',
+                  }}>
+                    Enterprise Design &amp; AI · CPKC × Mitacs · 2025–26
                   </p>
                 </div>
 
-                <div id="the-problem" className="case-study-section">
-                  <h2 className="section-heading">THE PROBLEM</h2>
-                  <p className="section-body">
-                    CPKC operates at a scale where a bad decision propagates across thousands of people and thousands of kilometers of track. When AI tools started entering the enterprise, there was no shared language for evaluating them, no way for teams without design or technical backgrounds to ask the right questions, push back, or identify where a tool's assumptions didn't match their own operational reality. The risk wasn't adoption resistance. It was adoption without judgment.
-                  </p>
+                {/* Mandate Paragraph */}
+                <p style={{
+                  fontFamily: 'var(--font-helvetica)',
+                  fontWeight: 300,
+                  fontSize: '18px',
+                  lineHeight: 1.75,
+                  color: '#000000',
+                  marginBottom: '56px',
+                }}>
+                  CPKC is{' '}
+                  <Highlighter action="highlight" color="#EAD9C2" isView={true}>
+                    North America's only transborder freight railway
+                  </Highlighter>
+                  {', '}with 20,000 people, infrastructure spanning three countries, and billions in
+                  annual freight. The CIO organization was navigating AI adoption without a
+                  human-centered lens. I was brought in to build one.
+                </p>
+
+                {/* Stats Strip */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(4, 1fr)',
+                  gap: '0',
+                  borderTop: '0.5px solid var(--color-border)',
+                  borderBottom: '0.5px solid var(--color-border)',
+                  margin: '48px 0',
+                }}>
+                  {[
+                    { value: '105+', label: 'CoP members' },
+                    { value: 'CIO', label: 'Level adoption' },
+                    { value: '4', label: 'Distinct outputs' },
+                    { value: 'Mitacs', label: 'BSI Grant recipient' },
+                  ].map((stat, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        padding: '24px 0',
+                        borderRight: i < 3 ? '0.5px solid var(--color-border)' : 'none',
+                        paddingLeft: i === 0 ? '0' : '24px',
+                      }}
+                    >
+                      <div style={{
+                        fontFamily: 'var(--font-helvetica)',
+                        fontSize: '28px',
+                        fontWeight: 600,
+                        color: '#000000',
+                        letterSpacing: '-0.02em',
+                        marginBottom: '4px',
+                      }}>
+                        {stat.value}
+                      </div>
+                      <div style={{
+                        fontFamily: 'var(--font-fragment-mono)',
+                        fontSize: '11px',
+                        color: '#000000',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.06em',
+                      }}>
+                        {stat.label}
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
+                {/* Context Section */}
+                <div id="context" className="case-study-section">
+                  <SectionLabel>context</SectionLabel>
+                  <p style={{
+                    fontFamily: 'var(--font-helvetica)',
+                    fontWeight: 300,
+                    fontSize: '16px',
+                    lineHeight: 1.75,
+                    color: '#000000',
+                    margin: 0,
+                  }}>
+                    CPKC's IS organization runs the technology layer of a continental supply chain. The teams building internal tools think in systems, not in users. Design thinking, structured problem framing, human-centered research, iterative prototyping, had no formal presence. The Mitacs Business Strategy Internship created the mandate to change that. The title was Innovation Catalyst. The actual job was building design practice from zero inside an organization that had never had it.
+                  </p>
+
+                  {/* Confidentiality Callout */}
+                  <div style={{
+                    borderLeft: '3px solid #D3A122',
+                    background: '#FAFAF9',
+                    borderRadius: '0 8px 8px 0',
+                    padding: '20px 24px',
+                    marginTop: '32px',
+                    marginBottom: '24px',
+                  }}>
+                    <p style={{
+                      fontFamily: 'var(--font-helvetica)',
+                      fontWeight: 300,
+                      fontSize: '14px',
+                      lineHeight: 1.7,
+                      color: '#000000',
+                      fontStyle: 'italic',
+                      margin: 0,
+                    }}>
+                      Most of what was built lives inside CPKC's internal systems, geolocation
+                      tools, AI-native products, and operating frameworks designed for a 20,000-person
+                      organization. They were never meant to be public. What I can share is how the
+                      work was structured and what it changed.
+                    </p>
+                    <a
+                      href="mailto:ahluwaliagovindsingh@gmail.com"
+                      style={{
+                        display: 'inline-block',
+                        marginTop: '12px',
+                        fontFamily: 'var(--font-fragment-mono)',
+                        fontSize: '12px',
+                        color: '#D3A122',
+                        textDecoration: 'none',
+                        letterSpacing: '0.04em',
+                      }}
+                    >
+                      I'm happy to walk through the specifics directly ↗
+                    </a>
+                  </div>
+                </div>
+
+                {/* The Room Section */}
+                <div id="the-room" className="case-study-section">
+                  <SectionLabel>the room</SectionLabel>
+                  <p style={{
+                    fontFamily: 'var(--font-helvetica)',
+                    fontWeight: 300,
+                    fontSize: '16px',
+                    lineHeight: 1.75,
+                    color: '#000000',
+                    margin: 0,
+                  }}>
+                    The meetings I was in weren't design reviews. They were sessions where VPs and Directors were deciding how to frame problems, allocate resources, and assess risk, and I was there not to observe but to offer a different angle. Most people in those rooms had spent decades in logistics, engineering, and operations. I'd spent four years studying how to ask better questions. That turned out to be useful.
+                  </p>
+
+                  {/* Large Stat Counter */}
+                  <div style={{ borderTop: '0.5px solid var(--color-border)', paddingTop: '40px', marginTop: '48px' }}>
+                    <div style={{
+                      fontFamily: 'var(--font-helvetica)',
+                      fontSize: 'clamp(56px, 8vw, 96px)',
+                      fontWeight: 600,
+                      lineHeight: 1,
+                      color: '#000000',
+                      letterSpacing: '-0.03em',
+                    }}>
+                      <AnimatedCount target={105} suffix="+" />
+                    </div>
+                    <p style={{
+                      fontFamily: 'var(--font-helvetica)',
+                      fontWeight: 300,
+                      fontSize: '16px',
+                      color: 'var(--color-text-secondary)',
+                      marginTop: '12px',
+                      marginBottom: 0,
+                    }}>
+                      people across CPKC departments who didn't speak design, do now.
+                    </p>
+                  </div>
+                </div>
+
+                {/* The Work Section */}
                 <div id="the-work" className="case-study-section">
-                  <h2 className="section-heading">THE WORK</h2>
-                  <p className="section-body">
-                    The engagement produced four distinct outputs across methodology, tooling, product, and community. Each addressed a different layer of the same problem: making design thinking operational inside an organization that had never had it.
+                  <SectionLabel>the work</SectionLabel>
+                  <p style={{
+                    fontFamily: 'var(--font-helvetica)',
+                    fontWeight: 300,
+                    fontSize: '14px',
+                    color: 'var(--color-text-secondary)',
+                    marginBottom: '32px',
+                    marginTop: 0,
+                  }}>
+                    Four outputs across methodology, tooling, product, and community. Each addressed a different layer of the same problem.
                   </p>
-                  <CPKCTimeline />
+
+                  {/* Horizontal Phase Cards Stack */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {phases.map((phase, index) => (
+                      <motion.div
+                        key={phase.number}
+                        initial={{ opacity: 0, y: 16 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: '40px',
+                          border: '0.5px solid var(--color-border)',
+                          borderRadius: '12px',
+                          padding: '28px 32px',
+                          background: '#FFFFFF',
+                        }}
+                      >
+                        {/* Left: SVG */}
+                        <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <img
+                            src={phase.svg}
+                            alt={phase.title}
+                            style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+                          />
+                        </div>
+
+                        {/* Right: Content */}
+                        <div style={{ flex: 1 }}>
+                          <p style={{
+                            fontFamily: 'var(--font-fragment-mono)',
+                            fontSize: '11px',
+                            color: '#D3A122',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.08em',
+                            marginBottom: '4px',
+                            marginTop: 0,
+                          }}>
+                            {phase.number} · {phase.label}
+                          </p>
+                          <h3 style={{
+                            fontFamily: 'var(--font-helvetica)',
+                            fontSize: '20px',
+                            fontWeight: 500,
+                            color: '#000000',
+                            marginBottom: '12px',
+                            marginTop: 0,
+                          }}>
+                            {phase.title}
+                          </h3>
+                          <p style={{
+                            fontFamily: 'var(--font-helvetica)',
+                            fontWeight: 300,
+                            fontSize: '14px',
+                            lineHeight: 1.75,
+                            color: 'var(--color-text-secondary)',
+                            margin: 0,
+                          }}>
+                            {phase.description}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
 
-                <div id="impact" className="case-study-section">
-                  <h2 className="section-heading">IMPACT</h2>
-                  <p className="section-body">
-                    The design thinking framework was adopted by the CIO and integrated into CPKC's standard project methodology. The Community of Practice reached 105 members across departments, a network that outlasts the engagement. The Market Intelligence chatbot shipped as CPKC's first AI-native internal product. The AI Cards toolkit remains in active use for evaluating new AI deployments.
-                  </p>
-                  <p className="section-body" style={{ marginTop: '20px' }}>
-                    Multiple stakeholders cited the framework as what changed how their teams approach a problem before they start solving it.
-                  </p>
-                </div>
-
-                <div id="reflection" className="case-study-section">
-                  <h2 className="section-heading">REFLECTION</h2>
-                  <p className="section-body">
-                    Enterprise design at scale isn't about the artifact. The framework, the toolkit, the chatbot: those are evidence of a more durable output: an organization that knows how to ask the right questions before it starts building. Working upstream inside CPKC meant operating in the gap between "we have a technology" and "we know what this technology is for." That gap is where the most consequential design work happens, and it rarely shows up in a portfolio.
-                  </p>
+                {/* Outcomes Section */}
+                <div id="outcomes" className="case-study-section">
+                  <SectionLabel>outcomes</SectionLabel>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '24px',
+                    marginTop: '24px',
+                  }}>
+                    {outcomes.map((outcome, index) => (
+                      <div key={index} style={{ borderTop: '0.5px solid var(--color-border)', paddingTop: '20px' }}>
+                        <div style={{
+                          fontFamily: 'var(--font-helvetica)',
+                          fontSize: '36px',
+                          fontWeight: 600,
+                          color: '#000000',
+                          letterSpacing: '-0.02em',
+                          marginBottom: '8px',
+                        }}>
+                          {outcome.value}
+                        </div>
+                        <p style={{
+                          fontFamily: 'var(--font-helvetica)',
+                          fontWeight: 300,
+                          fontSize: '13px',
+                          lineHeight: 1.6,
+                          color: 'var(--color-text-secondary)',
+                          margin: 0,
+                        }}>
+                          {outcome.label}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
           </FileContainer>
         </div>
       </DesktopSurface>
-
-      {/* Request Case Study Modal */}
-      <RequestModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        projectName="CPKC"
-        context="This project ran as a Mitacs Business Strategy Internship inside CPKC's CIO organization. Detailed artifacts and outputs are available on request."
-        email="govind@ahluwaliagovind.com"
-      />
     </>
   );
 }

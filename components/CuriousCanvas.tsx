@@ -1,571 +1,740 @@
-'use client';
+'use client'
 
-import { useState, useRef } from 'react';
-import { motion, AnimatePresence, useDragControls, useMotionValue, type PanInfo } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react'
 
-const nodeData = [
-  {
-    id: 'ga-central',
-    label: 'Govind',
-    type: 'folder',
-    initialX: 580,
-    initialY: 320,
-    categories: ['everything'],
-    icon: '/favicon.ico',
-    windowContent: 'text',
-    windowText: 'Everything on this canvas is connected to the same question: what is worth making?',
-  },
+type Category = 'everything' | 'process' | 'work' | 'personal'
+type NodeType = 'video' | 'youtube' | 'image' | 'link' | 'text'
+
+interface ChildNode {
+  id: string
+  label: string
+  sublabel: string
+  type: NodeType
+  width: number
+  height: number
+  categories: Category[]
+  src?: string
+  youtubeId?: string
+  href?: string
+  text?: string
+}
+
+interface Branch {
+  id: string
+  label: string
+  // Vertical position: 0–1 fraction of canvas height
+  yFrac: number
+  categories: Category[]
+  terminalText: string
+  terminalHighlight: string
+  children: ChildNode[]
+}
+
+const BRANCHES: Branch[] = [
   {
     id: 'form',
     label: 'FOR/M',
-    sublabel: 'Exhibition Design',
-    type: 'work',
-    initialX: 180,
-    initialY: 180,
-    categories: ['everything', 'work', 'making'],
-    thumbnail: '/projects/form/forsystem.svg',
-    windowContent: 'iframe',
-    windowSrc: '/projects/form',
+    yFrac: 0.16,
+    categories: ['everything', 'work'],
+    terminalText: 'Fifty graduates. One question about what to do with four years of work. The answer was an exhibition six thousand people walked through.',
+    terminalHighlight: 'six thousand people',
+    children: [
+      {
+        id: 'form-context',
+        label: 'The brief',
+        sublabel: 'Exhibition direction',
+        type: 'text',
+        width: 210, height: 90,
+        categories: ['everything', 'work'],
+        text: 'Exhibition Director for GradEx 111. Three curatorial zones. A speaker series. External sponsorships. A deployed website that reached 200K+ on Instagram.',
+      },
+      {
+        id: 'form-zone',
+        label: 'Zone card',
+        sublabel: 'for/body · The intimate scale',
+        type: 'image',
+        width: 180, height: 70,
+        categories: ['everything', 'work', 'process'],
+        src: '/projects/form/forbodycard.svg',
+      },
+      {
+        id: 'form-reel-1',
+        label: 'Before the doors opened',
+        sublabel: 'Marketing reel',
+        type: 'video',
+        width: 160, height: 90,
+        categories: ['everything', 'work'],
+        src: '/projects/form/marketing reel 1.mp4',
+      },
+      {
+        id: 'form-reel-2',
+        label: 'The days',
+        sublabel: 'Day 2 · GradEx 111',
+        type: 'video',
+        width: 160, height: 90,
+        categories: ['everything', 'work'],
+        src: '/projects/form/Day2.mp4',
+      },
+      {
+        id: 'form-instagram',
+        label: '@ocadu.id',
+        sublabel: 'Instagram',
+        type: 'link',
+        width: 140, height: 44,
+        categories: ['everything', 'work'],
+        href: 'https://www.instagram.com/ocadu.id',
+      },
+    ],
   },
   {
     id: 'falcon',
     label: 'Falcon',
-    sublabel: 'Research & Platform',
-    type: 'work',
-    initialX: 920,
-    initialY: 140,
-    categories: ['everything', 'work', 'research'],
-    thumbnail: '/projects/falcon/falcon-icon.svg',
-    windowContent: 'iframe',
-    windowSrc: '/projects/falcon',
+    yFrac: 0.37,
+    categories: ['everything', 'work'],
+    terminalText: 'Eight months of research into a gap everyone recognises. Not a reporting problem. A translation problem.',
+    terminalHighlight: 'translation problem',
+    children: [
+      {
+        id: 'falcon-context',
+        label: 'The problem',
+        sublabel: 'Research finding',
+        type: 'text',
+        width: 210, height: 90,
+        categories: ['everything', 'work', 'process'],
+        text: 'Founders and investors speak different languages. Existing tools treat it as a reporting problem. Falcon treats it as a translation problem.',
+      },
+      {
+        id: 'falcon-intro',
+        label: 'Introduction',
+        sublabel: 'Falcon',
+        type: 'youtube',
+        width: 240, height: 135,
+        categories: ['everything', 'work'],
+        youtubeId: 'Ijp7a1J9mrU',
+      },
+      {
+        id: 'behind-idea',
+        label: 'Behind the Idea',
+        sublabel: 'Research process',
+        type: 'youtube',
+        width: 240, height: 135,
+        categories: ['everything', 'process'],
+        youtubeId: 'p-zotFmbpzw',
+      },
+      {
+        id: 'signal-card',
+        label: 'Signal Card',
+        sublabel: 'Feature · Structured updates',
+        type: 'video',
+        width: 160, height: 90,
+        categories: ['everything', 'work', 'process'],
+        src: '/projects/falcon/signal-card.mp4',
+      },
+      {
+        id: 'open-canvas',
+        label: 'Open Canvas',
+        sublabel: 'Feature · The workspace',
+        type: 'video',
+        width: 160, height: 90,
+        categories: ['everything', 'work', 'process'],
+        src: '/projects/falcon/open-canvas.mp4',
+      },
+    ],
   },
   {
     id: 'cpkc',
     label: 'CPKC',
-    sublabel: 'Enterprise Design',
-    type: 'work',
-    initialX: 960,
-    initialY: 440,
+    yFrac: 0.60,
     categories: ['everything', 'work'],
-    thumbnail: '/cpkc-mitacslogo.svg',
-    windowContent: 'iframe',
-    windowSrc: '/projects/cpkc',
+    terminalText: 'The youngest person in the room. What changed wasn\'t the tools. It was the questions being asked.',
+    terminalHighlight: 'the questions being asked',
+    children: [
+      {
+        id: 'cpkc-mandate',
+        label: 'The mandate',
+        sublabel: 'Mitacs BSI · 2025–26',
+        type: 'text',
+        width: 210, height: 90,
+        categories: ['everything', 'work'],
+        text: 'Innovation Catalyst inside North America\'s only transborder freight railway. First design thinking framework adopted at CIO level.',
+      },
+      {
+        id: 'cpkc-cop',
+        label: 'Community of Practice',
+        sublabel: '105+ members',
+        type: 'text',
+        width: 210, height: 90,
+        categories: ['everything', 'work', 'process'],
+        text: 'Started at zero. Grew to 105+ members across departments. The goal was to make design thinking self-sustaining — not dependent on a single person.',
+      },
+      {
+        id: 'cpkc-artifact',
+        label: 'Methodology artifact',
+        sublabel: 'Phase 1 · Design Thinking Framework',
+        type: 'image',
+        width: 200, height: 110,
+        categories: ['everything', 'work', 'process'],
+        src: '/projects/cpkc/phase-1.svg',
+      },
+    ],
   },
   {
-    id: 'pen-paper',
-    label: 'Pen & Paper',
-    sublabel: 'Always first',
-    type: 'personal',
-    initialX: 400,
-    initialY: 120,
-    categories: ['everything', 'making', 'research'],
-    windowContent: 'text',
-    windowText: 'Every project starts the same way. Pen on paper. Not habit — it is the fastest way to make a thought visible.',
+    id: 'personal',
+    label: 'Outside the brief',
+    yFrac: 0.82,
+    categories: ['everything', 'personal'],
+    terminalText: 'The work that doesn\'t have a client or a deadline. Pen, paper, observation. This is what happens first.',
+    terminalHighlight: 'what happens first',
+    children: [
+      {
+        id: 'personal-process',
+        label: 'How I start',
+        sublabel: 'Pen & paper',
+        type: 'text',
+        width: 210, height: 90,
+        categories: ['everything', 'personal', 'process'],
+        text: 'I reach for pen and paper before I open anything. The thinking has to happen first. Software changes every year. The way I map a problem doesn\'t.',
+      },
+      {
+        id: 'penpaper',
+        label: 'Falcon workflow',
+        sublabel: 'Mapped by hand',
+        type: 'image',
+        width: 200, height: 130,
+        categories: ['everything', 'personal', 'process'],
+        src: '/about/Penpaperphoto.png',
+      },
+      {
+        id: 'sketches',
+        label: 'Sketchbook',
+        sublabel: 'Outside the brief',
+        type: 'image',
+        width: 220, height: 100,
+        categories: ['everything', 'personal'],
+        src: '/about/Painting_3.jpg',
+      },
+      {
+        id: 'portraits',
+        label: 'Portraits',
+        sublabel: 'Pencil · Dotwork · Chalk',
+        type: 'image',
+        width: 240, height: 80,
+        categories: ['everything', 'personal'],
+        src: '/about/Painting_2.jpg',
+      },
+    ],
   },
-  {
-    id: 'artwork',
-    label: 'Stone Series',
-    sublabel: '2022',
-    type: 'personal',
-    initialX: 140,
-    initialY: 460,
-    categories: ['everything', 'making', 'personal'],
-    thumbnail: '/about/L.jpeg',
-    windowContent: 'image',
-    windowSrc: '/about/L.jpeg',
-  },
-  {
-    id: 'falcon-demo',
-    label: 'Falcon Demo',
-    sublabel: 'Live prototype',
-    type: 'work',
-    initialX: 720,
-    initialY: 560,
-    categories: ['everything', 'work', 'research'],
-    windowContent: 'iframe',
-    windowSrc: 'https://falcondemo.vercel.app',
-  },
-  {
-    id: 'markets',
-    label: 'Equity Markets',
-    sublabel: 'Personal interest',
-    type: 'personal',
-    initialX: 280,
-    initialY: 560,
-    categories: ['everything', 'personal', 'research'],
-    windowContent: 'text',
-    windowText: 'I follow equity markets the same way I follow design problems. Both reward the person who looks at the signal before it becomes obvious.',
-  },
-  {
-    id: 'gradex',
-    label: 'GradEx 111',
-    sublabel: '6,000+ visitors',
-    type: 'personal',
-    initialX: 780,
-    initialY: 280,
-    categories: ['everything', 'making'],
-    thumbnail: '/about/L-TOP.jpeg',
-    windowContent: 'text',
-    windowText: 'FOR/M reached 6,000+ visitors over five days at 115 McCaul St. The most important number was not the attendance — it was how many people stayed.',
-  },
-];
+]
 
-interface CuriousCanvasProps {
-  onExitCuriousMode: () => void;
-  filter: string;
-  setFilter: (filter: string) => void;
-}
+const DEFAULT_TEXT = 'This space doesn\'t follow the same rules as the rest of the portfolio. It\'s where the work behind the work lives. Branches expand. Nothing is curated to look clean.'
+const DEFAULT_HIGHLIGHT = 'the work behind the work'
 
-export default function CuriousCanvas({ onExitCuriousMode, filter, setFilter }: CuriousCanvasProps) {
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const [openWindows, setOpenWindows] = useState<string[]>([]);
-  const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>(() =>
-    Object.fromEntries(
-      nodeData.map((n) => [n.id, { x: n.initialX, y: n.initialY }])
+// Layout constants
+const TERMINAL_W = 280
+const TERMINAL_LEFT = 20
+const TERMINAL_TOP = 20
+const BRANCH_X = 400     // x of branch node center
+const CHILD_COL_1 = 620  // x center of first child column
+const CHILD_COL_2 = 860  // x center of second child column
+const CHILD_GAP = 20     // vertical gap between children in same column
+
+interface Props { category: Category }
+
+export default function CuriousCanvas({ category }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [height, setHeight] = useState(700)
+  const [expanded, setExpanded] = useState<Set<string>>(new Set())
+  const [hoveredBranch, setHoveredBranch] = useState<string | null>(null)
+  const [expandedLeaf, setExpandedLeaf] = useState<ChildNode | null>(null)
+  const [showWelcome, setShowWelcome] = useState(true)
+
+  useEffect(() => {
+    if (containerRef.current) {
+      setHeight(containerRef.current.offsetHeight || 700)
+    }
+  }, [])
+
+  const visible = BRANCHES.filter(b =>
+    category === 'everything' || b.categories.includes(category)
+  )
+
+  const toggleBranch = (id: string) => {
+    setExpanded(prev => {
+      const next = new Set(prev)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
+  }
+
+  const active = hoveredBranch ? BRANCHES.find(b => b.id === hoveredBranch) : null
+  const terminalText = active?.terminalText ?? DEFAULT_TEXT
+  const terminalHighlight = active?.terminalHighlight ?? DEFAULT_HIGHLIGHT
+
+  // Compute child positions for a branch
+  const childPositions = (branch: Branch, canvasH: number) => {
+    const branchY = branch.yFrac * canvasH
+    const visChildren = branch.children.filter(c =>
+      category === 'everything' || c.categories.includes(category)
     )
-  );
-  const gaOffsetX = useMotionValue(0);
-  const gaOffsetY = useMotionValue(0);
+
+    // Lay out in 2 columns to the right of branch
+    const positions: Array<{ child: ChildNode; cx: number; cy: number }> = []
+
+    // Stack children: odd indices in col1, even in col2
+    let col1Y = branchY - 80
+    let col2Y = branchY - 40
+
+    visChildren.forEach((child, i) => {
+      if (i % 2 === 0) {
+        positions.push({ child, cx: CHILD_COL_1, cy: col1Y })
+        col1Y += child.height + CHILD_GAP + 30
+      } else {
+        positions.push({ child, cx: CHILD_COL_2, cy: col2Y })
+        col2Y += child.height + CHILD_GAP + 30
+      }
+    })
+
+    return positions
+  }
+
+  // L-shaped SVG path
+  const elbowPath = (x1: number, y1: number, x2: number, y2: number) => {
+    const mid = x1 + (x2 - x1) * 0.5
+    return `M ${x1} ${y1} C ${mid} ${y1} ${mid} ${y2} ${x2} ${y2}`
+  }
+
+  // Terminal center (right edge)
+  const termRightX = TERMINAL_LEFT + TERMINAL_W
+  const termCenterY = TERMINAL_TOP + 95 // approx vertical center of terminal
+
+  const renderHighlight = (text: string, highlight: string) => {
+    const idx = text.indexOf(highlight)
+    if (idx === -1) return <span>{text}</span>
+    return (
+      <>
+        <span>{text.slice(0, idx)}</span>
+        <span style={{
+          background: 'rgba(200,145,10,0.4)',
+          borderRadius: 2, padding: '0 2px',
+        }}>{highlight}</span>
+        <span>{text.slice(idx + highlight.length)}</span>
+      </>
+    )
+  }
 
   return (
     <div
+      ref={containerRef}
       style={{
-        position: 'relative',
-        width: 'calc(100% + 64px)',
-        minHeight: '600px',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
-        marginTop: '-12px',
-        marginLeft: '-32px',
-        marginRight: '-32px',
-        marginBottom: '-32px',
+        width: '100%', height: '100%',
+        position: 'relative', overflow: 'hidden',
+        background: '#F5F4F0', minHeight: '600px',
       }}
     >
-      {/* Canvas drag constraints area */}
-      <div
-        ref={canvasRef}
-        style={{
-          position: 'relative',
-          width: '100%',
-          minHeight: 'calc(100vh - 120px)',
-          overflow: 'hidden',
-          flex: 1,
-          flexGrow: 1,
-          backgroundColor: '#F9F7F5',
-          backgroundImage: 'radial-gradient(circle, #C8B89A 1px, transparent 1px)',
-          backgroundSize: '28px 28px',
-        }}
-      >
-        
-        {/* 1. SVGLines Component (layered below nodes) */}
-        <svg
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            pointerEvents: 'none',
-            zIndex: 1,
-          }}
-        >
-          <circle
-            cx={positions['ga-central'].x + 36}
-            cy={positions['ga-central'].y + 36}
-            r="3" fill="#C8B89A" opacity="0.8"
-          />
+      {/* SVG lines */}
+      <svg style={{
+        position: 'absolute', inset: 0,
+        width: '100%', height: '100%',
+        pointerEvents: 'none', zIndex: 1,
+        overflow: 'visible',
+      }}>
+        {visible.map(branch => {
+          const branchY = branch.yFrac * height
+          const isExpanded = expanded.has(branch.id)
+          const isHovered = hoveredBranch === branch.id
+          const positions = isExpanded ? childPositions(branch, height) : []
 
-          {[
-            { id: 'form', ox: 60, oy: 44, opacity: 0.7 },
-            { id: 'falcon', ox: 60, oy: 44, opacity: 0.7 },
-            { id: 'cpkc', ox: 60, oy: 44, opacity: 0.7 },
-            { id: 'pen-paper', ox: 50, oy: 25, opacity: 0.45 },
-            { id: 'artwork', ox: 50, oy: 40, opacity: 0.45 },
-            { id: 'falcon-demo', ox: 50, oy: 30, opacity: 0.45 },
-            { id: 'markets', ox: 50, oy: 25, opacity: 0.45 },
-            { id: 'gradex', ox: 50, oy: 40, opacity: 0.45 },
-          ].map(({ id, ox, oy, opacity }) => (
-            <line
-              key={id}
-              x1={positions['ga-central'].x + 36}
-              y1={positions['ga-central'].y + 36}
-              x2={positions[id].x + ox}
-              y2={positions[id].y + oy}
-              stroke="#C8B89A"
-              strokeWidth="0.75"
-              strokeDasharray="4 4"
-              opacity={opacity}
-            />
-          ))}
-        </svg>
-
-        {/* 2. Nodes mapped from nodeData array */}
-        {nodeData.map((node) => {
-          const isVisible = filter === 'everything' || node.categories.includes(filter);
           return (
-            <motion.div
-              key={node.id}
-              drag
-              dragConstraints={canvasRef}
-              dragElastic={0.05}
-              dragMomentum={false}
-              onDrag={(_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-                if (node.id === 'ga-central') {
-                  gaOffsetX.set(info.offset.x);
-                  gaOffsetY.set(info.offset.y);
-                  setPositions((prev) => ({
-                    ...prev,
-                    'ga-central': {
-                      x: node.initialX + info.offset.x,
-                      y: node.initialY + info.offset.y,
-                    },
-                  }));
-                } else {
-                  setPositions((prev) => ({
-                    ...prev,
-                    [node.id]: {
-                      x: node.initialX + info.offset.x + gaOffsetX.get() * 0.12,
-                      y: node.initialY + info.offset.y + gaOffsetY.get() * 0.12,
-                    },
-                  }));
-                }
-              }}
-              initial={{
-                x: node.id === 'ga-central' ? node.initialX : node.initialX + gaOffsetX.get() * 0.12,
-                y: node.id === 'ga-central' ? node.initialY : node.initialY + gaOffsetY.get() * 0.12,
-                opacity: 0,
-                scale: 0.9,
-              }}
-              animate={{
-                opacity: isVisible ? 1 : 0.15,
-                scale: isVisible ? 1 : 0.92,
-              }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-              style={{ position: 'absolute', cursor: 'grab', userSelect: 'none', zIndex: 2 }}
-              whileDrag={{ cursor: 'grabbing', scale: 1.02, zIndex: 100 }}
-              onClick={() => {
-                if (!openWindows.includes(node.id)) {
-                  setOpenWindows(prev => [...prev, node.id]);
-                }
+            <g key={branch.id}>
+              {/* Terminal → Branch */}
+              <path
+                d={elbowPath(termRightX, termCenterY, BRANCH_X - 60, branchY)}
+                fill="none"
+                stroke={isHovered ? 'rgba(0,0,0,0.45)' : 'rgba(0,0,0,0.15)'}
+                strokeWidth={isHovered ? 1.2 : 0.75}
+                style={{ transition: 'stroke 0.2s' }}
+              />
+
+              {/* Branch → Children */}
+              {positions.map(({ child, cx, cy }) => (
+                <path
+                  key={child.id}
+                  d={elbowPath(BRANCH_X + 60, branchY, cx - child.width / 2, cy + child.height / 2)}
+                  fill="none"
+                  stroke="rgba(0,0,0,0.12)"
+                  strokeWidth="0.6"
+                  strokeDasharray="4 4"
+                />
+              ))}
+            </g>
+          )
+        })}
+      </svg>
+
+      {/* Branch nodes + children */}
+      {visible.map(branch => {
+        const branchY = branch.yFrac * height
+        const isExpanded = expanded.has(branch.id)
+        const positions = isExpanded ? childPositions(branch, height) : []
+
+        return (
+          <div key={branch.id}>
+            {/* Branch pill */}
+            <div
+              onClick={() => toggleBranch(branch.id)}
+              onMouseEnter={() => setHoveredBranch(branch.id)}
+              onMouseLeave={() => setHoveredBranch(null)}
+              style={{
+                position: 'absolute',
+                left: BRANCH_X - 60,
+                top: branchY - 18,
+                transform: 'none',
+                zIndex: 5,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '7px 14px',
+                background: isExpanded ? '#000000' : '#FFFFFF',
+                color: isExpanded ? '#FFFFFF' : '#000000',
+                border: '0.5px solid #000000',
+                borderRadius: 6,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                transition: 'background 0.2s, color 0.2s',
+                userSelect: 'none',
+                whiteSpace: 'nowrap',
               }}
             >
-              {node.type === 'folder' && (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                  <div
-                    style={{
-                      background: '#1A1A1A',
-                      width: '72px',
-                      height: '72px',
-                      borderRadius: '8px',
-                      border: '1px solid #1A1A1A',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <img
-                      src="/favicon.svg"
-                      style={{
-                        width: 44,
-                        height: 44,
-                        objectFit: 'contain',
-                        display: 'block',
-                      }}
-                      alt="GA"
-                    />
-                  </div>
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-fragment-mono)',
-                      fontSize: '10px',
-                      color: '#FFFFFF',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.05em',
-                    }}
-                  >
-                    {node.label}
-                  </span>
-                </div>
-              )}
+              <span style={{
+                fontFamily: 'var(--font-fragment-mono)',
+                fontSize: '11px', fontWeight: 600,
+                letterSpacing: '0.06em',
+              }}>
+                {branch.label}
+              </span>
+              <span style={{
+                fontFamily: 'var(--font-fragment-mono)',
+                fontSize: '10px', opacity: 0.6,
+                display: 'inline-block',
+                transform: isExpanded ? 'rotate(45deg)' : 'none',
+                transition: 'transform 0.2s',
+              }}>
+                +
+              </span>
+            </div>
 
-              {node.type === 'work' && (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <div
-                    style={{
-                      background: 'white',
-                      width: '120px',
-                      height: '88px',
-                      borderRadius: '8px',
-                      border: '1px solid #E8E4DF',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                      overflow: 'hidden',
-                      position: 'relative',
-                    }}
-                  >
-                    {node.thumbnail && (
-                      <img
-                        src={node.thumbnail}
-                        alt={node.label}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'contain',
-                          padding: '12px',
-                          display: 'block',
-                        }}
+            {/* Child nodes */}
+            {positions.map(({ child, cx, cy }) => (
+              <div
+                key={child.id}
+                style={{
+                  position: 'absolute',
+                  left: cx - child.width / 2,
+                  top: cy,
+                  width: child.width,
+                  zIndex: 3,
+                  animation: 'nodeIn 0.22s ease forwards',
+                }}
+              >
+                <div style={{
+                  width: '100%', height: child.height,
+                  borderRadius: 8, overflow: 'hidden',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
+                  position: 'relative',
+                }}>
+
+                  {child.type === 'text' && (
+                    <div style={{
+                      width: '100%', height: '100%',
+                      background: '#FFFFFF',
+                      padding: '10px 12px',
+                      boxSizing: 'border-box',
+                      display: 'flex', alignItems: 'center',
+                      border: '0.5px solid rgba(0,0,0,0.1)',
+                      borderRadius: 8,
+                    }}>
+                      <p style={{
+                        fontFamily: 'var(--font-helvetica)',
+                        fontSize: '11px', lineHeight: 1.65,
+                        color: '#000000', margin: 0,
+                      }}>
+                        {child.text}
+                      </p>
+                    </div>
+                  )}
+
+                  {child.type === 'video' && (
+                    <>
+                      <video
+                        src={child.src}
+                        autoPlay loop muted playsInline
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                       />
-                    )}
-                  </div>
-                  <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                    <span
-                      style={{
-                        fontFamily: 'var(--font-helvetica-neue)',
-                        fontSize: '11px',
-                        fontWeight: 500,
-                        color: '#1A1A1A',
-                      }}
-                    >
-                      {node.label}
-                    </span>
-                    <span
-                      style={{
-                        fontFamily: 'var(--font-fragment-mono)',
-                        fontSize: '9px',
-                        color: '#A09890',
-                      }}
-                    >
-                      {node.sublabel}
-                    </span>
-                  </div>
-                </div>
-              )}
+                      <button
+                        onClick={() => setExpandedLeaf(child)}
+                        style={{
+                          position: 'absolute', bottom: 6, right: 6,
+                          width: 22, height: 22, borderRadius: 4,
+                          background: 'rgba(0,0,0,0.55)', border: 'none',
+                          cursor: 'pointer', display: 'flex',
+                          alignItems: 'center', justifyContent: 'center', zIndex: 5,
+                        }}
+                      >
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                          <path d="M1 4V1H4M6 1H9V4M9 6V9H6M4 9H1V6" stroke="white" strokeWidth="1.2" strokeLinecap="round"/>
+                        </svg>
+                      </button>
+                    </>
+                  )}
 
-              {node.type === 'personal' && (
-                <div
-                  style={{
-                    background: '#F9F7F5',
-                    width: '100px',
-                    borderRadius: '6px',
-                    border: '1px solid #E8E4DF',
-                    padding: '10px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                  }}
-                >
-                  {node.thumbnail && (
+                  {child.type === 'youtube' && (
+                    <>
+                      <iframe
+                        src={`https://www.youtube.com/embed/${child.youtubeId}?rel=0&modestbranding=1`}
+                        style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen title={child.label}
+                      />
+                      <button
+                        onClick={() => setExpandedLeaf(child)}
+                        style={{
+                          position: 'absolute', bottom: 6, right: 6,
+                          width: 22, height: 22, borderRadius: 4,
+                          background: 'rgba(0,0,0,0.55)', border: 'none',
+                          cursor: 'pointer', display: 'flex',
+                          alignItems: 'center', justifyContent: 'center', zIndex: 5,
+                        }}
+                      >
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                          <path d="M1 4V1H4M6 1H9V4M9 6V9H6M4 9H1V6" stroke="white" strokeWidth="1.2" strokeLinecap="round"/>
+                        </svg>
+                      </button>
+                    </>
+                  )}
+
+                  {child.type === 'image' && (
                     <img
-                      src={node.thumbnail}
-                      alt={node.label}
-                      style={{
-                        width: '80px',
-                        height: '50px',
-                        objectFit: 'cover',
-                        borderRadius: '4px',
-                        marginBottom: '6px',
-                      }}
+                      src={child.src}
+                      alt={child.label}
+                      draggable={false}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                     />
                   )}
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-helvetica-neue)',
-                      fontSize: '11px',
-                      fontWeight: 500,
-                      color: '#1A1A1A',
-                    }}
-                  >
-                    {node.label}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-fragment-mono)',
-                      fontSize: '9px',
-                      textTransform: 'uppercase',
-                      color: '#A09890',
-                      marginTop: '2px',
-                    }}
-                  >
-                    {node.sublabel}
-                  </span>
+
+                  {child.type === 'link' && (
+                    <a
+                      href={child.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        width: '100%', height: '100%',
+                        background: '#000000',
+                        display: 'flex', alignItems: 'center',
+                        justifyContent: 'center', textDecoration: 'none',
+                      }}
+                    >
+                      <span style={{
+                        fontFamily: 'var(--font-fragment-mono)',
+                        fontSize: '11px', color: '#FFFFFF',
+                        letterSpacing: '0.06em',
+                      }}>
+                        {child.label} ↗
+                      </span>
+                    </a>
+                  )}
                 </div>
-              )}
-            </motion.div>
-          );
-        })}
 
-        {/* 3. FloatingWindows */}
-        <AnimatePresence>
-          {openWindows.map((windowId) => {
-            const node = nodeData.find((n) => n.id === windowId);
-            if (!node) return null;
-            return (
-              <FloatingWindow
-                key={node.id}
-                node={node}
-                onClose={() => setOpenWindows((prev) => prev.filter((id) => id !== node.id))}
-              />
-            );
-          })}
-        </AnimatePresence>
+                {/* Child label */}
+                <div style={{ marginTop: 5, pointerEvents: 'none' }}>
+                  <div style={{
+                    fontFamily: 'var(--font-fragment-mono)',
+                    fontSize: '9px', color: '#000000',
+                    letterSpacing: '0.05em', lineHeight: 1.4,
+                  }}>
+                    {child.label}
+                  </div>
+                  <div style={{
+                    fontFamily: 'var(--font-fragment-mono)',
+                    fontSize: '8px', color: 'rgba(0,0,0,0.4)',
+                  }}>
+                    {child.sublabel}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      })}
 
-        {/* 5. ExperimentalCard (fixed, top-right of canvas area) */}
+      {/* Fixed terminal */}
+      <div style={{
+        position: 'absolute',
+        top: TERMINAL_TOP, left: TERMINAL_LEFT,
+        width: TERMINAL_W, zIndex: 10,
+        background: '#000000', borderRadius: 10,
+        boxShadow: '0 2px 16px rgba(0,0,0,0.18)',
+        pointerEvents: 'none',
+      }}>
+        <div style={{ padding: '8px 12px 6px', display: 'flex', gap: 5 }}>
+          <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#FF5F57' }} />
+          <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#FFBD2E' }} />
+          <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#28C840' }} />
+        </div>
+        <div style={{ padding: '4px 14px 14px' }}>
+          <p style={{
+            fontFamily: 'var(--font-fragment-mono)',
+            fontSize: '10px', color: '#FFFFFF',
+            lineHeight: 1.85, margin: 0,
+          }}>
+            {renderHighlight(terminalText, terminalHighlight)}
+          </p>
+          {expanded.size > 0 && (
+            <p style={{
+              fontFamily: 'var(--font-fragment-mono)',
+              fontSize: '9px', color: 'rgba(255,255,255,0.35)',
+              margin: '8px 0 0', lineHeight: 1.5,
+            }}>
+              {expanded.size === BRANCHES.length
+                ? 'Everything is open.'
+                : `${expanded.size} of ${BRANCHES.length} branches open.`
+              }
+            </p>
+          )}
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes nodeIn {
+          from { opacity: 0; transform: translateX(-8px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+      `}</style>
+
+      {/* Welcome modal */}
+      {showWelcome && (
         <div
           style={{
-            position: 'absolute',
-            top: '72px',
-            right: '24px',
-            background: 'rgba(255,255,255,0.9)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid #E8E4DF',
-            borderRadius: 8,
-            padding: '16px',
-            width: '220px',
-            zIndex: 250,
-            boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+            position: 'absolute', inset: 0, zIndex: 40,
+            background: 'rgba(0,0,0,0.18)',
+            display: 'flex', alignItems: 'center',
+            justifyContent: 'center',
           }}
+          onClick={() => setShowWelcome(false)}
         >
-          <p
+          <div
             style={{
-              fontFamily: 'var(--font-fragment-mono)',
-              fontSize: 10,
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              color: '#C8B89A',
-              margin: '0 0 8px',
+              width: '100%', maxWidth: '420px',
+              background: '#FFFFFF',
+              borderRadius: '12px',
+              padding: '36px 40px',
+              boxShadow: '0 8px 40px rgba(0,0,0,0.2)',
             }}
+            onClick={e => e.stopPropagation()}
           >
-            Experimental Space
-          </p>
-          <p
-            style={{
-              fontFamily: 'var(--font-helvetica-neue)',
-              fontSize: 13,
-              color: '#1A1A1A',
-              lineHeight: 1.5,
-              margin: 0,
-            }}
-          >
-            This canvas is always developing. Drag things around. See what connects.
-          </p>
+            <p style={{
+              fontFamily: 'var(--font-helvetica)',
+              fontSize: '22px',
+              fontWeight: 600,
+              lineHeight: 1.2,
+              color: '#000000',
+              margin: '0 0 16px',
+              letterSpacing: '-0.01em',
+            }}>
+              Still building this.
+            </p>
+            <p style={{
+              fontFamily: 'var(--font-helvetica)',
+              fontWeight: 300,
+              fontSize: '15px',
+              lineHeight: 1.7,
+              color: '#000000',
+              margin: '0 0 28px',
+            }}>
+              Not sure what it should be yet. That's kind of the point — some things are worth making before you know exactly why. Click the branches and see what connects.
+            </p>
+            <button
+              onClick={() => setShowWelcome(false)}
+              style={{
+                fontFamily: 'var(--font-helvetica)',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: '#FFFFFF',
+                background: '#000000',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '10px 22px',
+                cursor: 'pointer',
+                letterSpacing: '0.02em',
+              }}
+            >
+              Start exploring
+            </button>
+          </div>
         </div>
+      )}
 
-      </div>
+      {/* Expand modal */}
+      {expandedLeaf && (
+        <div
+          style={{
+            position: 'absolute', inset: 0, zIndex: 50,
+            background: 'rgba(0,0,0,0.55)',
+            display: 'flex', alignItems: 'center',
+            justifyContent: 'center', padding: 40,
+          }}
+          onClick={() => setExpandedLeaf(null)}
+        >
+          <div
+            style={{
+              width: '100%', maxWidth: 720, borderRadius: 12,
+              overflow: 'hidden', position: 'relative',
+              boxShadow: '0 8px 40px rgba(0,0,0,0.4)',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setExpandedLeaf(null)}
+              style={{
+                position: 'absolute', top: 10, right: 10,
+                width: 28, height: 28, borderRadius: '50%',
+                background: 'rgba(0,0,0,0.6)', border: 'none',
+                cursor: 'pointer', color: '#fff', fontSize: 16,
+                display: 'flex', alignItems: 'center',
+                justifyContent: 'center', zIndex: 10,
+              }}
+            >×</button>
+
+            {expandedLeaf.type === 'video' && (
+              <video
+                src={expandedLeaf.src}
+                autoPlay loop muted playsInline controls
+                style={{ width: '100%', display: 'block', maxHeight: '70vh', background: '#000' }}
+              />
+            )}
+            {expandedLeaf.type === 'youtube' && (
+              <div style={{ position: 'relative', paddingBottom: '56.25%', background: '#000' }}>
+                <iframe
+                  src={`https://www.youtube.com/embed/${expandedLeaf.youtubeId}?rel=0&autoplay=1`}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen title={expandedLeaf.label}
+                />
+              </div>
+            )}
+            <div style={{
+              padding: '10px 16px', background: '#000000',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            }}>
+              <span style={{ fontFamily: 'var(--font-fragment-mono)', fontSize: '11px', color: '#FFFFFF' }}>
+                {expandedLeaf.label} · {expandedLeaf.sublabel}
+              </span>
+              <span style={{ fontFamily: 'var(--font-fragment-mono)', fontSize: '10px', color: 'rgba(255,255,255,0.35)' }}>
+                Click outside to close
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  );
-}
-
-function FloatingWindow({
-  node,
-  onClose,
-}: {
-  node: typeof nodeData[number];
-  onClose: () => void;
-}) {
-  const dragControls = useDragControls();
-
-  return (
-    <motion.div
-      drag
-      dragListener={false}
-      dragControls={dragControls}
-      dragMomentum={false}
-      dragElastic={0}
-      initial={{ opacity: 0, scale: 0.95, x: node.initialX + 140, y: node.initialY - 40 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
-      style={{
-        position: 'absolute',
-        width: 520,
-        background: '#FFFFFF',
-        borderRadius: 12,
-        border: '1px solid #E8E4DF',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 0 0 0.5px rgba(0,0,0,0.06)',
-        overflow: 'hidden',
-        zIndex: 200,
-        minHeight: 320,
-      }}
-    >
-      {/* TITLE BAR (drag handle) */}
-      <div
-        onPointerDown={(e) => dragControls.start(e)}
-        style={{
-          background: '#F9F7F5',
-          padding: '12px 16px',
-          borderBottom: '1px solid #E8E4DF',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          cursor: 'grab',
-        }}
-      >
-        <span
-          style={{
-            fontFamily: 'var(--font-helvetica-neue)',
-            fontSize: '13px',
-            fontWeight: 500,
-            color: '#1A1A1A',
-          }}
-        >
-          {node.label}
-        </span>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }}
-          style={{
-            fontFamily: 'var(--font-fragment-mono)',
-            fontSize: '14px',
-            color: '#6B6560',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: 0,
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = '#1A1A1A';
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = '#6B6560';
-          }}
-        >
-          ×
-        </button>
-      </div>
-
-      {/* WINDOW CONTENT */}
-      {node.windowContent === 'iframe' && (
-        <iframe
-          src={node.windowSrc}
-          style={{ width: '100%', height: 380, border: 'none', display: 'block' }}
-          loading="lazy"
-        />
-      )}
-
-      {node.windowContent === 'image' && (
-        <img
-          src={node.windowSrc}
-          alt={node.label}
-          style={{ width: '100%', height: 380, objectFit: 'cover', display: 'block' }}
-        />
-      )}
-
-      {node.windowContent === 'text' && (
-        <div style={{ padding: '24px' }}>
-          <p
-            style={{
-              fontFamily: 'var(--font-helvetica-neue)',
-              fontSize: 15,
-              color: '#1A1A1A',
-              lineHeight: 1.65,
-              margin: 0,
-            }}
-          >
-            {node.windowText}
-          </p>
-        </div>
-      )}
-    </motion.div>
-  );
+  )
 }

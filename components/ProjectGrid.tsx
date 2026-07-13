@@ -2,17 +2,19 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Lottie from 'lottie-react';
+import TerminalTypewriter from './TerminalTypewriter';
+import ExperienceCardMini from './ExperienceCardMini';
 
 const WORK_IDS = ['form', 'falcon', 'cpkc'];
 
 const cards = [
-  { id: 'form', title: 'FOR/M', descriptor: 'Exhibition Design & Strategy', copy: 'The show that argued for what design is for.', href: '/projects/form', accent: '#C8B89A', span: 2, type: 'lottie', bg: '#FFFFFF' },
+  { id: 'contact', title: 'Get in touch', descriptor: '', copy: '', href: '/about', accent: '#1A1A1A', span: 2, type: 'contact', bg: '#000000' },
   { id: 'falcon', title: 'Falcon', descriptor: 'Research & Platform Design', copy: 'The translation layer for the venture conversation.', href: '/projects/falcon', accent: '#C8910A', span: 1, type: 'lottie-falcon', bg: '#FDF8F0' },
-  { id: 'cpkc', title: 'CPKC', descriptor: 'Enterprise Design & AI', copy: 'Design thinking inside a freight railway.', href: '/projects/cpkc', accent: '#B5C4A8', span: 2, type: 'image', src: '/cpkc-mitacslogo.svg', bg: '#F5F7F5' },
-  { id: 'about', title: 'About', descriptor: 'About', copy: 'The person behind the work.', href: '/about', accent: '#C8B89A', span: 1, type: 'image', src: '/about/L.jpeg', bg: '#F5F0EC' },
-  { id: 'experience', title: 'Experience', descriptor: 'Experience', copy: 'The roles. The rooms. The timeline.', href: '/experience', accent: '#C8B89A', span: 2, type: 'table', bg: '#FFFFFF' },
-  { id: 'contact', title: 'Get in touch', descriptor: '', copy: '', href: 'mailto:ahluwaliagovindsingh@gmail.com', accent: '#1A1A1A', span: 1, type: 'contact', bg: '#1A1A1A' },
+  { id: 'form', title: 'FOR/M', descriptor: 'Exhibition Design & Strategy', copy: 'The show that argued for what design is for.', href: '/projects/form', accent: '#C8B89A', span: 2, type: 'lottie', bg: '#FFFFFF' },
+  { id: 'cpkc', title: 'CPKC', descriptor: 'Enterprise Design & AI', copy: 'Design thinking inside a freight railway.', href: '/projects/cpkc', accent: '#B5C4A8', span: 1, type: 'image', src: '/cpkc-mitacslogo.svg', bg: '#F5F7F5' },
+  { id: 'experience', title: 'Experience', descriptor: 'Experience', copy: 'The roles. The rooms. The timeline.', href: '/experience', accent: '#C8B89A', span: 3, type: 'table', bg: '#FFFFFF' },
 ];
 
 interface ProjectGridProps {
@@ -62,220 +64,208 @@ export default function ProjectGrid({ activeTab = 'all', onProjectHover }: Proje
       gap: 10,
       width: '100%',
     }}>
-      {filteredCards.map(card => (
-        <div
-          key={card.id}
-          style={{
-            gridColumn: isMobile ? '1' : `span ${card.span}`,
-            aspectRatio: isMobile ? '16/9' : undefined,
-            position: 'relative',
-            borderRadius: 12,
-            overflow: 'hidden',
-            border: '1px solid #E8E4DF',
-            background: (card as any).bg,
-            cursor: 'pointer',
-            boxShadow: hovered === card.id
-              ? '0 4px 24px rgba(0,0,0,0.10)'
-              : '0 1px 4px rgba(0,0,0,0.04)',
-            transition: 'box-shadow 200ms ease',
-          }}
-          onClick={() => {
-            if (card.href.startsWith('mailto')) {
-              window.location.href = card.href;
-            } else {
-              router.push(card.href);
-            }
-          }}
-          onMouseEnter={() => {
-            setHovered(card.id);
-            if (onProjectHover) onProjectHover(true);
-          }}
-          onMouseLeave={() => {
-            setHovered(null);
-            if (onProjectHover) onProjectHover(false);
-          }}
-        >
-          {/* Accent left border */}
-          <div style={{
-            position: 'absolute', left: 0, top: 0, bottom: 0,
-            width: 3, background: card.accent, zIndex: 3,
-          }} />
-
-          {card.id === 'experience' && (
-            <div style={{
-              position: 'absolute', bottom: 0, left: 0, right: 0,
-              height: 120, zIndex: 1,
-              background: 'linear-gradient(to top, rgba(255,255,255,0.95) 0%, transparent 100%)',
-              pointerEvents: 'none',
-            }} />
-          )}
-
-          {/* TEXT AT BOTTOM LEFT — inside the card */}
-          {card.type !== 'contact' && (
-            <div style={{
-              position: 'absolute', bottom: 16, left: 20, zIndex: 5,
-              maxWidth: 'calc(100% - 40px)',
-            }}>
-              <p style={{
-                fontFamily: 'var(--font-fragment-mono)',
-                fontSize: 10,
-                fontWeight: 500,
-                color: card.id === 'about' ? 'rgba(255,255,255,0.7)' : '#1A1A1A',
-                margin: '0 0 6px',
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-              }}>
-                {card.descriptor}
-              </p>
-              <p style={{
-                fontFamily: 'var(--font-helvetica-neue)',
-                fontSize: 13, fontWeight: 600,
-                color: card.id === 'about' ? '#FFFFFF' : '#1A1A1A',
-                textShadow: card.id === 'about' ? '0 1px 4px rgba(0,0,0,0.3)' : 'none',
-                margin: 0, lineHeight: 1.3,
-              }}>{card.copy}</p>
-            </div>
-          )}
-
-          {/* LOTTIE */}
-          {card.type === 'lottie' && formAnim && (
-            <div style={{ position: 'absolute', inset: 0 }}>
-              <Lottie animationData={formAnim} loop autoplay
-                style={{ width: '100%', height: '100%' }} />
-            </div>
-          )}
-
-          {/* FALCON LOTTIE */}
-          {card.type === 'lottie-falcon' && falconAnim && (
-            <div style={{ position: 'absolute', inset: 0 }}>
-              <Lottie animationData={falconAnim} loop autoplay
-                style={{ width: '100%', height: '100%' }} />
-            </div>
-          )}
-
-          {/* IMAGE */}
-          {card.type === 'image' && (
-            <img src={(card as any).src} alt={card.title}
+      {filteredCards.map(card => {
+        if (card.id === 'experience') {
+          return (
+            <div
+              key={card.id}
+              data-cursor="Explore Experience"
               style={{
-                position: 'absolute', inset: 0,
-                width: '100%', height: '100%', display: 'block',
-                objectFit: card.id === 'about' ? 'cover' : 'contain',
-                padding: card.id === 'cpkc' ? '16px 24px' : card.id === 'falcon' ? '20%' : 0,
-              }} />
-          )}
-          {card.id === 'about' && (
-            <div style={{
-              position: 'absolute', inset: 0, zIndex: 2,
-              background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 50%, transparent 100%)',
-              borderRadius: 12,
-              pointerEvents: 'none',
-            }} />
-          )}
+                gridColumn: isMobile ? '1' : `span ${card.span}`,
+                aspectRatio: isMobile ? '16/9' : undefined,
+                position: 'relative',
+                borderRadius: 12,
+                overflow: 'hidden',
+                border: '1px solid #E8E4DF',
+                cursor: 'none',
+              }}
+            >
+              <ExperienceCardMini />
+            </div>
+          );
+        }
 
-          {/* EXPERIENCE TABLE */}
-          {card.type === 'table' && (
-            <div style={{
-              position: 'absolute', top: 52, left: 20, right: 20, bottom: 0,
-            }}>
-              {[
-                ['CPKC','Innovation Catalyst','2025–26'],
-                ['FOR/M','Exhibition Director','2026'],
-                ['Falcon','Independent Researcher','2025–26'],
-                ['Cadillac Fairview','Project Lead','2024–25'],
-                ['DesignWith Lab','Design Research Intern','2024'],
-              ].map(([org, role, year], i) => (
-                <div key={i} style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1.6fr auto',
-                  gap: 8, padding: '8px 0',
-                  borderBottom: '1px solid #E8E4DF',
-                  alignItems: 'center',
+        if (card.id === 'contact') {
+          return (
+            <Link
+              key={card.id}
+              href="/about"
+              style={{
+                display: 'block',
+                textDecoration: 'none',
+                gridColumn: isMobile ? '1' : `span ${card.span}`,
+                aspectRatio: isMobile ? '16/9' : undefined,
+                height: '100%',
+              }}
+            >
+              <div
+                data-cursor="Click to know more"
+                style={{
+                  position: 'relative',
+                  borderRadius: 12,
+                  overflow: 'hidden',
+                  border: '1px solid #E8E4DF',
+                  background: card.bg,
+                  cursor: 'none',
+                  height: '100%',
+                  boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                  transition: 'box-shadow 200ms ease, transform 150ms ease',
+                }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLDivElement;
+                  el.style.transform = 'translateY(-2px)';
+                  el.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)';
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLDivElement;
+                  el.style.transform = 'translateY(0px)';
+                  el.style.boxShadow = 'none';
+                }}
+              >
+                {/* Accent left border */}
+                <div style={{
+                  position: 'absolute', left: 0, top: 0, bottom: 0,
+                  width: 3, background: card.accent, zIndex: 3,
+                }} />
+
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  padding: '40px 16px 16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  color: '#FFFFFF',
                 }}>
-                  <span style={{ fontFamily: 'var(--font-helvetica-neue)', fontSize: 11, fontWeight: 500, color: '#1A1A1A' }}>{org}</span>
-                  <span style={{ fontFamily: 'var(--font-fragment-mono)', fontSize: 9, color: '#6B6560' }}>{role}</span>
-                  <span style={{ fontFamily: 'var(--font-fragment-mono)', fontSize: 9, color: '#A09890' }}>{year}</span>
+                  {/* macOS window dots */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '14px',
+                    left: '16px',
+                    display: 'flex',
+                    gap: '6px',
+                  }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#FF5F56' }} />
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#FFBD2E' }} />
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#27C93F' }} />
+                  </div>
+                  <TerminalTypewriter showIconsOnComplete={true} textFontSize="16px" />
                 </div>
-              ))}
-              <div style={{
-                position: 'absolute', bottom: 0, left: 0, right: 0, height: 80,
-                background: 'linear-gradient(to bottom, transparent, #FFFFFF)',
-                pointerEvents: 'none',
-              }} />
-            </div>
-          )}
-
-          {/* CONTACT */}
-          {card.type === 'contact' && (
-            <div style={{
-              position: 'absolute', inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 20,
-            }}>
-              <a href="mailto:ahluwaliagovindsingh@gmail.com"
-                onClick={e => e.stopPropagation()}
-                style={{
-                  width: isMobile ? 72 : 110, height: isMobile ? 72 : 110, borderRadius: '50%',
-                  border: '1px solid rgba(255,255,255,0.25)',
-                  display: 'flex', alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'rgba(255,255,255,0.85)',
-                  textDecoration: 'none',
-                  transition: 'border-color 200ms ease',
-                }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.7)'}
-                onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'}
-              >
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="4" width="20" height="16" rx="2"/>
-                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-                </svg>
-              </a>
-              <a href="https://linkedin.com/in/govind-singh-ahluwalia"
-                target="_blank" rel="noopener noreferrer"
-                onClick={e => e.stopPropagation()}
-                style={{
-                  width: isMobile ? 72 : 110, height: isMobile ? 72 : 110, borderRadius: '50%',
-                  border: '1px solid rgba(255,255,255,0.25)',
-                  display: 'flex', alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'rgba(255,255,255,0.85)',
-                  textDecoration: 'none',
-                  transition: 'border-color 200ms ease',
-                }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.7)'}
-                onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'}
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z"/>
-                </svg>
-              </a>
-            </div>
-          )}
-
-          {/* VIEW CASE STUDY — work cards only */}
-          {WORK_IDS.includes(card.id) && hovered === card.id && (
-            <div style={{
-              position: 'absolute', inset: 0, zIndex: 6,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: 'rgba(0,0,0,0.04)',
-            }}>
-              <div style={{
-                background: '#1A1A1A', color: '#FFFFFF',
-                fontFamily: 'var(--font-fragment-mono)',
-                fontSize: 11, textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                padding: '8px 16px', borderRadius: 4,
-              }}>
-                View Case Study
               </div>
-            </div>
-          )}
+            </Link>
+          );
+        }
 
-        </div>
-      ))}
+        return (
+          <div
+            key={card.id}
+            data-cursor="View Case Study"
+            style={{
+              gridColumn: isMobile ? '1' : `span ${card.span}`,
+              aspectRatio: isMobile ? '16/9' : undefined,
+              position: 'relative',
+              borderRadius: 12,
+              overflow: 'hidden',
+              border: '1px solid #E8E4DF',
+              background: (card as any).bg,
+              cursor: 'none',
+              boxShadow: hovered === card.id
+                ? '0 4px 24px rgba(0,0,0,0.10)'
+                : '0 1px 4px rgba(0,0,0,0.04)',
+              transform: 'translateY(0)',
+              transition: 'box-shadow 200ms ease, transform 150ms ease',
+            }}
+            onClick={() => {
+              if (card.href.startsWith('mailto')) {
+                window.location.href = card.href;
+              } else {
+                router.push(card.href);
+              }
+            }}
+            onMouseEnter={() => {
+              setHovered(card.id);
+              if (onProjectHover) onProjectHover(true);
+            }}
+            onMouseLeave={() => {
+              setHovered(null);
+              if (onProjectHover) onProjectHover(false);
+            }}
+          >
+            {/* Accent left border */}
+            <div style={{
+              position: 'absolute', left: 0, top: 0, bottom: 0,
+              width: 3, background: card.accent, zIndex: 3,
+            }} />
+
+            {/* TEXT AT BOTTOM LEFT — inside the card */}
+            {card.type !== 'contact' && (
+              <div style={{
+                position: 'absolute', bottom: 16, left: 20, zIndex: 5,
+                maxWidth: 'calc(100% - 40px)',
+              }}>
+                <p style={{
+                  fontFamily: 'var(--font-fragment-mono)',
+                  fontSize: 10,
+                  fontWeight: 500,
+                  color: '#1A1A1A',
+                  margin: '0 0 6px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                }}>
+                  {card.descriptor}
+                </p>
+                <p style={{
+                  fontFamily: 'var(--font-helvetica-neue)',
+                  fontSize: 13, fontWeight: 600,
+                  color: '#1A1A1A',
+                  margin: 0, lineHeight: 1.3,
+                }}>{card.copy}</p>
+              </div>
+            )}
+
+            {/* LOTTIE */}
+            {card.type === 'lottie' && formAnim && (
+              <div style={{ position: 'absolute', inset: 0 }}>
+                <Lottie animationData={formAnim} loop autoplay
+                  style={{ width: '100%', height: '100%' }} />
+              </div>
+            )}
+
+            {/* FALCON VIDEO */}
+            {card.type === 'lottie-falcon' && (
+              <div style={{ position: 'absolute', inset: 0 }}>
+                <video
+                  src="/falcon/signal-card.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    borderRadius: 'inherit',
+                  }}
+                />
+              </div>
+            )}
+
+            {/* IMAGE */}
+            {card.type === 'image' && (
+              <img src={(card as any).src} alt={card.title}
+                style={{
+                  position: 'absolute', inset: 0,
+                  width: '100%', height: '100%', display: 'block',
+                  objectFit: 'contain',
+                  padding: card.id === 'cpkc' ? '16px 24px' : card.id === 'falcon' ? '20%' : 0,
+                }} />
+            )}
+
+
+
+          </div>
+        );
+      })}
     </div>
   );
 }
