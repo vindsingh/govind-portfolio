@@ -124,7 +124,18 @@ export default function Footer() {
     const canvas = canvasRef.current!
     const rect = canvas.getBoundingClientRect()
     const src = 'touches' in e ? e.touches[0] : e
-    return { x: src.clientX - rect.left, y: src.clientY - rect.top }
+    const dpr = window.devicePixelRatio || 1
+    const cssX = src.clientX - rect.left
+    const cssY = src.clientY - rect.top
+    // Account for any mismatch between canvas attribute size and CSS rendered size
+    // canvas.width is physical pixels; dividing by dpr gives the expected CSS width
+    // If layout changed after init, scaleX/scaleY correct for the drift
+    const scaleX = (canvas.width / dpr) / rect.width
+    const scaleY = (canvas.height / dpr) / rect.height
+    return {
+      x: cssX * scaleX,
+      y: cssY * scaleY,
+    }
   }
 
   const saveToStorage = useCallback(() => {
