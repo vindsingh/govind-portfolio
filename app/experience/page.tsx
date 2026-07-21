@@ -385,9 +385,22 @@ export default function ExperiencePage() {
                             cursor: 'pointer',
                           }}
                         >
-                          <span style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '14px', fontWeight: 'bold' }}>
-                            →
-                          </span>
+                          <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            style={{
+                              transform: !item.link && isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+                              transition: 'transform 200ms ease',
+                            }}
+                          >
+                            <path d="M2 6h8M6 2l4 4-4 4" />
+                          </svg>
                         </button>
                       </div>
                     </div>

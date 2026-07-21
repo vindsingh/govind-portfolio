@@ -12,7 +12,6 @@ const ANCHORS = [
   { label: 'Context', id: 'context' },
   { label: 'The Room', id: 'the-room' },
   { label: 'The Work', id: 'the-work' },
-  { label: 'Outcomes', id: 'outcomes' },
 ] as const;
 
 function CPKCIndexBox() {
@@ -255,12 +254,6 @@ const phases = [
   },
 ] as const;
 
-const outcomes = [
-  { value: '105+', label: "Community of Practice members across CPKC departments" },
-  { value: 'CIO', label: "Level adoption of the design thinking framework" },
-  { value: '01', label: "CPKC's first AI-native internal product, co-owned UX end to end" },
-  { value: 'Mitacs', label: "Business Strategy Internship grant recipient, 2025–26" },
-] as const;
 
 export default function CPKCCaseStudy() {
   const router = useRouter();
@@ -653,41 +646,7 @@ export default function CPKCCaseStudy() {
                   </div>
                 </div>
 
-                {/* Outcomes Section */}
-                <div id="outcomes" className="case-study-section">
-                  <SectionLabel>outcomes</SectionLabel>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '24px',
-                    marginTop: '24px',
-                  }}>
-                    {outcomes.map((outcome, index) => (
-                      <div key={index} style={{ borderTop: '0.5px solid var(--color-border)', paddingTop: '20px' }}>
-                        <div style={{
-                          fontFamily: 'var(--font-helvetica)',
-                          fontSize: '36px',
-                          fontWeight: 600,
-                          color: '#000000',
-                          letterSpacing: '-0.02em',
-                          marginBottom: '8px',
-                        }}>
-                          {outcome.value}
-                        </div>
-                        <p style={{
-                          fontFamily: 'var(--font-helvetica)',
-                          fontWeight: 300,
-                          fontSize: '13px',
-                          lineHeight: 1.6,
-                          color: 'var(--color-text-secondary)',
-                          margin: 0,
-                        }}>
-                          {outcome.label}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+
               </div>
             </div>
           </FileContainer>
