@@ -280,14 +280,14 @@ export default function FormCaseStudy() {
 
         .role-cols {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: 1fr;
           gap: 32px;
         }
 
         .role-left {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 32px;
         }
 
         .role-category {
@@ -433,9 +433,9 @@ export default function FormCaseStudy() {
             gap: 24px !important;
           }
 
-          .role-cols {
+          .role-left {
             grid-template-columns: 1fr !important;
-            gap: 32px !important;
+            gap: 24px !important;
           }
 
           .zone-cards-grid {
@@ -562,7 +562,7 @@ export default function FormCaseStudy() {
 
                 {/* 6. Role block */}
                 <div className="role-block">
-                  <h3 className="role-title">My role</h3>
+                  <h3 className="role-title">Scope</h3>
                   <div className="role-cols">
                     <div className="role-left">
                       <div className="role-category">
@@ -571,28 +571,18 @@ export default function FormCaseStudy() {
                         <span className="role-cat-item">Zone structure and spatial programming</span>
                         <span className="role-cat-item">FOR/TALKS speaker series</span>
                       </div>
-                      <div className="role-category" style={{ marginTop: '16px' }}>
+                      <div className="role-category">
                         <span className="role-cat-header">■ BUILD</span>
                         <span className="role-cat-item">Exhibition website: HTML/CSS/JS</span>
                         <span className="role-cat-item">Google Apps Script backend</span>
                         <span className="role-cat-item">Content and editorial direction</span>
                       </div>
-                      <div className="role-category" style={{ marginTop: '16px' }}>
+                      <div className="role-category">
                         <span className="role-cat-header">■ TEAM</span>
                         <span className="role-cat-item">Led 6-person organizing committee</span>
                         <span className="role-cat-item">Coordinated with OCAD faculty and admin</span>
                         <span className="role-cat-item">Managed 5-day installation and programme</span>
                       </div>
-                    </div>
-                    <div className="role-right">
-                      I came in as Exhibition Director with one early conviction:
-                      the show needed a point of view before it needed a layout.
-                      I developed the curatorial framework, three zones, each with
-                      a distinct argument about design, before a single piece of
-                      student work was placed. FOR/TALKS was added as a layer of
-                      public programming that treated the exhibition as a venue,
-                      not just a display. I also spoke: presenting Falcon, a venture
-                      platform project, to an audience of founders and investors on Day 3.
                     </div>
                   </div>
                 </div>
