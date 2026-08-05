@@ -9,7 +9,6 @@ interface ProjectCardProps {
   descriptor: string;
   headline?: string;
   subline?: string;
-  accentColor?: string;
   visualType?: 'lottie' | 'image' | 'color';
   visualSrc?: string;
   visualBg?: string;
@@ -24,7 +23,6 @@ export default function ProjectCard({
   descriptor,
   headline,
   subline,
-  accentColor,
   visualType = 'color',
   visualSrc,
   visualBg,
@@ -66,7 +64,6 @@ export default function ProjectCard({
       style={{
         background: '#FFFFFF',
         border: '1px solid #E8E4DF',
-        borderLeft: accentColor ? `3.5px solid ${accentColor}` : '1px solid #E8E4DF',
         borderRadius: 'var(--radius-card)',
         boxShadow: isHovered ? 'var(--shadow-card-hover)' : 'var(--shadow-card)',
         overflow: 'hidden',

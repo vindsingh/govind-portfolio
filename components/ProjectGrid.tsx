@@ -10,11 +10,11 @@ import ExperienceCardMini from './ExperienceCardMini';
 const WORK_IDS = ['form', 'falcon', 'cpkc'];
 
 const cards = [
-  { id: 'contact', title: 'Get in touch', descriptor: '', copy: '', href: '/about', accent: '#1A1A1A', span: 2, type: 'contact', bg: '#000000' },
-  { id: 'falcon', title: 'Falcon', descriptor: 'Research & Platform Design', copy: 'The translation layer for the venture conversation.', href: '/projects/falcon', accent: '#C8910A', span: 1, type: 'lottie-falcon', bg: '#FDF8F0' },
-  { id: 'form', title: 'FOR/M', descriptor: 'Exhibition Design & Strategy', copy: 'The show that argued for what design is for.', href: '/projects/form', accent: '#C8B89A', span: 2, type: 'lottie', bg: '#FFFFFF' },
-  { id: 'cpkc', title: 'CPKC', descriptor: 'Enterprise Design & AI', copy: 'Design thinking inside a freight railway.', href: '/projects/cpkc', accent: '#B5C4A8', span: 1, type: 'image', src: '/cpkc-mitacslogo.svg', bg: '#F5F7F5' },
-  { id: 'experience', title: 'Experience', descriptor: 'Experience', copy: 'The roles. The rooms. The timeline.', href: '/experience', accent: '#C8B89A', span: 3, type: 'table', bg: '#FFFFFF' },
+  { id: 'contact', title: 'Get in touch', descriptor: '', copy: '', href: '/about', span: 2, type: 'contact', bg: '#000000' },
+  { id: 'falcon', title: 'Falcon', descriptor: 'Research & Platform Design', copy: 'The translation layer for the venture conversation.', href: '/projects/falcon', span: 1, type: 'lottie-falcon', bg: '#FDF8F0' },
+  { id: 'form', title: 'FOR/M', descriptor: 'Exhibition Design & Strategy', copy: 'The show that argued for what design is for.', href: '/projects/form', span: 2, type: 'lottie', bg: '#FFFFFF' },
+  { id: 'cpkc', title: 'CPKC', descriptor: 'Enterprise Design & AI', copy: 'Design thinking inside a freight railway.', href: '/projects/cpkc', span: 1, type: 'image', src: '/cpkc-mitacslogo.svg', bg: '#F5F7F5' },
+  { id: 'experience', title: 'Experience', descriptor: 'Experience', copy: 'The roles. The rooms. The timeline.', href: '/experience', span: 3, type: 'table', bg: '#FFFFFF' },
 ];
 
 interface ProjectGridProps {
@@ -125,12 +125,6 @@ export default function ProjectGrid({ activeTab = 'all', onProjectHover }: Proje
                   el.style.boxShadow = 'none';
                 }}
               >
-                {/* Accent left border */}
-                <div style={{
-                  position: 'absolute', left: 0, top: 0, bottom: 0,
-                  width: 3, background: card.accent, zIndex: 3,
-                }} />
-
                 <div style={{
                   position: 'absolute',
                   inset: 0,
@@ -194,11 +188,6 @@ export default function ProjectGrid({ activeTab = 'all', onProjectHover }: Proje
               if (onProjectHover) onProjectHover(false);
             }}
           >
-            {/* Accent left border */}
-            <div style={{
-              position: 'absolute', left: 0, top: 0, bottom: 0,
-              width: 3, background: card.accent, zIndex: 3,
-            }} />
 
             {/* TEXT AT BOTTOM LEFT — inside the card */}
             {card.type !== 'contact' && (
