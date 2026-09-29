@@ -37,22 +37,22 @@
 :root {
 
   /* COLOR TOKENS */
-  --color-bg:             #FFFFFF; /* pure white — desktop surface */
-  --color-surface:        #FFFFFF; /* pure white — file container */
+  --color-bg:             #FFFFFF; /* pure white - desktop surface */
+  --color-surface:        #FFFFFF; /* pure white - file container */
   --color-border:         #E8E4DF; /* soft warm border */
   --color-border-strong:  #C4BDB5; /* stronger border for active states */
 
   --color-text-primary:   #1A1A1A; /* near black */
   --color-text-secondary: #6B6560; /* warm grey */
-  --color-text-muted:     #A09890; /* muted warm grey — metadata, labels */
+  --color-text-muted:     #A09890; /* muted warm grey - metadata, labels */
 
   --color-accent:         #C8B89A; /* bone / sand */
   --color-accent-hover:   #B8A78A; /* slightly darker for hover */
-  --color-accent-subtle:  #F0EBE4; /* very light accent tint — backgrounds */
+  --color-accent-subtle:  #F0EBE4; /* very light accent tint - backgrounds */
   --color-accent-cpkc:    #D3A122; /* CPKC brand amber */
-  --color-accent-falcon:  #C8910A; /* cool slate — Falcon placeholder */
+  --color-accent-falcon:  #C8910A; /* cool slate - Falcon placeholder */
 
-  /* SHADOW TOKENS — iOS-glass multi-layer */
+  /* SHADOW TOKENS - iOS-glass multi-layer */
   --shadow-file:
     0 2px 4px  rgba(0, 0, 0, 0.04),
     0 8px 24px rgba(0, 0, 0, 0.08),
@@ -90,7 +90,22 @@
   --text-2xl:  clamp(40px, 5vw, 56px);    /* display large */
 
   /* FONT FAMILY TOKENS */
-  --font-space-mono: var(--font-space-mono), 'Courier New', monospace;
+  --font-display: var(--font-cardo), Georgia, serif;
+  --font-body:    var(--font-hind), system-ui, sans-serif;
+
+  /* keep existing names working so nothing breaks */
+  --font-helvetica-neue: var(--font-hind), system-ui, sans-serif;
+  --font-fragment-mono:  var(--font-hind), system-ui, sans-serif;
+  --font-space-mono:     var(--font-hind), system-ui, sans-serif;
+}
+
+:root,
+body {
+  --font-display: var(--font-cardo), Georgia, serif;
+  --font-body:    var(--font-hind), system-ui, sans-serif;
+  --font-helvetica-neue: var(--font-hind), system-ui, sans-serif !important;
+  --font-fragment-mono:  var(--font-hind), system-ui, sans-serif !important;
+  --font-space-mono:     var(--font-hind), system-ui, sans-serif !important;
 }
 
 /* ─── Global Base Styles ─────────────────────────────────────────── */
@@ -110,10 +125,14 @@ body {
   margin: 0;
   background-color: var(--color-bg);
   color: var(--color-text-primary);
-  font-family: var(--font-helvetica-neue);
+  font-family: var(--font-body);
   font-weight: 400;
   line-height: 1.5;
   min-height: 100vh;
+}
+
+h1, h2 {
+  font-family: var(--font-display) !important;
 }
 
 /* ─── Selection ──────────────────────────────────────────────────── */
@@ -157,6 +176,8 @@ html,
 body {
   scrollbar-width: none;
   -ms-overflow-style: none;
+  overflow-x: clip;
+  max-width: 100vw;
 }
 
 html::-webkit-scrollbar,

@@ -1,8 +1,23 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
-import { Space_Mono } from 'next/font/google'
+import { Space_Mono, Cardo, Hind } from 'next/font/google'
 import './globals.css'
 import Footer from '@/components/Footer'
+
+const cardo = Cardo({
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  variable: '--font-cardo',
+  display: 'swap',
+})
+
+const hind = Hind({
+  weight: ['300', '400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-hind',
+  display: 'swap',
+})
 
 const helveticaNeue = localFont({
   src: [
@@ -55,9 +70,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${helveticaNeue.variable} ${fragmentMono.variable} ${spaceMono.variable}`}>
-        {children}
-        <Footer />
+      <body
+        className={`${helveticaNeue.variable} ${fragmentMono.variable} ${spaceMono.variable} ${cardo.variable} ${hind.variable}`}
+        style={{
+          overflowX: 'clip',
+          maxWidth: '100vw',
+        }}
+      >
+        <div style={{ overflowX: 'clip', maxWidth: '100vw', width: '100%' }}>
+          {children}
+          <Footer />
+        </div>
       </body>
     </html>
   )

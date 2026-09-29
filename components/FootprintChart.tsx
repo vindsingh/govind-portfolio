@@ -10,10 +10,10 @@ const DATA = [
 ]
 
 const COLORS = [
-  '#4A8CC4', // for/system blue — smallest footprint, most common
-  '#3D9E5A', // for/space green — medium footprint
-  '#D85A30', // for/body orange — large footprint, body-scale work
-  '#C0B8A8', // neutral taupe — installations and special cases
+  '#4A8CC4', // for/system blue: smallest footprint, most common
+  '#3D9E5A', // for/space green: medium footprint
+  '#D85A30', // for/body orange: large footprint, body-scale work
+  '#C0B8A8', // neutral taupe: installations and special cases
 ]
 
 export default function FootprintChart() {

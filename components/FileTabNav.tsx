@@ -1,13 +1,14 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
-type Tab = 'all' | 'work' | 'about' | 'experience';
+export type Tab = 'all' | 'work' | 'about' | 'experience';
 
 interface FileTabNavProps {
-  activeTab: Tab;
-  onTabChange: (tab: Tab) => void;
+  activeTab?: Tab;
+  onTabChange?: (tab: Tab) => void;
   isCuriousMode?: boolean;
   onToggleCuriousMode?: () => void;
   filter?: string;
@@ -21,37 +22,41 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'experience', label: 'Experience' },
 ];
 
-export default function FileTabNav({
+const TAB_HREFS: Record<Tab, string> = {
+  all: '/',
+  work: '/?tab=work',
+  about: '/about',
+  experience: '/experience',
+};
+
+function FileTabNavContent({
   activeTab,
   onTabChange,
   isCuriousMode,
-  onToggleCuriousMode,
   filter,
   setFilter,
 }: FileTabNavProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isMobile, setIsMobile] = useState(true);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 640);
     check();
-    setMounted(true);
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  const handleTabClick = (id: Tab) => {
-    if (id === 'experience') {
-      router.push('/experience');
-      return;
+  const isHome = pathname === '/';
+  const effectiveActiveTab: Tab = activeTab ?? (() => {
+    if (pathname === '/about') return 'about';
+    if (pathname === '/experience') return 'experience';
+    if (isHome) {
+      return searchParams?.get('tab') === 'work' ? 'work' : 'all';
     }
-    if (id === 'about') {
-      router.push('/about');
-      return;
-    }
-    onTabChange(id);
-  };
+    return 'all';
+  })();
 
   if (isCuriousMode && isMobile) {
     return null;
@@ -64,13 +69,13 @@ export default function FileTabNav({
         maxWidth: '1320px',
         marginInline: 'auto',
         position: 'relative',
-        zIndex: 2, // ensure tabs render above container shadow/border
+        zIndex: 2,
         paddingTop: 0,
         marginTop: 0,
       }}
     >
       {isCuriousMode ? (
-        /* ── Curious Mode sentence filter ────────────────────────────── */
+        /* Curious Mode sentence filter */
         <div
           style={{
             display: 'flex',
@@ -135,53 +140,16 @@ export default function FileTabNav({
               </svg>
             </div>
           </div>
-          {mounted && !isMobile && onToggleCuriousMode && (
-            <button
-              onClick={onToggleCuriousMode}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                borderRadius: '8px',
-                border: '0.5px solid #000000',
-                background: 'transparent',
-                color: '#000000',
-                padding: '5px 18px',
-                fontFamily: 'var(--font-fragment-mono)',
-                fontSize: '11px',
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                minWidth: '140px',
-                justifyContent: 'center',
-                marginLeft: 'auto',
-                marginBottom: '7px',
-                transition: 'background 0.2s, color 0.2s',
-              }}
-              onMouseEnter={e => {
-                const btn = e.currentTarget
-                btn.style.background = '#000000'
-                btn.style.color = '#FFFFFF'
-              }}
-              onMouseLeave={e => {
-                const btn = e.currentTarget
-                btn.style.background = 'transparent'
-                btn.style.color = '#000000'
-              }}
-            >
-              {isCuriousMode ? 'File View' : 'Curious Mode'}
-            </button>
-          )}
         </div>
       ) : (
-        /* ── Tab row ──────────────────────────────────────────────────── */
+        /* Tab row */
         <div
           className="tab-row-scroll"
           style={{
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'flex-end',
-            gap: isMobile ? '4px' : '0',
+            gap: '0',
             paddingLeft: '0',
             overflowX: 'auto',
             WebkitOverflowScrolling: 'touch',
@@ -190,110 +158,101 @@ export default function FileTabNav({
           }}
         >
           {/* Left: folder tabs */}
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: isMobile ? '4px' : '0' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: '0' }}>
             {TABS.map((tab) => {
-              const isActive = tab.id === activeTab;
+              const isActive = tab.id === effectiveActiveTab;
+              const href = TAB_HREFS[tab.id];
 
-              return isActive ? (
-                /* ── Active tab ─────────────────────────────────────── */
-                <button
+              const activeStyle: React.CSSProperties = {
+                background: '#1A1A1A',
+                border: 'none',
+                clipPath: tab.id === 'all'
+                  ? 'polygon(0 0, calc(100% - 12px) 0, 100% 100%, 0 100%)'
+                  : 'polygon(12px 0, calc(100% - 12px) 0, 100% 100%, 0 100%)',
+                borderRadius: '0',
+                padding: isMobile ? '6px 12px' : '7px 16px',
+                fontFamily: 'var(--font-helvetica-neue)',
+                fontSize: isMobile ? '11px' : '13px',
+                fontWeight: 500,
+                color: '#FFFFFF',
+                marginBottom: '-1px',
+                cursor: 'pointer',
+                userSelect: 'none',
+                whiteSpace: 'nowrap',
+                lineHeight: 1,
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+              };
+
+              const inactiveStyle: React.CSSProperties = {
+                background: 'transparent',
+                border: 'none',
+                padding: isMobile ? '6px 12px' : '7px 16px',
+                color: '#6B6560',
+                fontFamily: 'var(--font-helvetica-neue)',
+                fontSize: isMobile ? '11px' : '13px',
+                fontWeight: 400,
+                cursor: 'pointer',
+                userSelect: 'none',
+                whiteSpace: 'nowrap',
+                lineHeight: 1,
+                transition: 'color 150ms ease',
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+              };
+
+              // On home page, switching between 'all' and 'work' uses router.replace(..., { scroll: false })
+              if (isHome && (tab.id === 'all' || tab.id === 'work')) {
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      router.replace(href, { scroll: false });
+                      onTabChange?.(tab.id);
+                    }}
+                    style={isActive ? activeStyle : inactiveStyle}
+                    onMouseEnter={(e) => {
+                      if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#1A1A1A';
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#6B6560';
+                    }}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              }
+
+              // On all other routes (or for about/experience tabs on home), render a plain Link
+              return (
+                <Link
                   key={tab.id}
-                  onClick={() => handleTabClick(tab.id)}
-                  style={{
-                    background: '#1A1A1A',
-                    border: 'none',
-                    clipPath: isMobile ? 'none' : (
-                      tab.id === 'all'
-                        ? 'polygon(0 0, calc(100% - 12px) 0, 100% 100%, 0 100%)'
-                        : 'polygon(12px 0, calc(100% - 12px) 0, 100% 100%, 0 100%)'
-                    ),
-                    borderRadius: isMobile ? '6px 6px 0 0' : '0',
-                    padding: isMobile ? '6px 12px' : '7px 16px',
-                    fontFamily: 'var(--font-helvetica-neue)',
-                    fontSize: isMobile ? '11px' : '13px',
-                    fontWeight: 500,
-                    color: '#FFFFFF',
-                    marginBottom: '-1px',
-                    cursor: 'pointer',
-                    userSelect: 'none',
-                    whiteSpace: 'nowrap',
-                    lineHeight: 1,
-                  }}
-                >
-                  {tab.label}
-                </button>
-              ) : (
-                /* ── Inactive tab ────────────────────────────────────── */
-                <button
-                  key={tab.id}
-                  onClick={() => handleTabClick(tab.id)}
-                  style={{
-                    background: 'transparent',
-                    border: 'none',
-                    padding: isMobile ? '6px 12px' : '7px 16px',
-                    color: '#6B6560',
-                    fontFamily: 'var(--font-helvetica-neue)',
-                    fontSize: isMobile ? '11px' : '13px',
-                    fontWeight: 400,
-                    cursor: 'pointer',
-                    userSelect: 'none',
-                    whiteSpace: 'nowrap',
-                    lineHeight: 1,
-                    transition: 'color 150ms ease',
-                  }}
+                  href={href}
+                  style={isActive ? activeStyle : inactiveStyle}
                   onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.color = '#1A1A1A';
+                    if (!isActive) (e.currentTarget as HTMLElement).style.color = '#1A1A1A';
                   }}
                   onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.color = '#6B6560';
+                    if (!isActive) (e.currentTarget as HTMLElement).style.color = '#6B6560';
                   }}
                 >
                   {tab.label}
-                </button>
+                </Link>
               );
             })}
           </div>
-
-          {/* Right: Curious Mode toggle ───────────────────────────────── */}
-          {mounted && !isMobile && onToggleCuriousMode && (
-            <button
-              onClick={onToggleCuriousMode}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                borderRadius: '8px',
-                border: '0.5px solid #000000',
-                background: 'transparent',
-                color: '#000000',
-                padding: '5px 18px',
-                fontFamily: 'var(--font-fragment-mono)',
-                fontSize: '11px',
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                minWidth: '140px',
-                justifyContent: 'center',
-                marginLeft: 'auto',
-                marginBottom: '7px',
-                transition: 'background 0.2s, color 0.2s',
-              }}
-              onMouseEnter={e => {
-                const btn = e.currentTarget
-                btn.style.background = '#000000'
-                btn.style.color = '#FFFFFF'
-              }}
-              onMouseLeave={e => {
-                const btn = e.currentTarget
-                btn.style.background = 'transparent'
-                btn.style.color = '#000000'
-              }}
-            >
-              {isCuriousMode ? 'File View' : 'Curious Mode'}
-            </button>
-          )}
         </div>
       )}
     </div>
+  );
+}
+
+export default function FileTabNav(props: FileTabNavProps) {
+  return (
+    <Suspense fallback={null}>
+      <FileTabNavContent {...props} />
+    </Suspense>
   );
 }

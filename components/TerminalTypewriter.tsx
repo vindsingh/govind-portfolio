@@ -145,7 +145,7 @@ export default function TerminalTypewriter({
               style={{ cursor: 'pointer' }}
               onClick={e => {
                 e.stopPropagation();
-                window.open('https://linkedin.com/in/govindsinghahluwalia', '_blank', 'noopener,noreferrer');
+                window.open('https://linkedin.com/in/govind-ahluwalia', '_blank', 'noopener,noreferrer');
               }}
             >
               <LinkedinIcon size={14} />

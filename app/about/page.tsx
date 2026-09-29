@@ -2,21 +2,32 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { Mail } from 'lucide-react';
 import { DesktopSurface, FileContainer } from '@/components/FileContainer';
 import SiteHeader from '@/components/SiteHeader';
 import FileTabNav from '@/components/FileTabNav';
-import TerminalTypewriter from '@/components/TerminalTypewriter';
+import AboutGallery, { PaintingItem } from '@/components/AboutGallery';
 
-const ABOUT_LINES = [
-  '> Glad you want to know more.',
-  '> The work is one side of it.',
-  '> This is the other.',
-];
+const PAINTINGS: readonly PaintingItem[] = [
+  { slug: 'install-01-hospitality', alt: 'Painted mural in a café interior' },
+  { slug: 'install-03-residential', alt: 'Canvases installed on a wall' },
+  { slug: 'cityscape',              alt: 'Pen drawing of a city skyline' },
+  { slug: 'install-02-lounge',      alt: 'Three abstract canvases in a lounge' },
+  { slug: 'goldfish',               alt: 'Watercolour and ink goldfish' },
+  { slug: 'portrait-fragments',     alt: 'Portrait in fragmented hatching' },
+  { slug: 'portrait-teal',          alt: 'Portrait in a teal circle' },
+  { slug: 'hand-study',             alt: 'Pen study of a hand' },
+  { slug: 'building',               alt: 'Architectural pen drawing' },
+  { slug: 'eagle',                  alt: 'Pen drawing of an eagle' },
+  { slug: 'elephant',               alt: 'Painted ornamental elephant' },
+  { slug: 'sketchbook-page',        alt: 'Mixed media sketchbook page' },
+  { slug: 'stipple-triangle',       alt: 'Stippled ink portrait' },
+  { slug: 'stipple-portrait',       alt: 'Stippled portrait of an older man' },
+] as const;
 
 export default function AboutPage() {
   const router = useRouter();
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [triggerElement, setTriggerElement] = useState<HTMLElement | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -27,11 +38,18 @@ export default function AboutPage() {
   }, []);
 
   const handleTabChange = (tab: string) => {
-    if (tab === 'work' || tab === 'all') {
+    if (tab === 'work') {
+      router.push('/?tab=work');
+    } else if (tab === 'all') {
       router.push('/');
     } else if (tab === 'experience') {
       router.push('/experience');
     }
+  };
+
+  const openGallery = (e: React.MouseEvent<HTMLElement>) => {
+    setTriggerElement(e.currentTarget);
+    setGalleryOpen(true);
   };
 
   return (
@@ -39,8 +57,8 @@ export default function AboutPage() {
       <style dangerouslySetInnerHTML={{ __html: `
         .desktop-surface-custom {
           min-height: 100vh !important;
-          background: #F9F7F5 !important;
-          font-family: var(--font-helvetica-neue), sans-serif !important;
+          background: var(--color-bg) !important;
+          font-family: var(--font-body), sans-serif !important;
         }
 
         .folder-wrapper {
@@ -50,64 +68,169 @@ export default function AboutPage() {
 
         .file-container-custom {
           overflow: visible !important;
-          background: #FFFFFF !important;
-          border: 1px solid #E8E4DF !important;
-          border-radius: 0 20px 20px 20px !important;
+          background: var(--color-surface) !important;
+          border: 1px solid var(--color-border) !important;
+          border-radius: 0 var(--radius-card) var(--radius-card) var(--radius-card) !important;
           box-shadow: var(--shadow-file) !important;
           padding: 32px;
         }
 
-        .about-content-wrapper {
-          display: flex;
-          flex-direction: row;
-          gap: 48px;
-          align-items: flex-start;
-          width: 100%;
+        .about-header-line {
+          font-family: var(--font-display);
+          font-size: var(--text-xl);
+          font-weight: 400;
+          color: var(--color-text-primary);
+          max-width: none;
+          margin: 0 auto 48px;
+          line-height: 1.25;
+          letter-spacing: -0.02em;
+          text-align: center;
         }
 
-        .about-right-col {
-          width: 380px;
-          flex-shrink: 0;
-        }
-
-        .social-icon-btn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 36px;
-          height: 36px;
-          border: 1px solid #E8E4DF;
-          border-radius: 50%;
-          color: #6B6560;
-          transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
-          text-decoration: none;
-          background: transparent;
-        }
-
-        .social-icon-btn:hover {
-          border-color: #1A1A1A;
-          color: #1A1A1A;
-        }
-
-        .artwork-grid-desktop {
+        .about-intro-grid {
           display: grid;
-          grid-template-columns: 140px 1fr 1fr 140px;
-          grid-template-rows: 1fr 1fr;
-          gap: 6px;
-          width: 100%;
-          min-height: 420px;
+          grid-template-columns: 1fr 420px;
+          gap: 64px;
+          align-items: center;
+        }
+
+        .about-intro-copy {
+          max-width: 560px;
+        }
+
+        .about-intro-p {
+          font-family: var(--font-body);
+          font-size: var(--text-base);
+          line-height: 1.65;
+          color: var(--color-text-secondary);
+          margin: 0 0 16px 0;
+        }
+
+        .about-intro-link {
+          color: inherit;
+          font-size: inherit;
+          text-decoration: underline;
+          text-underline-offset: 3px;
+          text-decoration-color: var(--color-border);
+          transition: color var(--transition-base), text-decoration-color var(--transition-base);
+        }
+
+        .about-intro-link:hover {
+          color: var(--color-text-primary);
+          text-decoration-color: currentColor;
+        }
+
+        .about-cards-row {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 24px;
+          margin-top: 64px;
+        }
+
+        .about-card-shell {
+          padding: 40px;
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-card);
+          background: transparent;
+          box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          box-shadow: var(--shadow-card);
+          transition: transform var(--transition-base), box-shadow var(--transition-base);
+        }
+
+        .about-card-shell:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 16px 40px rgba(0, 0, 0, 0.10);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .about-card-shell:hover {
+            transform: none;
+          }
+        }
+
+        .about-card-title {
+          font-family: var(--font-display);
+          font-size: var(--text-md);
+          font-weight: 400;
+          color: var(--color-text-primary);
+          margin: 0 0 12px 0;
+          letter-spacing: -0.01em;
+        }
+
+        .about-card-body {
+          font-family: var(--font-body);
+          font-size: var(--text-base);
+          line-height: 1.65;
+          color: var(--color-text-secondary);
+          margin: 0;
+        }
+
+        .paintings-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+          margin-top: 28px;
+        }
+
+        .painting-tile-btn {
+          aspect-ratio: 1 / 1;
+          border: none;
+          background: transparent;
+          padding: 0;
+          cursor: pointer;
+          border-radius: var(--radius-sm);
           overflow: hidden;
+          position: relative;
+          display: block;
+          width: 100%;
+          outline-offset: 2px;
+          transition: transform var(--transition-base);
+        }
+
+        .painting-tile-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: var(--radius-sm);
+          display: block;
+          transition: transform var(--transition-base);
+        }
+
+        .painting-tile-btn:hover .painting-tile-img {
+          transform: scale(1.04);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .painting-tile-btn:hover .painting-tile-img {
+            transform: none;
+          }
+        }
+
+        @media (max-width: 1023px) {
+          .about-intro-grid {
+            grid-template-columns: 1fr !important;
+            gap: 32px !important;
+          }
+          .about-photo-col {
+            order: -1;
+            width: 100% !important;
+            max-width: 420px !important;
+          }
+          .about-cards-row {
+            grid-template-columns: 1fr !important;
+            gap: 24px !important;
+            margin-top: 48px !important;
+          }
+          .about-card-shell {
+            padding: 24px !important;
+          }
         }
 
         @media (max-width: 767px) {
           .file-container-custom {
             padding: 16px !important;
-          }
-          .about-content-wrapper {
-            flex-direction: column;
-          }
-          .about-right-col {
-            width: 100% !important;
           }
         }
       ` }} />
@@ -122,282 +245,186 @@ export default function AboutPage() {
           />
 
           <FileContainer className="file-container-custom">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '48px', width: '100%' }}>
-              
-              {/* TERMINAL REPLICA */}
-              <div
-                style={{
-                  width: '100%',
-                  background: '#000000',
-                  borderRadius: '12px',
-                  border: '1px solid #222222',
-                  padding: '40px 24px 24px',
-                  position: 'relative',
-                  color: '#FFFFFF',
-                  boxShadow: '0 4px 24px rgba(0,0,0,0.15)',
-                }}
-              >
-                {/* macOS window dots */}
-                <div style={{
-                  position: 'absolute',
-                  top: '14px',
-                  left: '16px',
-                  display: 'flex',
-                  gap: '6px',
-                }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#FF5F56' }} />
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#FFBD2E' }} />
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#27C93F' }} />
-                </div>
+            {/* Header line - left aligned, 40px margin-bottom */}
+            <h1 className="about-header-line">
+              I like knowing how things actually work.
+            </h1>
 
-                <TerminalTypewriter textFontSize="16px" lines={ABOUT_LINES}>
-                  {/* Icon buttons below typewriter lines */}
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
-                    <a
-                      href="mailto:ahluwaliagovindsingh@gmail.com"
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: '50%',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        color: '#FFFFFF',
-                        transition: 'background 200ms ease',
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                      onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
-                    >
-                      <Mail size={16} strokeWidth={1.5} style={{ color: '#FFFFFF' }} />
-                    </a>
-                    <a
-                      href="https://linkedin.com/in/govind-singh-ahluwalia"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: '50%',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        color: '#FFFFFF',
-                        transition: 'background 200ms ease',
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                      onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#FFFFFF' }}>
-                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z"/>
-                      </svg>
-                    </a>
-                  </div>
-                </TerminalTypewriter>
+            {/* Intro row */}
+            <div className="about-intro-grid">
+              {/* Intro copy */}
+              <div className="about-intro-copy">
+                <p className="about-intro-p">
+                  So far that has meant a freight railway, an exhibition six thousand people walked through, and the gap between what founders say and what investors hear.
+                </p>
+                <p className="about-intro-p">
+                  Design is how I go about it. Most of what I do starts as a question and ends as something built, with a lot of talking and drawing in between.
+                </p>
+                <p className="about-intro-p">
+                  Outside that, I cook, bike, and paint. Usually in Toronto.
+                </p>
+                <p className="about-intro-p" style={{ margin: 0 }}>
+                  Curious about how people, systems, and ideas fit together. If you are too,{' '}
+                  <a
+                    href="mailto:ahluwaliagovindsingh@gmail.com"
+                    className="about-intro-link"
+                  >
+                    message me
+                  </a>{' '}
+                  or find me on{' '}
+                  <a
+                    href="https://linkedin.com/in/govind-ahluwalia"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="about-intro-link"
+                  >
+                    LinkedIn
+                  </a>
+                  .
+                </p>
               </div>
-              
-              {/* SECTION 1 — BIO TEXT */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
-                style={{ width: '100%' }}
-              >
-                <p
+
+              {/* FOR/M photo column */}
+              <div className="about-photo-col">
+                <img
+                  src="/about/IMG_9896.JPG"
+                  alt="Govind speaking at FOR/M exhibition"
                   style={{
-                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                    fontSize: 'clamp(13px, 1.4vw, 15px)',
-                    color: '#1A1A1A',
-                    lineHeight: '1.7',
-                    marginBottom: '20px',
+                    width: '100%',
+                    maxWidth: '420px',
+                    aspectRatio: '4 / 3',
+                    objectFit: 'cover',
+                    objectPosition: 'center 30%',
+                    borderRadius: 'var(--radius-card)',
+                    display: 'block',
+                    border: '1px solid var(--color-border)',
                   }}
-                >
-                  I'm Govind. I work at the intersection of design, strategy, and research — drawn to problems that are too tangled to have obvious answers. A freight railway learning to think in human terms. Investors and founders trying to actually understand each other. Fifty graduates turning into an exhibition six thousand people walk through.
+                />
+              </div>
+            </div>
+
+            {/* Cards row */}
+            <div className="about-cards-row">
+              {/* Card 1 - Observer by nature (Paintings first per §3.2) */}
+              <div className="about-card-shell" id="about-card-2">
+                <h2 className="about-card-title">Observer by nature</h2>
+                <p className="about-card-body">
+                  Some of it has been commissioned for homes and offices. The rest are my versions of paintings I liked.
                 </p>
 
-                <p
-                  style={{
-                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                    fontSize: 'clamp(13px, 1.4vw, 15px)',
-                    color: '#1A1A1A',
-                    lineHeight: '1.7',
-                    marginBottom: '20px',
-                  }}
-                >
-                  My process starts with the question, not the tool. Most of what I do begins with research, ends with something built, and passes through a lot of diagrams, conversations, and paper in between. I'm most useful at the beginning of things — when the problem is still being defined and the right approach isn't obvious yet.
-                </p>
-
-                <p
-                  style={{
-                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                    fontSize: 'clamp(13px, 1.4vw, 15px)',
-                    color: '#1A1A1A',
-                    lineHeight: '1.7',
-                    marginBottom: 0,
-                  }}
-                >
-                  Based in Toronto. Curious about design strategy, strategic foresight, and the early edge of ventures.
-                </p>
-              </motion.div>
-
-              {/* SECTION 2 — HOW I START */}
-              <div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-fragment-mono), monospace',
-                    fontSize: '12px',
-                    fontWeight: 'normal',
-                    color: '#A09890',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.06em',
-                    marginBottom: '16px',
-                  }}
-                >
-                  how I start
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: isMobile ? 'column' : 'row',
-                    gap: '32px',
-                    alignItems: 'stretch',
-                  }}
-                >
-                  {/* Left Column (50% width) */}
-                  <div style={{ flex: '50 0 0%' }}>
-                    <p
-                      style={{
-                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                        fontSize: 'clamp(13px, 1.4vw, 15px)',
-                        color: '#1A1A1A',
-                        lineHeight: '1.7',
-                        margin: 0,
-                      }}
-                    >
-                      I reach for pen and paper before I open anything. Not because I distrust the tools — I use most of them — but because the thinking has to happen first. Software changes every year. The way I map a problem, trace a causal chain, or sketch a system doesn't. What looks like a product on screen usually started as a diagram, a question, or a half-finished map on paper.
-                    </p>
-                  </div>
-
-                  {/* Right Column (50% width) */}
-                  <div style={{ flex: '50 0 0%', height: isMobile ? '320px' : '480px', position: 'relative' }}>
-                    <motion.div
-                      initial={{ opacity: 0, y: 16 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5 }}
-                      style={{ width: '100%', height: '100%', position: isMobile ? 'relative' : 'absolute', inset: 0 }}
+                <div className="paintings-grid">
+                  {PAINTINGS.slice(0, 5).map((painting) => (
+                    <button
+                      key={painting.slug}
+                      className="painting-tile-btn"
+                      onClick={(e) => openGallery(e)}
+                      aria-label={`View painting: ${painting.alt}`}
                     >
                       <img
-                        src="/about/Penpaperphoto.png"
-                        alt=""
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          objectPosition: 'top',
-                          borderRadius: '8px',
-                        }}
+                        src={`/about/paintings/${painting.slug}-thumb.webp`}
+                        alt={painting.alt}
+                        className="painting-tile-img"
                       />
-                    </motion.div>
-                  </div>
+                    </button>
+                  ))}
+
+                  {/* Tile 6: Real thumbnail with frosted overlay per 2.5 */}
+                  <button
+                    className="painting-tile-btn"
+                    onClick={(e) => openGallery(e)}
+                    aria-label={`View all paintings (+${PAINTINGS.length - 5})`}
+                  >
+                    <img
+                      src={`/about/paintings/${PAINTINGS[5].slug}-thumb.webp`}
+                      alt={PAINTINGS[5].alt}
+                      className="painting-tile-img"
+                    />
+                    <div
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'rgba(255, 255, 255, 0.82)',
+                        backdropFilter: 'blur(16px) saturate(140%)',
+                        WebkitBackdropFilter: 'blur(16px) saturate(140%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        lineHeight: 1,
+                        borderRadius: 'var(--radius-sm)',
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-body)',
+                          fontSize: 'var(--text-md)',
+                          fontWeight: 500,
+                          color: 'var(--color-text-primary)',
+                          lineHeight: 1,
+                        }}
+                      >
+                        +{PAINTINGS.length - 5}
+                      </span>
+                    </div>
+                  </button>
                 </div>
               </div>
 
-              {/* SECTION 3 — OUTSIDE THE BRIEF */}
-              <div>
+              {/* Card 2 - Working it out by hand (Second per §3.2) */}
+              <div className="about-card-shell" id="about-card-1">
+                <h2 className="about-card-title">Working it out by hand</h2>
+                <div className="about-card-body">
+                  <p style={{ margin: '0 0 16px 0' }}>
+                    I&apos;ve been drawing since I was a kid, across whatever medium was around. It never became the job, but it became how I think.
+                  </p>
+                  <p style={{ margin: 0 }}>
+                    Now the same habit goes into tracing a causal chain or mapping how a service actually works. What comes out might be a screen, a roadmap, or just a clearer way of seeing what was already there.
+                  </p>
+                </div>
+
+                {/* 2.4 Side by side images */}
                 <div
                   style={{
-                    fontFamily: 'var(--font-fragment-mono), monospace',
-                    fontSize: '12px',
-                    fontWeight: 'normal',
-                    color: '#A09890',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.06em',
-                    marginBottom: '16px',
+                    display: 'grid',
+                    gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+                    gap: '12px',
+                    marginTop: '28px',
                   }}
                 >
-                  outside the brief
-                </div>
-
-                <p
-                  style={{
-                    fontFamily: 'var(--font-helvetica-neue), sans-serif',
-                    fontSize: 'clamp(13px, 1.4vw, 15px)',
-                    color: '#A09890',
-                    marginBottom: '24px',
-                    marginTop: 0,
-                  }}
-                >
-                  Observer by nature. Maker by instinct.
-                </p>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {/* Painting 1 */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0 }}
-                    style={{ width: '100%', height: '480px', position: 'relative' }}
-                  >
-                    <img
-                      src="/about/Painting_1.png"
-                      alt=""
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        borderRadius: '8px',
-                      }}
-                    />
-                  </motion.div>
-
-                  {/* Painting 2 */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.15 }}
-                    style={{ width: '100%', height: '320px', position: 'relative' }}
-                  >
-                    <img
-                      src="/about/Painting_2.jpg"
-                      alt=""
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        borderRadius: '8px',
-                      }}
-                    />
-                  </motion.div>
-
-                  {/* Painting 3 */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                    style={{ width: '100%', height: '400px', position: 'relative' }}
-                  >
-                    <img
-                      src="/about/Painting_3.jpg"
-                      alt=""
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        borderRadius: '8px',
-                      }}
-                    />
-                  </motion.div>
+                  <img
+                    src="/about/Penpaperphoto.png"
+                    alt="Working it out by hand sketch on desk"
+                    style={{
+                      width: '100%',
+                      aspectRatio: '1 / 1',
+                      objectFit: 'cover',
+                      borderRadius: 'var(--radius-sm)',
+                      display: 'block',
+                    }}
+                  />
+                  <img
+                    src="/about/penpaperphoto.jpeg"
+                    alt="Second sketchbook study"
+                    style={{
+                      width: '100%',
+                      aspectRatio: '1 / 1',
+                      objectFit: 'cover',
+                      borderRadius: 'var(--radius-sm)',
+                      display: 'block',
+                    }}
+                  />
                 </div>
               </div>
-
             </div>
           </FileContainer>
         </div>
+
+        {/* Modal gallery */}
+        <AboutGallery
+          isOpen={galleryOpen}
+          onClose={() => setGalleryOpen(false)}
+          paintings={PAINTINGS}
+          triggerElement={triggerElement}
+        />
       </DesktopSurface>
     </>
   );

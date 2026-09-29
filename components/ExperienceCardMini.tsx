@@ -237,7 +237,7 @@ export default function ExperienceCardMini() {
         </div>
       </div>
 
-      {/* Permanent glaze — always visible */}
+      {/* Permanent glaze: always visible */}
       <div style={{
         position: 'absolute',
         inset: 0,

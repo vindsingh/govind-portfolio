@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { DesktopSurface, FileContainer } from '@/components/FileContainer';
 import SiteHeader from '@/components/SiteHeader';
 import IndexBox from '@/components/IndexBox';
@@ -465,18 +466,18 @@ export default function FormCaseStudy() {
         <div className="folder-wrapper">
           {/* Tab row (inline) */}
           <div className="tab-row-container">
-            <button className="active-tab" onClick={() => router.push('/')}>
+            <Link href="/" className="active-tab">
               ← Go back
-            </button>
-            <button className="inactive-tab" onClick={() => router.push('/')}>
+            </Link>
+            <Link href="/?tab=work" className="inactive-tab">
               Work
-            </button>
-            <button className="inactive-tab" onClick={() => router.push('/')}>
+            </Link>
+            <Link href="/about" className="inactive-tab">
               About
-            </button>
-            <button className="inactive-tab" onClick={() => router.push('/')}>
+            </Link>
+            <Link href="/experience" className="inactive-tab">
               Experience
-            </button>
+            </Link>
           </div>
 
           {/* FileContainer */}
@@ -505,7 +506,7 @@ export default function FormCaseStudy() {
                     letterSpacing: '0.04em',
                     margin: 0,
                   }}>
-                    — The shape of a thing is inseparable from the reason it was made.
+                    The shape of a thing is inseparable from the reason it was made.
                   </p>
                 </div>
 
@@ -659,13 +660,13 @@ export default function FormCaseStudy() {
                         }}
                       >
                         {/* Left column */}
-                        <div style={{ width: '240px', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
+                        <div style={{ width: isMobile ? '100%' : '240px', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
                           <Image
                             src={zone.svg}
                             alt={zone.label}
                             width={561}
                             height={115}
-                            style={{ width: '427px', maxWidth: 'none', height: 'auto', display: 'block', flexShrink: 0 }}
+                            style={{ width: isMobile ? '100%' : '427px', maxWidth: isMobile ? '100%' : 'none', height: 'auto', display: 'block', flexShrink: 0 }}
                           />
                         </div>
 
@@ -746,7 +747,7 @@ export default function FormCaseStudy() {
                     marginTop: '32px',
                     marginBottom: '8px',
                   }}>
-                    FLOOR PLAN — 115 MCCAUL ST, TORONTO
+                    FLOOR PLAN · 115 MCCAUL ST, TORONTO
                   </div>
                   <FlipCard
                     frontSrc="/projects/form/floorplan-rough.jpg"

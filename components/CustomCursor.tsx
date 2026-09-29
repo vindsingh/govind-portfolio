@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react';
 
 export default function CustomCursor() {
   const [state, setState] = useState({
@@ -8,39 +8,61 @@ export default function CustomCursor() {
     y: 0,
     label: '',
     visible: false,
-  })
-  const raf = useRef<number | null>(null)
+  });
+  const raf = useRef<number | null>(null);
 
   useEffect(() => {
     const move = (e: MouseEvent) => {
-      // Walk up the DOM tree to find data-cursor attribute
-      let el = e.target as Element | null
-      let label = ''
+      let el = e.target as HTMLElement | null;
+      let label = '';
+      let cardEl: HTMLElement | null = null;
+
       while (el && el !== document.body) {
-        const attr = el.getAttribute('data-cursor')
+        const attr = el.getAttribute('data-cursor');
         if (attr) {
-          label = attr
-          break
+          label = attr;
+          cardEl = el;
+          break;
         }
-        el = el.parentElement
+        el = el.parentElement;
       }
 
-      if (raf.current) cancelAnimationFrame(raf.current)
+      if (raf.current) cancelAnimationFrame(raf.current);
       raf.current = requestAnimationFrame(() => {
-        setState({ x: e.clientX, y: e.clientY, label, visible: !!label })
-      })
-    }
+        if (!label || !cardEl) {
+          setState((s) => ({ ...s, visible: false }));
+          return;
+        }
 
-    const leave = () => setState(s => ({ ...s, visible: false }))
+        const rect = cardEl.getBoundingClientRect();
+        const pillW = 120;
+        const pillH = 28;
 
-    window.addEventListener('mousemove', move)
-    window.addEventListener('mouseleave', leave)
+        const targetX = e.clientX + 12;
+        const targetY = e.clientY + 12;
+
+        const clampedX = Math.max(rect.left + 10, Math.min(targetX, rect.right - pillW - 10));
+        const clampedY = Math.max(rect.top + 10, Math.min(targetY, rect.bottom - pillH - 10));
+
+        setState({
+          x: clampedX,
+          y: clampedY,
+          label,
+          visible: true,
+        });
+      });
+    };
+
+    const leave = () => setState((s) => ({ ...s, visible: false }));
+
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseleave', leave);
     return () => {
-      window.removeEventListener('mousemove', move)
-      window.removeEventListener('mouseleave', leave)
-      if (raf.current) cancelAnimationFrame(raf.current)
-    }
-  }, [])
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseleave', leave);
+      if (raf.current) cancelAnimationFrame(raf.current);
+    };
+  }, []);
 
   if (!state.visible || !state.label) return null;
 
@@ -48,57 +70,29 @@ export default function CustomCursor() {
     <div
       style={{
         position: 'fixed',
-        left: state.x + 14,
-        top: state.y + 14,
+        left: state.x,
+        top: state.y,
         zIndex: 99999,
         pointerEvents: 'none',
         background: '#000000',
-        borderRadius: '3px',
-        overflow: 'hidden',
+        color: '#FFFFFF',
+        borderRadius: '4px',
+        padding: '6px 12px',
         whiteSpace: 'nowrap',
         userSelect: 'none',
-        // Fixed width so marquee has a container to scroll within
-        width: '140px',
-        padding: '6px 0',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'var(--font-fragment-mono)',
+        fontSize: '10px',
+        fontWeight: 500,
+        letterSpacing: '0.08em',
+        textTransform: 'uppercase',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.18)',
       }}
     >
-      <style>{`
-        @keyframes cursor-marquee {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
-      <div
-        key={state.label}
-        style={{
-          display: 'inline-flex',
-          animation: 'cursor-marquee 3s linear infinite',
-          // Double the text so it loops seamlessly
-        }}
-      >
-        <span style={{
-          fontFamily: 'var(--font-fragment-mono)',
-          fontSize: '10px',
-          fontWeight: 500,
-          letterSpacing: '0.08em',
-          textTransform: 'uppercase',
-          color: '#FFFFFF',
-          paddingRight: '32px', // gap between repetitions
-        }}>
-          {state.label}
-        </span>
-        <span style={{
-          fontFamily: 'var(--font-fragment-mono)',
-          fontSize: '10px',
-          fontWeight: 500,
-          letterSpacing: '0.08em',
-          textTransform: 'uppercase',
-          color: '#FFFFFF',
-          paddingRight: '32px',
-        }}>
-          {state.label}
-        </span>
-      </div>
+      {state.label}
     </div>
   );
 }
+
