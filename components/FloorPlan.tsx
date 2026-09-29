@@ -185,8 +185,7 @@ export default function FloorPlan() {
               backgroundColor: 'var(--color-surface)',
               border: '1px solid var(--color-border)',
               color: 'var(--color-text-primary)',
-              fontSize: 'var(--text-xs)',
-              fontFamily: 'var(--font-fragment-mono), monospace',
+              fontFamily: 'var(--font-body), sans-serif',
               boxShadow: 'var(--shadow-file)',
               borderRadius: 'var(--radius-sm)',
               padding: '6px 10px',
@@ -238,10 +237,10 @@ export default function FloorPlan() {
           />
           <span
             style={{
-              fontFamily: 'var(--font-fragment-mono), monospace',
+              fontFamily: 'var(--font-body), sans-serif',
               fontSize: 'var(--text-xs)',
               textTransform: 'uppercase',
-              color: '#000000',
+              color: 'var(--color-text-primary)',
               letterSpacing: '0.03em',
             }}
           >
@@ -261,10 +260,10 @@ export default function FloorPlan() {
           />
           <span
             style={{
-              fontFamily: 'var(--font-fragment-mono), monospace',
+              fontFamily: 'var(--font-body), sans-serif',
               fontSize: 'var(--text-xs)',
               textTransform: 'uppercase',
-              color: '#000000',
+              color: 'var(--color-text-primary)',
               letterSpacing: '0.03em',
             }}
           >
@@ -284,10 +283,10 @@ export default function FloorPlan() {
           />
           <span
             style={{
-              fontFamily: 'var(--font-fragment-mono), monospace',
+              fontFamily: 'var(--font-body), sans-serif',
               fontSize: 'var(--text-xs)',
               textTransform: 'uppercase',
-              color: '#000000',
+              color: 'var(--color-text-primary)',
               letterSpacing: '0.03em',
             }}
           >

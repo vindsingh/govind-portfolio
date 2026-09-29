@@ -156,16 +156,16 @@ const BRANCHES: Branch[] = [
         type: 'text',
         width: 210, height: 90,
         categories: ['everything', 'work'],
-        text: 'Innovation Catalyst inside North America\'s only transborder freight railway. First design thinking framework adopted at CIO level.',
+        text: 'Researcher on the Innovation Program at CPKC, the only single-line railway connecting Canada, the United States and Mexico.',
       },
       {
         id: 'cpkc-cop',
-        label: 'Community of Practice',
+        label: 'Group members',
         sublabel: '105+ members',
         type: 'text',
         width: 210, height: 90,
         categories: ['everything', 'work', 'process'],
-        text: 'Started at zero. Grew to 105+ members across departments. The goal was to make design thinking self-sustaining — not dependent on a single person.',
+        text: 'Started at zero. Grew to 105+ members across departments. The goal was to make design thinking self-sustaining, not dependent on a single person.',
       },
       {
         id: 'cpkc-artifact',
@@ -211,7 +211,7 @@ const BRANCHES: Branch[] = [
         type: 'image',
         width: 220, height: 100,
         categories: ['everything', 'personal'],
-        src: '/about/Painting_3.jpg',
+        src: '/about/paintings/sketchbook-page-thumb.webp',
       },
       {
         id: 'portraits',
@@ -220,7 +220,7 @@ const BRANCHES: Branch[] = [
         type: 'image',
         width: 240, height: 80,
         categories: ['everything', 'personal'],
-        src: '/about/Painting_2.jpg',
+        src: '/about/paintings/portrait-fragments-thumb.webp',
       },
     ],
   },
@@ -650,7 +650,7 @@ export default function CuriousCanvas({ category }: Props) {
               color: '#000000',
               margin: '0 0 28px',
             }}>
-              Not sure what it should be yet. That's kind of the point — some things are worth making before you know exactly why. Click the branches and see what connects.
+              Not sure what it should be yet. That's kind of the point: some things are worth making before you know exactly why. Click the branches and see what connects.
             </p>
             <button
               onClick={() => setShowWelcome(false)}

@@ -1,70 +1,70 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
 
 const ANCHORS = [
-  { label: 'MY ROLE', id: 'my-role' },
-  { label: 'THE PROBLEM', id: 'the-problem' },
-  { label: 'KEY DECISION', id: 'key-decision' },
-  { label: 'EXECUTION', id: 'execution' },
-  { label: 'IMPACT', id: 'impact' },
-  { label: 'REFLECTION', id: 'reflection' },
+  { label: 'My role', id: 'my-role' },
+  { label: 'The problem', id: 'the-problem' },
+  { label: 'Key decision', id: 'key-decision' },
+  { label: 'Execution', id: 'execution' },
+  { label: 'Impact', id: 'impact' },
+  { label: 'Reflection', id: 'reflection' },
 ];
 
 const METADATA = [
-  { label: 'Role', value: 'Exhibition Director' },
-  { label: 'Category', value: 'Exhibition Design & Strategy' },
-  { label: 'Industry', value: 'Design Education' },
-  { label: 'Year', value: '2026' },
-  { label: 'Team', value: '6 people' },
+  { label: 'ROLE', value: 'Exhibition Director' },
+  { label: 'CATEGORY', value: 'Exhibition Design & Strategy' },
+  { label: 'INDUSTRY', value: 'Design Education' },
+  { label: 'YEAR', value: '2026' },
+  { label: 'TEAM', value: '6 people' },
 ];
 
 export default function IndexBox() {
-  const timeoutsRef = useRef<{ [key: string]: ReturnType<typeof setTimeout>[] }>({});
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
-    const handleScroll = () => setIsCollapsed(window.scrollY > 220);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const elements = ANCHORS.map(a => document.getElementById(a.id)).filter(Boolean) as HTMLElement[];
+    if (elements.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveId(entry.target.id);
+          }
+        }
+      },
+      {
+        rootMargin: '-30% 0px -55% 0px',
+        threshold: 0,
+      }
+    );
+
+    elements.forEach(el => observer.observe(el));
+    return () => observer.disconnect();
   }, []);
 
   const handleAnchorClick = (id: string) => {
+    setActiveId(id);
     const target = document.getElementById(id);
     if (target) {
       target.scrollIntoView({ behavior: 'smooth' });
-
-      // Clear any existing timeouts for this target to avoid overlaps
-      if (timeoutsRef.current[id]) {
-        timeoutsRef.current[id].forEach(clearTimeout);
-      }
-
-      const t1 = setTimeout(() => {
-        target.classList.add('section-highlight');
-      }, 600);
-
-      const t2 = setTimeout(() => {
-        target.classList.remove('section-highlight');
-      }, 1500);
-
-      timeoutsRef.current[id] = [t1, t2];
     }
   };
 
   return (
     <>
-      {/* Component Styles */}
       <style dangerouslySetInnerHTML={{ __html: `
         .index-box-container {
-          width: 220px;
+          width: 250px;
           position: sticky;
           top: 32px;
           align-self: flex-start;
-          border: 1px solid #E8E4DF;
-          border-radius: 12px;
-          padding: 20px;
-          background: #FFFFFF;
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-card);
+          padding: 16px;
+          background: var(--color-surface);
           box-sizing: border-box;
           z-index: 10;
         }
@@ -72,65 +72,49 @@ export default function IndexBox() {
         .index-box-anchors {
           display: flex;
           flex-direction: column;
+          align-items: flex-start;
           gap: 2px;
         }
 
         .index-box-anchor {
-          font-family: var(--font-fragment-mono), monospace;
-          font-size: 11px;
-          font-weight: 500;
-          text-transform: uppercase;
-          color: #1A1A1A;
-          letter-spacing: 0.06em;
-          padding: 2px 0 2px 10px;
-          border-left: 2px solid transparent;
-          cursor: pointer;
-          transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1), border-left-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
-          text-align: left;
-          width: 100%;
+          font-family: var(--font-body), sans-serif;
+          display: inline-flex;
+          align-items: baseline;
+          gap: 8px;
           background: transparent;
-          border-top: none;
-          border-right: none;
-          border-bottom: none;
+          border: none;
+          border-bottom: 1.5px solid transparent;
+          padding: 2px 0 3px 0;
+          cursor: pointer;
+          white-space: nowrap;
+          color: var(--color-text-muted);
+          transition: color var(--transition-base), border-bottom-color var(--transition-base);
+          text-align: left;
+          line-height: 1.4;
         }
 
         .index-box-anchor:hover {
-          color: #1A1A1A;
-          border-left-color: #C8B89A;
+          color: var(--color-text-secondary);
         }
 
-        .index-box-divider {
-          margin: 16px 0;
-          border: none;
-          border-top: 1px solid #E8E4DF;
+        .index-box-anchor.active {
+          color: var(--color-text-primary);
+          border-bottom: 1.5px solid var(--color-text-primary);
+          padding-bottom: 3px;
         }
 
-        .index-box-meta-block {
+        .anchor-label {
+          font-family: var(--font-body), sans-serif;
+          font-size: var(--text-sm);
+          font-weight: 500;
+          color: inherit;
+        }
+
+        .sidebar-metadata {
           display: flex;
           flex-direction: column;
           gap: 12px;
-        }
-
-        .index-box-meta-label {
-          font-family: var(--font-fragment-mono), monospace;
-          font-size: 10px;
-          text-transform: uppercase;
-          color: #A09890;
-          letter-spacing: 0.06em;
-          display: block;
-          margin-bottom: 2px;
-        }
-
-        .index-box-meta-value {
-          font-family: var(--font-helvetica-neue), sans-serif;
-          font-size: 12px;
-          font-weight: 500;
-          color: #1A1A1A;
-        }
-
-        .section-highlight {
-          background-color: #F0EBE4 !important;
-          transition: background-color 1200ms ease !important;
+          padding-left: 0;
         }
 
         @media (max-width: 767px) {
@@ -149,54 +133,62 @@ export default function IndexBox() {
             <button
               key={anchor.id}
               onClick={() => handleAnchorClick(anchor.id)}
-              className="index-box-anchor"
+              className={`index-box-anchor ${activeId === anchor.id ? 'active' : ''}`}
             >
-              {anchor.label}
+              <span className="anchor-label">{anchor.label}</span>
             </button>
           ))}
         </div>
 
-        {/* Collapsible div */}
-        <div style={{
-          overflow: 'hidden',
-          maxHeight: isCollapsed ? '0px' : '400px',
-          opacity: isCollapsed ? 0 : 1,
-          marginTop: isCollapsed ? '0px' : '16px',
-          transition: 'max-height 400ms ease, opacity 300ms ease, margin-top 300ms ease'
-        }}>
-          {/* Divider */}
-          <hr className="index-box-divider" />
-
-          {/* Metadata block */}
-          <div className="index-box-meta-block">
+        {/* Metadata block */}
+        <div style={{ marginTop: '24px' }}>
+          <div className="sidebar-metadata">
             {METADATA.map((item) => (
               <div key={item.label}>
-                <span className="index-box-meta-label">{item.label}</span>
-                <span className="index-box-meta-value">{item.value}</span>
+                <div style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--text-xs)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  color: 'var(--color-text-muted)',
+                }}>
+                  {item.label}
+                </div>
+                <div style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--text-sm)',
+                  color: 'var(--color-text-primary)',
+                  marginTop: '2px',
+                  fontWeight: 500,
+                  lineHeight: '1.4',
+                }}>
+                  {item.value}
+                </div>
               </div>
             ))}
+
+            {/* LINKS secondary block */}
+            {/* Action Buttons restored per §5.1 */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '20px' }}>
+              <InteractiveHoverButton
+                href="https://formgradex.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm"
+              >
+                Visit website
+              </InteractiveHoverButton>
+
+              <InteractiveHoverButton
+                href="https://www.instagram.com/ocadu.id"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm"
+              >
+                Instagram
+              </InteractiveHoverButton>
+            </div>
           </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '20px' }}>
-          <InteractiveHoverButton
-            href="https://formgradex.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm"
-          >
-            Visit website
-          </InteractiveHoverButton>
-
-          <InteractiveHoverButton
-            href="https://www.instagram.com/ocadu.id"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm"
-          >
-            Instagram
-          </InteractiveHoverButton>
         </div>
       </div>
     </>

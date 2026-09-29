@@ -52,7 +52,7 @@ export default function FlipCard({
   }, [isInView, ready, flipped])
 
   return (
-    // Fix 1: outer wrapper height locked once ready — kills blank space
+    // Fix 1: outer wrapper height locked once ready. Kills blank space
     <div
       ref={wrapperRef}
       style={{
@@ -140,7 +140,7 @@ export default function FlipCard({
             </div>
           </div>
 
-          {/* Fix 2: flip toggle button — right center, outside card face */}
+          {/* Fix 2: flip toggle button: right center, outside card face */}
           <button
             onClick={() => setFlipped((f) => !f)}
             title={flipped ? 'Show original plan' : 'Show interactive map'}

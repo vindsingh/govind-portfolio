@@ -18,7 +18,7 @@ const cards = [
     tag: 'Enterprise · CPKC',
     title: 'Building design inside a railroad',
     stat: '105+',
-    statLabel: 'Community of Practice members',
+    statLabel: 'Group members',
     href: '/cpkc',
     size: 'medium' as const,
     category: 'built' as const,

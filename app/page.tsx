@@ -1,19 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { DesktopSurface, FileContainer } from '@/components/FileContainer';
 import SiteHeader from '@/components/SiteHeader';
-import FileTabNav from '@/components/FileTabNav';
+import FileTabNav, { Tab } from '@/components/FileTabNav';
 import ProjectGrid from '@/components/ProjectGrid';
 import CuriousCanvas from '@/components/CuriousCanvas';
 import CustomCursor from '@/components/CustomCursor';
 
-export default function Home() {
-  const [activeTab, setActiveTab] = useState<
-    'all' | 'work' | 'about' | 'experience'
-  >('all');
-  const [isCuriousMode, setIsCuriousMode] = useState(false);
+function HomeContent() {
+  const params = useSearchParams();
+  const tab: Tab = params.get('tab') === 'work' ? 'work' : 'all';
+  const [isCuriousMode, setIsCuriousMode] = useState(
+    params.get('curious') === '1' || params.get('curious') === 'true'
+  );
   const [curiousCategory, setCuriousCategory] = useState<
     'everything' | 'process' | 'work' | 'personal'
   >('everything');
@@ -32,11 +33,13 @@ export default function Home() {
     <>
       <CustomCursor />
       <DesktopSurface>
-        <SiteHeader />
+        <SiteHeader
+          isCuriousMode={isCuriousMode}
+          onToggleCuriousMode={() => setIsCuriousMode((prev) => !prev)}
+        />
         <div style={{ position: 'relative', marginTop: '12px' }}>
           <FileTabNav
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
+            activeTab={tab}
             isCuriousMode={isCuriousMode}
             onToggleCuriousMode={() => setIsCuriousMode((prev) => !prev)}
             filter={curiousCategory}
@@ -53,12 +56,20 @@ export default function Home() {
               {isCuriousMode ? (
                 <CuriousCanvas category={curiousCategory} />
               ) : (
-                <ProjectGrid activeTab={activeTab} />
+                <ProjectGrid activeTab={tab} />
               )}
             </div>
           </FileContainer>
         </div>
       </DesktopSurface>
     </>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={null}>
+      <HomeContent />
+    </Suspense>
   );
 }

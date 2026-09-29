@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { DesktopSurface, FileContainer } from '@/components/FileContainer';
@@ -11,68 +11,56 @@ import VideoPlayer from '@/components/VideoPlayer';
 import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
 
 const ANCHORS = [
-  { label: 'The Problem', id: 'problem' },
-  { label: 'The Ecosystem', id: 'ecosystem' },
+  { label: 'The problem', id: 'problem' },
+  { label: 'The ecosystem', id: 'ecosystem' },
   { label: 'Features', id: 'features' },
-  { label: 'Now', id: 'now' },
+  { label: 'Current state', id: 'now' },
 ] as const;
 
 function FalconIndexBox() {
-  const timeoutsRef = useRef<{ [key: string]: ReturnType<typeof setTimeout>[] }>({});
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
-    const handleScroll = () => setIsCollapsed(window.scrollY > 220);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const elements = ANCHORS.map(a => document.getElementById(a.id)).filter(Boolean) as HTMLElement[];
+    if (elements.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveId(entry.target.id);
+          }
+        }
+      },
+      {
+        rootMargin: '-30% 0px -55% 0px',
+        threshold: 0,
+      }
+    );
+
+    elements.forEach(el => observer.observe(el));
+    return () => observer.disconnect();
   }, []);
 
   const handleAnchorClick = (id: string) => {
+    setActiveId(id);
     const target = document.getElementById(id);
     if (target) {
       target.scrollIntoView({ behavior: 'smooth' });
-
-      // Clear any existing timeouts for this target to avoid overlaps
-      if (timeoutsRef.current[id]) {
-        timeoutsRef.current[id].forEach(clearTimeout);
-      }
-
-      const t1 = setTimeout(() => {
-        target.classList.add('section-highlight');
-      }, 600);
-
-      const t2 = setTimeout(() => {
-        target.classList.remove('section-highlight');
-      }, 1500);
-
-      timeoutsRef.current[id] = [t1, t2];
     }
-  };
-
-  const ctaButtonStyle = {
-    display: 'block',
-    border: '1px solid var(--color-border-strong, #E8E4DF)',
-    borderRadius: '6px',
-    padding: '8px 14px',
-    fontFamily: 'var(--font-helvetica-neue), sans-serif',
-    fontSize: '12px',
-    color: '#1A1A1A',
-    textAlign: 'center' as const,
-    textDecoration: 'none',
-    transition: '200ms cubic-bezier(0.4, 0, 0.2, 1)',
   };
 
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: `
         .index-box-container {
-          width: 220px;
+          width: 250px;
           position: sticky;
           top: 32px;
           align-self: flex-start;
           border: 1px solid var(--color-border);
           border-radius: var(--radius-card);
-          padding: 20px;
+          padding: 16px;
           background: var(--color-surface);
           box-sizing: border-box;
           z-index: 10;
@@ -81,38 +69,49 @@ function FalconIndexBox() {
         .index-box-anchors {
           display: flex;
           flex-direction: column;
+          align-items: flex-start;
           gap: 2px;
         }
 
         .index-box-anchor {
-          font-family: var(--font-fragment-mono), monospace;
-          font-size: 11px;
-          font-weight: 500;
-          text-transform: uppercase;
-          color: #1A1A1A;
-          letter-spacing: 0.06em;
-          padding: 2px 0 2px 10px;
-          border-left: 2px solid transparent;
-          cursor: pointer;
-          transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1), border-left-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
-          text-align: left;
-          width: 100%;
+          font-family: var(--font-body), sans-serif;
+          display: inline-flex;
+          align-items: baseline;
+          gap: 8px;
           background: transparent;
-          border-top: none;
-          border-right: none;
-          border-bottom: none;
+          border: none;
+          border-bottom: 1.5px solid transparent;
+          padding: 2px 0 3px 0;
+          cursor: pointer;
+          white-space: nowrap;
+          color: var(--color-text-muted);
+          transition: color var(--transition-base), border-bottom-color var(--transition-base);
+          text-align: left;
+          line-height: 1.4;
         }
 
         .index-box-anchor:hover {
+          color: var(--color-text-secondary);
+        }
+
+        .index-box-anchor.active {
           color: var(--color-text-primary);
-          border-left-color: #C8910A; /* Falcon amber */
+          border-bottom: 1.5px solid var(--color-text-primary);
+          padding-bottom: 3px;
+        }
+
+        .anchor-label {
+          font-family: var(--font-body), sans-serif;
+          font-size: var(--text-sm);
+          font-weight: 500;
+          color: inherit;
         }
 
         .sidebar-metadata {
           display: flex;
           flex-direction: column;
-          gap: 20px;
-          padding-left: 10px;
+          gap: 12px;
+          padding-left: 0;
         }
 
         @media (max-width: 767px) {
@@ -125,45 +124,94 @@ function FalconIndexBox() {
       ` }} />
 
       <div className="index-box-container">
+        {/* Anchors block */}
         <div className="index-box-anchors">
           {ANCHORS.map((anchor) => (
             <button
               key={anchor.id}
               onClick={() => handleAnchorClick(anchor.id)}
-              className="index-box-anchor"
+              className={`index-box-anchor ${activeId === anchor.id ? 'active' : ''}`}
             >
-              {anchor.label}
+              <span className="anchor-label">{anchor.label}</span>
             </button>
           ))}
         </div>
 
-        <div className="sidebar-metadata" style={{ marginTop: '24px' }}>
-          <div>
-            <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#000000' }}>ROLE</div>
-            <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500 }}>Independent Researcher &amp; Designer</div>
-          </div>
-          <div>
-            <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#000000' }}>CATEGORY</div>
-            <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500 }}>Performance Intelligence · Venture Design</div>
-          </div>
-          <div>
-            <div style={{ fontFamily: 'var(--font-fragment-mono), monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#000000' }}>STATUS</div>
-            <div style={{ fontFamily: 'var(--font-helvetica-neue), sans-serif', fontSize: 'var(--text-sm)', color: '#1A1A1A', marginTop: '4px', fontWeight: 500, lineHeight: '1.4' }}>
-              Research complete · <span style={{ color: '#C8910A' }}>Product in development</span>
+        {/* Metadata block */}
+        <div style={{ marginTop: '24px' }}>
+          <div className="sidebar-metadata">
+            <div>
+              <div style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-xs)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                color: 'var(--color-text-muted)',
+              }}>
+                ROLE
+              </div>
+              <div style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-sm)',
+                color: 'var(--color-text-primary)',
+                marginTop: '2px',
+                fontWeight: 500,
+                lineHeight: '1.4',
+              }}>
+                Independent Researcher and Builder
+              </div>
+            </div>
+
+            <div>
+              <div style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-xs)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                color: 'var(--color-text-muted)',
+              }}>
+                CATEGORY
+              </div>
+              <div style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-sm)',
+                color: 'var(--color-text-primary)',
+                marginTop: '2px',
+                fontWeight: 500,
+                lineHeight: '1.4',
+              }}>
+                Performance Intelligence · Venture Design
+              </div>
+            </div>
+
+            {/* Action Buttons restored per §5.1 */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '24px' }}>
+              <InteractiveHoverButton
+                href="https://youtu.be/Ijp7a1J9mrU"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm"
+              >
+                Watch the Intro
+              </InteractiveHoverButton>
+              <InteractiveHoverButton
+                href="https://youtu.be/p-zotFmbpzw"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm"
+              >
+                Behind the Idea
+              </InteractiveHoverButton>
+              <InteractiveHoverButton
+                href="https://falcondemo.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm"
+              >
+                Try the Demo
+              </InteractiveHoverButton>
             </div>
           </div>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '24px' }}>
-          <InteractiveHoverButton href="https://youtu.be/Ijp7a1J9mrU" target="_blank" rel="noopener noreferrer" className="text-sm">
-            Watch the Intro
-          </InteractiveHoverButton>
-          <InteractiveHoverButton href="https://youtu.be/p-zotFmbpzw" target="_blank" rel="noopener noreferrer" className="text-sm">
-            Behind the Idea
-          </InteractiveHoverButton>
-          <InteractiveHoverButton href="https://falcondemo.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-sm">
-            Try the Demo
-          </InteractiveHoverButton>
         </div>
       </div>
     </>
@@ -178,13 +226,13 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
       viewport={{ once: true }}
       transition={{ duration: 0.4, ease: "easeOut" }}
       style={{
-        borderLeft: '3px solid #C8910A',
+        borderLeft: '3px solid var(--color-accent-falcon)',
         paddingLeft: '12px',
-        fontFamily: 'var(--font-fragment-mono), monospace',
+        fontFamily: 'var(--font-body), sans-serif',
         fontSize: '11px',
         textTransform: 'uppercase',
         letterSpacing: '0.1em',
-        color: '#000000',
+        color: 'var(--color-text-primary)',
         lineHeight: '1',
       }}
     >
@@ -200,17 +248,18 @@ interface SectionHeadingProps {
 function SectionHeading({ children }: SectionHeadingProps) {
   return (
     <motion.h2
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.4, delay: 0.06, ease: "easeOut" }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       style={{
-        fontFamily: 'var(--font-helvetica-neue), sans-serif',
-        fontSize: 'var(--text-lg)',
-        fontWeight: 500,
-        color: '#000000',
-        marginTop: '12px',
-        marginBottom: '28px',
+        fontFamily: 'var(--font-display)',
+        fontSize: '28px',
+        fontWeight: 700,
+        lineHeight: 1.25,
+        color: 'var(--color-text-primary)',
+        margin: '12px 0 24px',
+        maxWidth: 580,
       }}
     >
       {children}
@@ -268,8 +317,8 @@ export default function FalconCaseStudy() {
       <style dangerouslySetInnerHTML={{ __html: `
         .desktop-surface-custom {
           min-height: 100vh !important;
-          background: #F9F7F5 !important;
-          font-family: var(--font-helvetica-neue), sans-serif !important;
+          background: var(--color-bg) !important;
+          font-family: var(--font-body), sans-serif !important;
         }
 
         .folder-wrapper {
@@ -279,8 +328,8 @@ export default function FalconCaseStudy() {
 
         .file-container-custom {
           overflow: visible !important;
-          background: #FFFFFF !important;
-          border: 1px solid #E8E4DF !important;
+          background: var(--color-surface) !important;
+          border: 1px solid var(--color-border) !important;
           border-radius: var(--radius-file) !important;
           box-shadow: var(--shadow-card) !important;
         }
@@ -306,44 +355,6 @@ export default function FalconCaseStudy() {
           border-radius: var(--radius-card);
           transition: background-color 1200ms ease;
           scroll-margin-top: 64px;
-        }
-
-        .section-highlight {
-          background-color: rgba(200, 145, 10, 0.06) !important;
-          transition: background-color 1200ms ease !important;
-        }
-
-        .cta-primary {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: #C8910A;
-          color: #FFFFFF;
-          padding: 10px 20px;
-          border-radius: 6px;
-          font-family: var(--font-fragment-mono), monospace;
-          font-size: 12px;
-          text-transform: uppercase;
-          letter-spacing: 0.06em;
-          font-weight: 500;
-          transition: var(--transition-base);
-          text-decoration: none;
-        }
-        .cta-primary:hover {
-          background: #B8800A;
-        }
-
-        .cta-text-link {
-          font-family: var(--font-fragment-mono), monospace;
-          font-size: 12px;
-          color: #6B6560;
-          text-decoration: underline;
-          text-underline-offset: 3px;
-          cursor: pointer;
-          transition: color var(--transition-base);
-        }
-        .cta-text-link:hover {
-          color: #1A1A1A;
         }
 
         @media (max-width: 767px) {
@@ -381,39 +392,39 @@ export default function FalconCaseStudy() {
                 {/* Headline Block */}
                 <div style={{ marginBottom: '48px' }}>
                   <h1 style={{
-                    fontFamily: 'var(--font-helvetica), sans-serif',
+                    fontFamily: 'var(--font-display)',
                     fontSize: 'clamp(28px, 4.5vw, 52px)',
                     fontWeight: 600,
                     lineHeight: 1.1,
                     letterSpacing: '-0.02em',
-                    color: '#000000',
+                    color: 'var(--color-text-primary)',
                     marginBottom: '16px',
                   }}>
                     Founders talk. Investors filter. Something gets lost in between.
                   </h1>
                   <p style={{
-                    fontFamily: 'var(--font-fragment-mono), monospace',
+                    fontFamily: 'var(--font-body), sans-serif',
                     fontSize: '12px',
-                    color: '#000000',
+                    color: 'var(--color-text-secondary)',
                     letterSpacing: '0.04em',
                     margin: 0,
                   }}>
-                    — Language failure in venture.
+                    - Language failure in venture.
                   </p>
                 </div>
 
                 {/* Mandate Paragraph */}
                 <p style={{
-                  fontFamily: 'var(--font-helvetica), sans-serif',
+                  fontFamily: 'var(--font-body), sans-serif',
                   fontWeight: 300,
                   fontSize: '18px',
                   lineHeight: 1.75,
-                  color: '#000000',
+                  color: 'var(--color-text-primary)',
                   marginBottom: '48px',
                 }}>
                   Falcon is built on eight months of research into a problem founders and investors both
                   recognise and neither has fixed. The information that flows between them is{' '}
-                  <Highlighter action="underline" color="#C8910A" isView={true}>
+                  <Highlighter action="underline" color="var(--color-accent-falcon)" isView={true}>
                     scattered, informal, and lossy.
                   </Highlighter>{' '}
                   Existing tools treat it as a reporting problem. Falcon treats it as a{' '}
@@ -435,9 +446,9 @@ export default function FalconCaseStudy() {
                 )}
 
                 {/* Separator */}
-                <div style={{ width: '100%', height: '1px', backgroundColor: '#E8E4DF', marginTop: '40px', marginBottom: '48px' }} />
+                <div style={{ width: '100%', height: '1px', backgroundColor: 'var(--color-border)', marginTop: '40px', marginBottom: '48px' }} />
 
-                {/* SECTION 2 — THE PROBLEM */}
+                {/* SECTION 2 - THE PROBLEM */}
                 <div id="problem" className="case-study-section" style={{ marginTop: 0 }}>
                   <SectionLabel>THE PROBLEM</SectionLabel>
                   <SectionHeading>Three people. The same company. None of them looking at the same thing.</SectionHeading>
@@ -445,9 +456,9 @@ export default function FalconCaseStudy() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     <p
                       style={{
-                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                        fontFamily: 'var(--font-body), sans-serif',
                         fontSize: 'var(--text-base)',
-                        color: '#000000',
+                        color: 'var(--color-text-secondary)',
                         lineHeight: '1.65',
                         margin: 0,
                       }}
@@ -460,9 +471,9 @@ export default function FalconCaseStudy() {
                     </p>
                     <p
                       style={{
-                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                        fontFamily: 'var(--font-body), sans-serif',
                         fontSize: 'var(--text-base)',
-                        color: '#000000',
+                        color: 'var(--color-text-secondary)',
                         lineHeight: '1.65',
                         margin: 0,
                       }}
@@ -476,13 +487,13 @@ export default function FalconCaseStudy() {
                     </p>
                     <p
                       style={{
-                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                        fontFamily: 'var(--font-body), sans-serif',
                         fontSize: 'var(--text-md)',
                         fontWeight: 500,
-                        color: '#000000',
+                        color: 'var(--color-text-primary)',
                         marginTop: '36px',
                         paddingTop: '28px',
-                        borderTop: '1px solid #E8E4DF',
+                        borderTop: '1px solid var(--color-border)',
                         lineHeight: '1.65',
                         margin: 0,
                       }}
@@ -495,15 +506,18 @@ export default function FalconCaseStudy() {
                 {/* ORBITING CIRCLES DIAGRAM */}
                 <div id="ecosystem" className="case-study-section" style={{ marginTop: '56px', marginBottom: '56px' }}>
                   <SectionLabel>THE ECOSYSTEM</SectionLabel>
-                  <div style={{
-                    position: 'relative',
-                    width: '100%',
-                    height: '480px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    overflow: 'hidden'
-                  }}>
+                  <div
+                    className="orbit-ecosystem-stage"
+                    style={{
+                      position: 'relative',
+                      width: '100%',
+                      height: '480px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      overflow: 'hidden'
+                    }}
+                  >
                     {/* Orbit path circles */}
                     <div style={{
                       position: 'absolute',
@@ -536,7 +550,7 @@ export default function FalconCaseStudy() {
                       alt="Falcon"
                     />
 
-                    {/* Inner orbit items — use CSS animation via style tag */}
+                    {/* Inner orbit items: use CSS animation via style tag */}
                     <style>{`
                       @keyframes orbitCW {
                         from { transform: translate(-50%, -50%) rotate(0deg) translateX(120px) rotate(0deg); }
@@ -545,6 +559,12 @@ export default function FalconCaseStudy() {
                       @keyframes orbitCCW {
                         from { transform: translate(-50%, -50%) rotate(0deg) translateX(200px) rotate(0deg); }
                         to   { transform: translate(-50%, -50%) rotate(-360deg) translateX(200px) rotate(360deg); }
+                      }
+                      @media (max-width: 767px) {
+                        .orbit-ecosystem-stage {
+                          transform: scale(0.78);
+                          transform-origin: center center;
+                        }
                       }
                       .orbit-item-inner-1 {
                         position: absolute;
@@ -602,9 +622,9 @@ export default function FalconCaseStudy() {
                   <div style={{ marginTop: '24px', textAlign: 'center' }}>
                     <div
                       style={{
-                        fontFamily: 'var(--font-fragment-mono), monospace',
+                        fontFamily: 'var(--font-body), sans-serif',
                         fontSize: '11px',
-                        color: '#000000',
+                        color: 'var(--color-text-primary)',
                         textTransform: 'uppercase',
                         letterSpacing: '0.1em',
                       }}
@@ -613,9 +633,9 @@ export default function FalconCaseStudy() {
                     </div>
                     <div
                       style={{
-                        fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                        fontFamily: 'var(--font-body), sans-serif',
                         fontSize: 'var(--text-sm)',
-                        color: '#000000',
+                        color: 'var(--color-text-secondary)',
                         marginTop: '6px',
                       }}
                     >
@@ -624,9 +644,9 @@ export default function FalconCaseStudy() {
                   </div>
                 </div>
 
-                {/* SECTION 3 — FEATURES */}
+                {/* SECTION 3 - FEATURES */}
                 <div id="features" className="case-study-section" style={{ marginTop: '64px' }}>
-                  <SectionLabel>features</SectionLabel>
+                  <SectionLabel>FEATURES</SectionLabel>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '24px' }}>
                     {features.map((feature, index) => (
@@ -637,16 +657,16 @@ export default function FalconCaseStudy() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.5, delay: index * 0.08 }}
                         style={{
-                          border: '0.5px solid var(--color-border, #E8E4DF)',
+                          border: '0.5px solid var(--color-border)',
                           borderRadius: '12px',
                           padding: '24px 28px',
                           width: '100%',
                         }}
                       >
                         <p style={{
-                          fontFamily: 'var(--font-fragment-mono), monospace',
+                          fontFamily: 'var(--font-body), sans-serif',
                           fontSize: '11px',
-                          color: '#C8910A',
+                          color: 'var(--color-accent-falcon)',
                           textTransform: 'uppercase',
                           letterSpacing: '0.08em',
                           marginBottom: '6px',
@@ -655,20 +675,20 @@ export default function FalconCaseStudy() {
                           {feature.label}
                         </p>
                         <h3 style={{
-                          fontFamily: 'var(--font-helvetica), sans-serif',
+                          fontFamily: 'var(--font-display)',
                           fontSize: '20px',
                           fontWeight: 500,
-                          color: '#000000',
+                          color: 'var(--color-text-primary)',
                           marginTop: 0,
                           marginBottom: '4px',
                         }}>
                           {feature.name}
                         </h3>
                         <p style={{
-                          fontFamily: 'var(--font-helvetica), sans-serif',
+                          fontFamily: 'var(--font-body), sans-serif',
                           fontWeight: 300,
                           fontSize: '14px',
-                          color: 'var(--color-text-secondary, var(--text-secondary, #6B6560))',
+                          color: 'var(--color-text-secondary)',
                           marginBottom: '20px',
                           lineHeight: 1.6,
                           marginTop: 0,
@@ -687,16 +707,16 @@ export default function FalconCaseStudy() {
                   </div>
                 </div>
 
-                {/* SECTION 4 — NOW */}
+                {/* SECTION 4 - NOW */}
                 <div id="now" className="case-study-section" style={{ marginTop: '72px' }}>
                   <SectionLabel>CURRENT STATE</SectionLabel>
                   <SectionHeading>Built and building.</SectionHeading>
 
                   <div
                     style={{
-                      fontFamily: 'var(--font-helvetica-neue), sans-serif',
+                      fontFamily: 'var(--font-body), sans-serif',
                       fontSize: 'var(--text-base)',
-                      color: '#000000',
+                      color: 'var(--color-text-secondary)',
                       marginTop: '8px',
                       marginBottom: '32px',
                     }}
@@ -709,37 +729,61 @@ export default function FalconCaseStudy() {
                     padding: '40px 0'
                   }}>
                     <p style={{
-                      fontFamily: 'var(--font-helvetica-neue)',
-                      fontSize: '15px',
-                      color: '#000000',
-                      lineHeight: 1.65,
-                      maxWidth: 480,
-                      margin: '0 auto 32px'
+                      fontFamily: 'var(--font-body), sans-serif',
+                      fontSize: 'var(--text-base)',
+                      color: 'var(--color-text-primary)',
+                      lineHeight: 1.6,
+                      maxWidth: 520,
+                      margin: '0 auto',
+                      textAlign: 'center',
                     }}>
-                      The research is complete. The platform is in development.
-                      If you are working in this space: venture intelligence,
-                      founder-investor communication, or performance data,
-                      I would like to hear from you.
+                      If you are working on venture intelligence, founder-investor communication, or performance data,{' '}
+                      <a
+                        href="mailto:ahluwaliagovindsingh@gmail.com"
+                        style={{
+                          color: 'inherit',
+                          textDecoration: 'underline',
+                          textUnderlineOffset: '3px',
+                          textDecorationColor: 'var(--color-border)',
+                          transition: 'color var(--transition-base), text-decoration-color var(--transition-base)',
+                          fontWeight: 500,
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = 'var(--color-text-primary)';
+                          e.currentTarget.style.textDecorationColor = 'currentColor';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'inherit';
+                          e.currentTarget.style.textDecorationColor = 'var(--color-border)';
+                        }}
+                      >
+                        message me
+                      </a>{' '}
+                      or find me on{' '}
+                      <a
+                        href="https://linkedin.com/in/govind-ahluwalia"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          color: 'inherit',
+                          textDecoration: 'underline',
+                          textUnderlineOffset: '3px',
+                          textDecorationColor: 'var(--color-border)',
+                          transition: 'color var(--transition-base), text-decoration-color var(--transition-base)',
+                          fontWeight: 500,
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = 'var(--color-text-primary)';
+                          e.currentTarget.style.textDecorationColor = 'currentColor';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'inherit';
+                          e.currentTarget.style.textDecorationColor = 'var(--color-border)';
+                        }}
+                      >
+                        LinkedIn
+                      </a>.
                     </p>
-                    <a
-                      href="mailto:ahluwaliagovindsingh@gmail.com"
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 8,
-                        fontFamily: 'var(--font-fragment-mono)',
-                        fontSize: 12,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.08em',
-                        color: '#FFFFFF',
-                        background: '#C8910A',
-                        borderRadius: 6,
-                        padding: '10px 20px',
-                        textDecoration: 'none'
-                      }}
-                    >
-                      Get in touch →
-                    </a>
                   </div>
                 </div>
 

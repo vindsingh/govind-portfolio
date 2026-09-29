@@ -22,6 +22,7 @@ export function DesktopSurface({ children, className = '' }: DesktopSurfaceProps
         minHeight: '100vh',
         backgroundColor: 'var(--color-bg)',
         padding: '0 clamp(12px, 2vw, 24px) clamp(12px, 2vw, 24px)',
+        overflowX: 'clip',
       }}
     >
       {children}
@@ -31,7 +32,7 @@ export function DesktopSurface({ children, className = '' }: DesktopSurfaceProps
 
 /* ─────────────────────────────────────────────────────────────────────────
    FILE CONTAINER
-   The central UI metaphor — the entire homepage content lives inside this.
+   The central UI metaphor - the entire homepage content lives inside this.
    Styled like a digital file open on a desktop (Apple Files / iOS glass).
 ───────────────────────────────────────────────────────────────────────── */
 
@@ -70,7 +71,7 @@ export function FileContainer({ children, className = '' }: FileContainerProps) 
         overflow: 'hidden',
       }}
     >
-      {/* Glass specular highlight — subtle 1px gradient at top edge */}
+      {/* Glass specular highlight - subtle 1px gradient at top edge */}
       <div
         aria-hidden="true"
         style={{

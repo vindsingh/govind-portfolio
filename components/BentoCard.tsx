@@ -76,7 +76,7 @@ function ContactModal({ onClose }: { onClose: () => void }) {
             {
               label: 'LinkedIn',
               value: '@govind-singh-ahluwalia',
-              href: 'https://www.linkedin.com/in/govind-singh-ahluwalia/',
+              href: 'https://linkedin.com/in/govind-ahluwalia',
             },
             {
               label: 'Email',
