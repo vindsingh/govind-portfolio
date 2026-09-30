@@ -52,49 +52,74 @@ const WHEEL_H = '10.683%';   // of box height  (wheel is 73.1 × 74.78, not squa
 
 interface TrainBandProps {
   heroRef: React.RefObject<HTMLDivElement | null>;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
   isMobile?: boolean;
-  isFixed?: boolean;
 }
 
 export default function TrainBand({
   heroRef,
+  containerRef,
   isMobile = false,
-  isFixed = true,
 }: TrainBandProps) {
   const shouldReduceMotion = useReducedMotion();
   const isAnimated = !isMobile && !shouldReduceMotion;
 
-  const currentBandH = isMobile ? BAND_H_MOBILE : BAND_H;
-  // boxWidth = BAND_H / VISIBLE_FRAC * ART_RATIO (200 → 1071.43px)
-  const boxWidth = (currentBandH / VISIBLE_FRAC) * ART_RATIO;
-  const boxHeight = boxWidth / ART_RATIO; // 312.50px at 200px band height
+  const bandRef = useRef<HTMLDivElement>(null);
+  const [bandH, setBandH] = useState(BAND_H);
+  const [containerW, setContainerW] = useState(1320);
 
-  // Measure Element 2 inner width to compute exact clamped translation via ResizeObserver
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [el2Width, setEl2Width] = useState(1320);
-
+  // Sync band left, width, and height to container at every width (§2)
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
+    const el =
+      containerRef?.current ||
+      (typeof document !== 'undefined'
+        ? document.querySelector<HTMLDivElement>('.file-container-custom')
+        : null);
+    const band = bandRef.current;
+    if (!el || !band) return;
 
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.contentRect.width > 0) {
-          setEl2Width(entry.contentRect.width);
-        }
-      }
-    });
+    const sync = () => {
+      const r = el.getBoundingClientRect();
+      const width = el.offsetWidth || r.width;
+      const center = r.left + r.width / 2;
+      const left = center - width / 2;
+      band.style.left = `${left}px`;
+      band.style.width = `${width}px`;
+      // Scale band height with container width: 200px at 1320px (§2.1)
+      const computedH = (width / 1320) * 200;
+      band.style.height = `${computedH}px`;
+      setBandH(computedH);
+      setContainerW(width);
+    };
+
+    sync();
+    const ro = new ResizeObserver(sync);
     ro.observe(el);
-    if (el.clientWidth > 0) {
-      setEl2Width(el.clientWidth);
-    }
-    return () => ro.disconnect();
-  }, []);
+    window.addEventListener('resize', sync);
+    window.addEventListener('scroll', sync, { passive: true });
 
-  // Compute clamped translation: el2Width - boxcarW - RIGHT_PAD (Sprint 3c §1)
+    // Re-sync as container entry animation finishes
+    const t1 = setTimeout(sync, 100);
+    const t2 = setTimeout(sync, 550);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      ro.disconnect();
+      window.removeEventListener('resize', sync);
+      window.removeEventListener('scroll', sync);
+    };
+  }, [containerRef]);
+
+  const currentBandH = bandH;
+  // boxWidth = BAND_H / VISIBLE_FRAC * ART_RATIO
+  const boxWidth = (currentBandH / VISIBLE_FRAC) * ART_RATIO;
+  const boxHeight = boxWidth / ART_RATIO;
+
+  // Clamped translation: stops when trailing yellow boxcar sits RIGHT_PAD inside right edge
   const boxcarW = boxWidth * BOXCAR_FRAC;
-  const RIGHT_PAD = 32;
-  const finalX = Math.max(0, el2Width - boxcarW - RIGHT_PAD);
+  const RIGHT_PAD = Math.max(12, Math.round((containerW / 1320) * 24));
+  const finalX = Math.max(0, containerW - boxcarW - RIGHT_PAD);
 
   // Scroll tracking linked to the Hero container
   const { scrollYProgress } = useScroll({
@@ -140,32 +165,27 @@ export default function TrainBand({
   }, [isAnimated]);
 
   return (
-    /* 1. Pinned strip: fixed height, full width, clips everything */
+    /* 1. Pinned strip: fixed height, matches container width & position, clips everything */
     <div
+      ref={bandRef}
       style={{
-        position: isFixed ? 'fixed' : 'absolute',
+        position: 'fixed',
         bottom: 0,
         left: 0,
-        right: 0,
-        height: currentBandH,
+        width: '100%',
+        height: `${currentBandH}px`,
         overflow: 'hidden',
         pointerEvents: 'none',
         zIndex: 5,
       }}
     >
-      {/* 2. Container-width track: matches FileContainer's 1320px max.
-             Repeating background track stays still while train moves over it. */}
+      {/* 2. Container-width track: repeating background track stays still while train moves over it */}
       <div
-        ref={containerRef}
         style={{
           position: 'relative',
           width: '100%',
-          maxWidth: '1320px',
-          marginInline: 'auto',
           height: '100%',
           overflow: 'hidden',
-          borderBottomLeftRadius: isFixed ? 0 : 'var(--radius-file)',
-          borderBottomRightRadius: isFixed ? 0 : 'var(--radius-file)',
           backgroundImage: `url(${TRACK_SRC})`,
           backgroundRepeat: 'repeat-x',
           backgroundPosition: 'left bottom',
@@ -174,7 +194,7 @@ export default function TrainBand({
       >
         {/* 3. The artboard box: aspect locked, anchored to the bottom.
                Translates rightward as hero scrolls out, and clamps so trailing
-               yellow boxcar sits RIGHT_PAD inside the right edge.
+               yellow boxcar sits inside the right edge.
                At scroll top, one-shot re-entry animates train back to starting position. */}
         <motion.div
           initial={isReEntering ? { x: finalX } : false}
@@ -201,7 +221,7 @@ export default function TrainBand({
               ? (isReEntering
                   ? undefined
                   : (hasBeenPastHero.current ? finalX : trainTranslateX))
-              : 0,
+              : finalX,
             willChange: isAnimated ? 'transform' : 'auto',
             pointerEvents: 'none',
             userSelect: 'none',
