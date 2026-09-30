@@ -221,7 +221,6 @@ function CPKCIndexBox({ activeId, onAnchorClick }: CPKCIndexBoxProps) {
 export default function CPKCCaseStudy() {
   const router = useRouter();
   const heroRef = useRef<HTMLDivElement>(null);
-  const fileContainerRef = useRef<HTMLDivElement>(null);
   const sectionStackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [activeRailId, setActiveRailId] = useState<string | null>(null);
@@ -350,6 +349,7 @@ export default function CPKCCaseStudy() {
 
         .file-container-custom {
           overflow: visible !important;
+          padding: 0 !important;
         }
 
         .case-study-layout {
@@ -403,7 +403,7 @@ export default function CPKCCaseStudy() {
             </Link>
           </div>
 
-          <FileContainer ref={fileContainerRef} className="file-container-custom">
+          <FileContainer className="file-container-custom">
             <div className="case-study-layout">
               <CPKCIndexBox
                 activeId={activeRailId}
@@ -526,11 +526,11 @@ export default function CPKCCaseStudy() {
                 <SectionStack activeId={activeRailId} />
               </div>
             </div>
+
+            {/* The sticky track band pinned to the bottom of the viewport while container is in view */}
+            <TrainBand heroRef={heroRef} isMobile={isMobile} />
           </FileContainer>
         </div>
-
-        {/* The fixed track band pinned to the bottom of the viewport (§2) */}
-        <TrainBand heroRef={heroRef} containerRef={fileContainerRef} isMobile={isMobile} />
       </DesktopSurface>
     </>
   );
