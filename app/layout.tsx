@@ -58,9 +58,6 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   title: 'Govind Singh Ahluwalia',
   description: 'Designer working in rooms where design does not have a seat yet.',
-  icons: {
-    icon: '/favicon.svg',
-  },
 }
 
 export default function RootLayout({

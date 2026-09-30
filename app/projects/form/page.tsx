@@ -467,7 +467,7 @@ export default function FormCaseStudy() {
           {/* Tab row (inline) */}
           <div className="tab-row-container">
             <Link href="/" className="active-tab">
-              ← Go back
+              Go back
             </Link>
             <Link href="/?tab=work" className="inactive-tab">
               Work

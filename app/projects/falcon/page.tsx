@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { DesktopSurface, FileContainer } from '@/components/FileContainer';
 import SiteHeader from '@/components/SiteHeader';
-import FileTabNav from '@/components/FileTabNav';
 import { Highlighter } from '@/components/ui/Highlighter';
 import VideoPlayer from '@/components/VideoPlayer';
 import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
@@ -326,6 +326,48 @@ export default function FalconCaseStudy() {
           margin-top: 12px;
         }
 
+        .tab-row-container {
+          display: flex;
+          align-items: flex-end;
+          margin-bottom: -1px;
+          width: 100%;
+          max-width: 1320px;
+          margin-inline: auto;
+          position: relative;
+          z-index: 2;
+        }
+
+        .active-tab {
+          background: var(--color-text-primary);
+          color: var(--color-surface);
+          font-family: var(--font-body), sans-serif;
+          font-size: 13px;
+          font-weight: 500;
+          padding: 7px 16px;
+          clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 100%, 0 100%);
+          border: none;
+          border-radius: 0;
+          cursor: pointer;
+          line-height: 1;
+        }
+
+        .inactive-tab {
+          background: transparent;
+          color: var(--color-text-secondary);
+          font-family: var(--font-body), sans-serif;
+          font-size: 13px;
+          font-weight: 400;
+          padding: 7px 16px;
+          border: none;
+          cursor: pointer;
+          line-height: 1;
+          transition: color 150ms ease;
+        }
+
+        .inactive-tab:hover {
+          color: var(--color-text-primary);
+        }
+
         .file-container-custom {
           overflow: visible !important;
           background: var(--color-surface) !important;
@@ -375,12 +417,20 @@ export default function FalconCaseStudy() {
         <SiteHeader />
 
         <div className="folder-wrapper">
-          <FileTabNav
-            activeTab="work"
-            onTabChange={() => {
-              router.push('/');
-            }}
-          />
+          <div className="tab-row-container">
+            <Link href="/" className="active-tab">
+              Go back
+            </Link>
+            <Link href="/?tab=work" className="inactive-tab">
+              Work
+            </Link>
+            <Link href="/about" className="inactive-tab">
+              About
+            </Link>
+            <Link href="/experience" className="inactive-tab">
+              Experience
+            </Link>
+          </div>
 
           <FileContainer className="file-container-custom">
             <div className="case-study-layout">
