@@ -221,10 +221,9 @@ function CPKCIndexBox({ activeId, onAnchorClick }: CPKCIndexBoxProps) {
 export default function CPKCCaseStudy() {
   const router = useRouter();
   const heroRef = useRef<HTMLDivElement>(null);
+  const fileContainerRef = useRef<HTMLDivElement>(null);
   const sectionStackRef = useRef<HTMLDivElement>(null);
-  const sentinelRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [isPastSentinel, setIsPastSentinel] = useState(false);
   const [activeRailId, setActiveRailId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -232,23 +231,6 @@ export default function CPKCCaseStudy() {
     check();
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
-  }, []);
-
-  // Track sentinel to switch band from fixed to absolute when content ends
-  useEffect(() => {
-    const checkSentinel = () => {
-      if (!sentinelRef.current) return;
-      const rect = sentinelRef.current.getBoundingClientRect();
-      setIsPastSentinel(rect.top <= window.innerHeight);
-    };
-
-    window.addEventListener('scroll', checkSentinel, { passive: true });
-    window.addEventListener('resize', checkSentinel, { passive: true });
-    checkSentinel();
-    return () => {
-      window.removeEventListener('scroll', checkSentinel);
-      window.removeEventListener('resize', checkSentinel);
-    };
   }, []);
 
   // SPRINT 8 §1: Rail scroll-spy via IntersectionObserver over the four sections
@@ -421,7 +403,7 @@ export default function CPKCCaseStudy() {
             </Link>
           </div>
 
-          <FileContainer className="file-container-custom">
+          <FileContainer ref={fileContainerRef} className="file-container-custom">
             <div className="case-study-layout">
               <CPKCIndexBox
                 activeId={activeRailId}
@@ -547,13 +529,8 @@ export default function CPKCCaseStudy() {
           </FileContainer>
         </div>
 
-        {/* Sentinel placed immediately after the closing content */}
-        <div ref={sentinelRef} style={{ width: '100%', height: '1px', pointerEvents: 'none' }} />
-
-        {/* The fixed track band pinned to the bottom of the viewport */}
-        <div style={{ width: '100%', overflow: 'hidden' }}>
-          <TrainBand heroRef={heroRef} isMobile={isMobile} isFixed={!isPastSentinel} />
-        </div>
+        {/* The fixed track band pinned to the bottom of the viewport (§2) */}
+        <TrainBand heroRef={heroRef} containerRef={fileContainerRef} isMobile={isMobile} />
       </DesktopSurface>
     </>
   );

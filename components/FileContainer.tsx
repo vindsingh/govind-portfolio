@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -41,18 +41,20 @@ interface FileContainerProps {
   className?: string
 }
 
-export function FileContainer({ children, className = '' }: FileContainerProps) {
-  const [isMobile, setIsMobile] = useState(false)
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768)
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [])
+export const FileContainer = React.forwardRef<HTMLDivElement, FileContainerProps>(
+  function FileContainer({ children, className = '' }, ref) {
+    const [isMobile, setIsMobile] = useState(false)
+    useEffect(() => {
+      const check = () => setIsMobile(window.innerWidth < 768)
+      check()
+      window.addEventListener('resize', check)
+      return () => window.removeEventListener('resize', check)
+    }, [])
 
-  return (
-    <motion.div
-      className={className}
+    return (
+      <motion.div
+        ref={ref}
+        className={className}
       initial={{ opacity: 0, y: 12, scale: 0.995 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -89,4 +91,7 @@ export function FileContainer({ children, className = '' }: FileContainerProps) 
       {children}
     </motion.div>
   )
-}
+})
+
+FileContainer.displayName = 'FileContainer'
+

@@ -694,6 +694,16 @@ export default function Footer() {
             opacity: 1 !important;
           }
         }
+        @media (min-width: 768px) {
+          .footer-attribution-mobile {
+            display: none !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .footer-attribution-desktop {
+            display: none !important;
+          }
+        }
       `,
         }}
       />
@@ -875,8 +885,9 @@ export default function Footer() {
               ))}
             </div>
 
-            {/* Copyright attribution line (§4: Drawn and built by Govind. 2026.) */}
+            {/* Copyright attribution line (Desktop: §3.1 Built by Govind. 2026.) */}
             <div
+              className="footer-attribution-desktop"
               style={{
                 fontFamily: 'var(--font-fragment-mono)',
                 fontSize: 'var(--text-base)',
@@ -885,7 +896,7 @@ export default function Footer() {
                 marginTop: 'auto',
               }}
             >
-              Drawn and built by Govind. 2026.
+              Built by Govind. 2026.
             </div>
           </div>
 
@@ -1034,6 +1045,22 @@ export default function Footer() {
                   <line x1="3" y1="21" x2="10" y2="14" />
                 </svg>
               </button>
+            </div>
+
+            {/* Attribution line below drawing block on phone (§3.2) */}
+            <div
+              className="footer-attribution-mobile"
+              style={{
+                fontFamily: 'var(--font-fragment-mono)',
+                fontSize: 'var(--text-base)',
+                color: 'var(--color-text-muted)',
+                letterSpacing: '0.04em',
+                marginTop: '28px',
+                textAlign: 'left',
+                width: '100%',
+              }}
+            >
+              Built by Govind. 2026.
             </div>
           </div>
         </div>
