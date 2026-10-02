@@ -3,6 +3,7 @@ import localFont from 'next/font/local'
 import { Space_Mono, Cardo, Hind } from 'next/font/google'
 import './globals.css'
 import Footer from '@/components/Footer'
+import { Analytics } from '@vercel/analytics/next'
 
 const cardo = Cardo({
   weight: ['400', '700'],
@@ -78,6 +79,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </div>
+        <Analytics />
       </body>
     </html>
   )
